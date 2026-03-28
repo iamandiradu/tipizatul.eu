@@ -1,7 +1,11 @@
+import { config as dotenvConfig } from 'dotenv'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+
+// Load .env.local into process.env so non-VITE_ vars are available
+dotenvConfig({ path: '.env.local' })
 
 function driveProxyPlugin(): Plugin {
   return {
@@ -18,7 +22,11 @@ function driveProxyPlugin(): Plugin {
 
         try {
           const { GoogleAuth } = await import('google-auth-library')
-          const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}')
+          const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY
+
+          if (!raw) { res.statusCode = 500; res.end('GOOGLE_SERVICE_ACCOUNT_KEY not set'); return }
+          let credentials: Record<string, unknown>
+          try { credentials = JSON.parse(raw) } catch { credentials = JSON.parse(Buffer.from(raw, 'base64').toString('utf-8')) }
           const auth = new GoogleAuth({
             credentials,
             scopes: ['https://www.googleapis.com/auth/drive.readonly'],

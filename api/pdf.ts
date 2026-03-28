@@ -3,10 +3,22 @@ import { GoogleAuth } from 'google-auth-library'
 
 let authClient: Awaited<ReturnType<GoogleAuth['getClient']>> | null = null
 
+function parseCredentials(raw: string): Record<string, unknown> {
+  try {
+    return JSON.parse(raw)
+  } catch {
+    // Treat as base64-encoded JSON
+    return JSON.parse(Buffer.from(raw, 'base64').toString('utf-8'))
+  }
+}
+
 async function getAuthClient() {
   if (authClient) return authClient
 
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY ?? '{}')
+  const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY
+
+  if (!raw) throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured')
+  const credentials = parseCredentials(raw)
   const auth = new GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/drive.readonly'],
