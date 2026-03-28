@@ -2,7 +2,6 @@
 // - uploadPdfToDrive: used by admins (requires OAuth access token from sign-in)
 // - fetchPdfFromDrive: used by all users (public files + API key, no auth needed)
 
-const DRIVE_API_KEY = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY as string
 const DRIVE_API = 'https://www.googleapis.com/drive/v3'
 
 // Cache fetched font bytes to avoid re-downloading on every PDF generation
@@ -214,14 +213,11 @@ export async function deletePdfFromDrive(
 }
 
 /**
- * Fetch a publicly shared PDF from Google Drive.
- * Uses an API key — no user authentication required.
+ * Fetch a publicly shared PDF from Google Drive via server-side proxy.
+ * The API key is kept server-side — no user authentication required.
  */
 export async function fetchPdfFromDrive(fileId: string): Promise<ArrayBuffer> {
-  if (!DRIVE_API_KEY) {
-    throw new Error('VITE_GOOGLE_DRIVE_API_KEY lipsește din variabilele de mediu.')
-  }
-  const url = `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
+  const url = `/api/pdf?fileId=${encodeURIComponent(fileId)}`
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`Nu s-a putut descărca formularul (Drive ${res.status}).`)
