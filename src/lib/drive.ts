@@ -215,13 +215,17 @@ export async function deletePdfFromDrive(
 
 /**
  * Fetch a publicly shared PDF from Google Drive.
- * Uses an API key — no user authentication required.
+ * In production: routes through the /api/pdf serverless proxy to avoid CORS/referrer issues.
+ * In development: calls Drive directly with the API key.
  */
 export async function fetchPdfFromDrive(fileId: string): Promise<ArrayBuffer> {
-  const url = `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
+  const url = import.meta.env.PROD
+    ? `/api/pdf?fileId=${encodeURIComponent(fileId)}`
+    : `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
+
   const res = await fetch(url)
   if (!res.ok) {
-    throw new Error(`Nu s-a putut descărca formularul (Drive ${res.status}).`)
+    throw new Error(`Nu s-a putut descărca formularul (${res.status}).`)
   }
   return res.arrayBuffer()
 }
