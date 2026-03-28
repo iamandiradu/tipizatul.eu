@@ -218,6 +218,9 @@ export async function deletePdfFromDrive(
  * Uses an API key — no user authentication required.
  */
 export async function fetchPdfFromDrive(fileId: string): Promise<ArrayBuffer> {
+  if (!DRIVE_API_KEY) {
+    throw new Error('VITE_GOOGLE_DRIVE_API_KEY lipsește din variabilele de mediu.')
+  }
   const url = `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
   const res = await fetch(url)
   if (!res.ok) {
