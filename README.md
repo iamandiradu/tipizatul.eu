@@ -66,7 +66,7 @@ The app runs at `http://localhost:5173`.
 | `VITE_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket (part of standard config) |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
 | `VITE_FIREBASE_APP_ID` | Firebase app ID |
-| `VITE_GOOGLE_DRIVE_API_KEY` | Browser-restricted API key for public Drive reads |
+| `GOOGLE_SERVICE_ACCOUNT_KEY` | Google service account JSON key (raw JSON or base64-encoded) for server-side Drive PDF proxy |
 
 ### Adding an admin
 
@@ -98,6 +98,8 @@ Open a PR → Vercel deploys a preview URL and posts it as a GitHub status check
 ## Project structure
 
 ```
+api/
+└── pdf.ts              # Vercel serverless proxy — fetches Drive PDFs via service account
 src/
 ├── lib/
 │   ├── firebase.ts        # Shared Firebase app init

@@ -14,7 +14,7 @@ Before deploying you need:
 
 - A GitHub repository with the project
 - A Firebase project (Auth + Firestore enabled)
-- A Google Cloud project with the Drive API enabled and an API key created
+- A Google Cloud project with the Drive API enabled and a service account JSON key
 - The NotoSans-Regular.ttf font in `public/fonts/` (see `public/fonts/README.md`)
 
 ---
@@ -61,18 +61,16 @@ Add:
 
 ---
 
-## 2. Google Drive API Key
+## 2. Google Service Account (Drive PDF proxy)
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials
-2. Create Credentials → **API Key**
-3. **Restrict the key:**
-   - Application restrictions: **HTTP referrers**
-   - Add: `https://tipizatul.eu/*`, `https://*.vercel.app/*`, `http://localhost:5173/*`
-   - API restrictions: **Google Drive API** only
-4. Copy the key — this is your `VITE_GOOGLE_DRIVE_API_KEY`
+PDF fetches go through a server-side proxy (`/api/pdf`) that authenticates with a Google service account, avoiding browser referrer restrictions and bot detection.
 
-The Drive API must be enabled on the project:
-APIs & Services → Library → search "Google Drive API" → Enable.
+1. Go to [Google Cloud Console](https://console.cloud.google.com) → IAM & Admin → Service Accounts
+2. Create a service account (e.g. `tipizatul-drive-reader`) — no special roles needed
+3. Create a **JSON key** and download it
+4. The Drive API must be enabled on the project:
+   APIs & Services → Library → search "Google Drive API" → Enable
+5. Set the `GOOGLE_SERVICE_ACCOUNT_KEY` environment variable to the JSON key contents (raw JSON or base64-encoded) — see sections 3.2 and 5
 
 ---
 
@@ -98,7 +96,7 @@ In Vercel → Project → Settings → Environment Variables, add all keys from 
 | `VITE_FIREBASE_STORAGE_BUCKET` | Production, Preview, Development |
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Production, Preview, Development |
 | `VITE_FIREBASE_APP_ID` | Production, Preview, Development |
-| `VITE_GOOGLE_DRIVE_API_KEY` | Production, Preview, Development |
+| `GOOGLE_SERVICE_ACCOUNT_KEY` | Production, Preview, Development |
 
 ### 3.3 Deploy
 Click **Deploy**. Vercel builds and publishes the site.
