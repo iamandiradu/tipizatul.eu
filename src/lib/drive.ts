@@ -219,10 +219,15 @@ export async function deletePdfFromDrive(
  * In development: calls Drive directly with the API key.
  */
 export async function fetchPdfFromDrive(fileId: string): Promise<ArrayBuffer> {
-  const url = import.meta.env.PROD
-    ? `/api/pdf?fileId=${encodeURIComponent(fileId)}`
-    : `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
-
+  let url: string
+  if (import.meta.env.PROD) {
+    url = `/api/pdf?fileId=${encodeURIComponent(fileId)}`
+  } else {
+    if (!DRIVE_API_KEY) {
+      throw new Error('VITE_GOOGLE_DRIVE_API_KEY lipsește din variabilele de mediu.')
+    }
+    url = `${DRIVE_API}/files/${fileId}?alt=media&key=${DRIVE_API_KEY}`
+  }
   const res = await fetch(url)
   if (!res.ok) {
     throw new Error(`Nu s-a putut descărca formularul (${res.status}).`)
