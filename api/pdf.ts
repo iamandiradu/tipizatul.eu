@@ -19,6 +19,7 @@ async function getAuthClient() {
 
   if (!raw) throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured')
   const credentials = parseCredentials(raw)
+  console.log('Parsed credential keys:', Object.keys(credentials))
   const auth = new GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/drive.readonly'],
