@@ -1,9 +1,9 @@
-import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-function driveProxyPlugin(env: Record<string, string>): Plugin {
+function driveProxyPlugin(): Plugin {
   return {
     name: 'drive-pdf-proxy',
     configureServer(server) {
@@ -18,7 +18,7 @@ function driveProxyPlugin(env: Record<string, string>): Plugin {
 
         try {
           const { GoogleAuth } = await import('google-auth-library')
-          const credentials = JSON.parse(env.VITE_GOOGLE_SERVICE_ACCOUNT_KEY || '{}')
+          const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}')
           const auth = new GoogleAuth({
             credentials,
             scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -51,19 +51,15 @@ function driveProxyPlugin(env: Record<string, string>): Plugin {
   }
 }
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd())
-
-  return {
-    plugins: [
-      react(),
-      tailwindcss(),
-      driveProxyPlugin(env),
-    ],
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
+export default defineConfig({
+  plugins: [
+    react(),
+    tailwindcss(),
+    driveProxyPlugin(),
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
     },
-  }
+  },
 })
