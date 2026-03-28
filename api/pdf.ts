@@ -17,6 +17,11 @@ async function getAuthClient() {
 
   const raw = process.env.GOOGLE_SERVICE_ACCOUNT_KEY
 
+  // Debug: log env var names containing "GOOGLE" to verify the var exists
+  const googleVars = Object.keys(process.env).filter(k => k.includes('GOOGLE'))
+  console.log('Available GOOGLE env vars:', googleVars)
+  console.log('GOOGLE_SERVICE_ACCOUNT_KEY length:', raw?.length ?? 'undefined')
+
   if (!raw) throw new Error('GOOGLE_SERVICE_ACCOUNT_KEY not configured')
   const credentials = parseCredentials(raw)
   console.log('Parsed credential keys:', Object.keys(credentials))
