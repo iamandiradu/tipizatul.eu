@@ -30,7 +30,7 @@ export default function FillPage() {
     if (!id) return
     fetchTemplate(id)
       .then(async (tmpl) => {
-        if (!tmpl) {
+        if (!tmpl || tmpl.archived) {
           setNotFound(true)
           return
         }
