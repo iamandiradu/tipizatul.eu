@@ -17,6 +17,7 @@ export default function FillPage() {
   const [template, setTemplate] = useState<Template | null>(null)
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null)
   const [notFound, setNotFound] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
 
@@ -34,8 +35,12 @@ export default function FillPage() {
           return
         }
         setTemplate(tmpl)
-        const bytes = await fetchPdfFromDrive(tmpl.driveFileId)
-        setPdfBytes(bytes)
+        try {
+          const bytes = await fetchPdfFromDrive(tmpl.driveFileId)
+          setPdfBytes(bytes)
+        } catch (err) {
+          setLoadError(err instanceof Error ? err.message : 'Nu s-a putut încărca PDF-ul.')
+        }
       })
       .catch(() => setNotFound(true))
   }, [id])
@@ -66,6 +71,18 @@ export default function FillPage() {
       <div className="text-center py-16">
         <p className="text-gray-500">Formularul nu a fost găsit.</p>
         <Link to="/" className="text-blue-600 hover:underline text-sm mt-2 block">
+          ← Înapoi la catalog
+        </Link>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-red-500 dark:text-red-400 font-medium mb-1">Nu s-a putut încărca formularul.</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 mb-4 font-mono">{loadError}</p>
+        <Link to="/" className="text-blue-600 hover:underline text-sm">
           ← Înapoi la catalog
         </Link>
       </div>
@@ -155,7 +172,7 @@ export default function FillPage() {
         </button>
       </form>
 
-      <div className="mt-10">
+      <div className="mt-10 hidden md:block">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
         <PdfPreview pdfBytes={pdfBytes} />
       </div>

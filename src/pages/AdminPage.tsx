@@ -96,7 +96,7 @@ function AnnotateForm({
       {pdfSection}
 
       <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 mb-4">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[900px] text-sm">
           <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <tr>
               <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400">Câmp PDF</th>
