@@ -155,7 +155,7 @@ export default function FillPage() {
         </button>
       </form>
 
-      <div className="mt-10">
+      <div className="mt-10 hidden md:block">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
         <PdfPreview pdfBytes={pdfBytes} />
       </div>
