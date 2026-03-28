@@ -124,6 +124,10 @@ src/
 
 ---
 
+## Author
+
+Radu Iamandi
+
 ## License
 
 MIT
