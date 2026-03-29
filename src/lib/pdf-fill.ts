@@ -1,4 +1,5 @@
 import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 import type { Template, FormValues } from '@/types/template'
 import { getNotoSansBytes } from '@/lib/drive'
 
@@ -9,6 +10,7 @@ export async function fillAndDownload(
   fileName?: string,
 ): Promise<void> {
   const pdfDoc = await PDFDocument.load(pdfBytes)
+  pdfDoc.registerFontkit(fontkit)
   const form = pdfDoc.getForm()
 
   // Embed NotoSans for full Romanian diacritics support:
