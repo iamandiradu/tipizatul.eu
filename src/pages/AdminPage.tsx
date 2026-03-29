@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import { Upload, Trash2, LogOut, PlusCircle, Save, Loader2, Pencil, X, ArchiveX, ArchiveRestore, ChevronDown, ChevronUp, AlertTriangle } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
 import { signOut } from '@/lib/auth'
-import { uploadPdfToDrive, replacePdfOnDrive, deletePdfFromDrive } from '@/lib/drive'
+import { uploadPdfToDrive, replacePdfOnDrive, deletePdfFromDrive, archivePdfOnDrive, restorePdfOnDrive } from '@/lib/drive'
 import { fetchAllTemplates, saveTemplate, patchTemplate } from '@/lib/firestore'
 import { introspectPdf } from '@/lib/pdf-introspect'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -394,11 +394,17 @@ export default function AdminPage() {
 
   async function handleArchive(t: Template) {
     await patchTemplate(t.id, { archived: true })
+    if (driveAccessToken) {
+      await archivePdfOnDrive(driveAccessToken, t.driveFileId).catch(() => {})
+    }
     await reload()
   }
 
   async function handleRestore(t: Template) {
     await patchTemplate(t.id, { archived: false })
+    if (driveAccessToken) {
+      await restorePdfOnDrive(driveAccessToken, t.driveFileId).catch(() => {})
+    }
     await reload()
   }
 

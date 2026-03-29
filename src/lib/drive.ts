@@ -71,6 +71,54 @@ async function getPdfFolderId(accessToken: string): Promise<string> {
   return folderId
 }
 
+// Cached folder ID for "Tipizatul.eu/PDFs/Archived"
+let _archivedFolderId: string | null = null
+
+async function getArchivedFolderId(accessToken: string): Promise<string> {
+  if (_archivedFolderId) return _archivedFolderId
+  const pdfFolderId = await getPdfFolderId(accessToken)
+  const folderId = await getOrCreateFolder(accessToken, 'Archived', pdfFolderId)
+  _archivedFolderId = folderId
+  return folderId
+}
+
+/**
+ * Move a Drive file from one folder to another.
+ */
+export async function moveDriveFile(
+  accessToken: string,
+  fileId: string,
+  fromFolderId: string,
+  toFolderId: string,
+): Promise<void> {
+  const res = await fetch(
+    `${DRIVE_API}/files/${encodeURIComponent(fileId)}?addParents=${encodeURIComponent(toFolderId)}&removeParents=${encodeURIComponent(fromFolderId)}`,
+    {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${accessToken}` },
+    },
+  )
+  if (!res.ok) throw new Error('Eroare la mutarea fișierului pe Drive.')
+}
+
+/**
+ * Move a PDF to the Archived folder. Called when a template is archived.
+ */
+export async function archivePdfOnDrive(accessToken: string, fileId: string): Promise<void> {
+  const from = await getPdfFolderId(accessToken)
+  const to = await getArchivedFolderId(accessToken)
+  await moveDriveFile(accessToken, fileId, from, to)
+}
+
+/**
+ * Move a PDF back from Archived to the main PDFs folder. Called when a template is restored.
+ */
+export async function restorePdfOnDrive(accessToken: string, fileId: string): Promise<void> {
+  const from = await getArchivedFolderId(accessToken)
+  const to = await getPdfFolderId(accessToken)
+  await moveDriveFile(accessToken, fileId, from, to)
+}
+
 /**
  * Find the next available filename in the PDFs folder.
  * If "Name.pdf" exists, tries "Name_2.pdf", "Name_3.pdf", etc.
