@@ -5,8 +5,10 @@ import {
   getDocs,
   getDoc,
   setDoc,
+  addDoc,
   query,
   orderBy,
+  serverTimestamp,
 } from 'firebase/firestore'
 import { firebaseApp } from '@/lib/firebase'
 import type { Template } from '@/types/template'
@@ -36,4 +38,14 @@ export async function saveTemplate(template: Template): Promise<void> {
 
 export async function patchTemplate(id: string, patch: Partial<Template>): Promise<void> {
   await setDoc(doc(firestoreDb, TEMPLATES, id), patch, { merge: true })
+}
+
+// ── Proposals ───────────────────────────────────────────────────────────────
+
+export async function submitProposal(title: string, description: string): Promise<void> {
+  await addDoc(collection(firestoreDb, 'proposals'), {
+    title,
+    description,
+    createdAt: serverTimestamp(),
+  })
 }

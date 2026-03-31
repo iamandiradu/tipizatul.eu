@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider, Outlet, NavLink, Link } from 'react-router-dom'
-import { lazy, Suspense } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { lazy, Suspense, useState } from 'react'
+import { Moon, Sun, Lightbulb } from 'lucide-react'
 import { useDarkMode } from '@/lib/useDarkMode'
+import ProposalWidget from '@/components/ProposalWidget'
 
 const CatalogPage = lazy(() => import('@/pages/CatalogPage'))
 const FillPage = lazy(() => import('@/pages/FillPage'))
@@ -13,6 +14,7 @@ const ErrorPage = lazy(() => import('@/pages/ErrorPage'))
 
 function AppShell({ showBackLink }: { showBackLink?: boolean }) {
   const { dark, toggle } = useDarkMode()
+  const [proposalOpen, setProposalOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -27,13 +29,24 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
               tipizatul.eu
             </NavLink>
           )}
-          <button
-            onClick={toggle}
-            aria-label={dark ? 'Activează modul luminos' : 'Activează modul întunecat'}
-            className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
+          <div className="flex items-center gap-1 relative">
+            <button
+              onClick={() => setProposalOpen((v) => !v)}
+              aria-label="Propune un formular"
+              className="flex items-center gap-1.5 px-2 py-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm"
+            >
+              <Lightbulb className="w-5 h-5" />
+              <span className="hidden sm:inline">Propune</span>
+            </button>
+            <ProposalWidget open={proposalOpen} onClose={() => setProposalOpen(false)} />
+            <button
+              onClick={toggle}
+              aria-label={dark ? 'Activează modul luminos' : 'Activează modul întunecat'}
+              className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </header>
       <main className="max-w-6xl mx-auto px-4 py-8">
