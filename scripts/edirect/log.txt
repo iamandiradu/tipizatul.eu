@@ -1,0 +1,469 @@
+Total entries: 8818
+Downloadable: 8818
+Downloading with concurrency=3...
+  FAIL 49159237: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7764794/O7765176__1 PLAN PREGATIRE_SU_ISJ ARAD.pdf
+  FAIL 11217664: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932702/I1932776__2 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE IMPORT DISTRIBU?IE DISPOZITIVE MEDICALE .docx
+  FAIL 11218463: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932861/I1932861__2 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE IMPORT DISTRIBU?IE DISPOZITIVE MEDICALE .docx
+  FAIL 11219813: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1933097/I1933114__2 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE IMPORT DISTRIBU?IE DISPOZITIVE MEDICALE .docx
+  [0.6%] 46 downloaded, 0 skipped, 4 failed
+  FAIL 11219707: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932950/I1933094__2 OPIS DOCUMENTE NECESARE PENTRU AVIZAREA ÎN REGIM TEMPORAR A ACTIVITA?II DE IMPORT DISTRIBU?IE DEP0ZITARE DISPOZITIVE MEDICALE.docx
+  FAIL 11218467: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932861/I1932861__3 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE INSTALARE ?I SAU MENTENAN?A DISPOZITIVE MEDICALE .docx
+  FAIL 11217700: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932702/I1932776__3 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE INSTALARE ?I SAU MENTENAN?A DISPOZITIVE MEDICALE .docx
+  FAIL 11219826: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1933097/I1933114__3 OPIS DOCUMENTA?IE EVALUARE ACTIVITATE DE INSTALARE ?I SAU MENTENAN?A DISPOZITIVE MEDICALE .docx
+  [1.1%] 92 downloaded, 0 skipped, 8 failed
+  [1.7%] 142 downloaded, 0 skipped, 8 failed
+  [2.3%] 192 downloaded, 0 skipped, 8 failed
+  [2.8%] 242 downloaded, 0 skipped, 8 failed
+  FAIL 1521: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25054/I878008__Act înfiintare Birou Mediator.pdf
+  FAIL 4696940: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25054/I878008__Act înfiintare Birou Mediatori Asociati.pdf
+  FAIL 33278055: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5327018/
+  FAIL 33270000: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5325694/I5327025__Adeverin?a - Tip Vechime în munca.pdf
+  [3.4%] 288 downloaded, 0 skipped, 12 failed
+  FAIL 49384033: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7800437/I7800437__Acte necesare înscrierii în Colegiul Medicilor Braila (3).pdf
+  FAIL 49384182: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7800437/I7800437__Juramântul lui Hipocrate.pdf
+  FAIL 49162407: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7765582/I7765582__ANEXA Nr.6 CERERE de avizare anuala a Certificatului de membru -pdf.pdf
+  FAIL 49163050: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7765582/I7765582__Declara?ie de incompatibilitate.pdf
+  [4.0%] 334 downloaded, 0 skipped, 16 failed
+  FAIL 9450270: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1378961/I1632640__ACTE NECESARE PENTRU INTOCMIREA DOSARULUI DE  AJUTOR  DE URGEN?A sau  AJUTOR FINANCIAR.docx
+  FAIL 9450674: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1373731/I1632832__ACTE NECESARE PENTRU INTOCMIREA DOSARULUI DE ALOCATIE DE STAT.docx
+  FAIL 4854926: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/900864/I900864__Act înfiintare Birou Mediator.pdf
+  FAIL 4854933: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/900864/I900864__Act înfiintare Birou Mediatori Asociati.pdf
+  FAIL 7870056: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1396472/I1396472__Adeverin?a certificata de catre asocia?ia de proprietari sau locatari.doc
+  [4.5%] 379 downloaded, 0 skipped, 21 failed
+  FAIL 53392691: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/8398119/I8398885__Model adeverin?a angajator.doc
+  FAIL 6794515: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1195827/I1195827__DECLARATIE VENIT.docx
+  FAIL 6728632: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1185174/I1185174__DECLARATIE VENIT.docx
+  [5.1%] 426 downloaded, 0 skipped, 24 failed
+  [5.7%] 476 downloaded, 0 skipped, 24 failed
+  FAIL 27756258: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4076171/O4445633__Adeverin?a de autenticitate.doc
+  FAIL 33025026: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5289319/I5394951__Adeverinta tip Anexa 2 completata de angajator.pdf
+  [6.2%] 524 downloaded, 0 skipped, 26 failed
+  [6.8%] 574 downloaded, 0 skipped, 26 failed
+  FAIL 33585505: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5374403/O5374403__Formular pentru aprobarea transportului deseurilor periculoase.docx
+  [7.4%] 623 downloaded, 0 skipped, 27 failed
+  [7.9%] 673 downloaded, 0 skipped, 27 failed
+  [8.5%] 723 downloaded, 0 skipped, 27 failed
+  FAIL 11219844: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1933097/O1933116__7 ANEXA LA AVIZUL DE FUNC?IONARE TEMPLATE.pdf
+  [9.1%] 772 downloaded, 0 skipped, 28 failed
+  FAIL 48822951: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7715528/I7715668__Angajament de plata restituire cf. norme 1154.docx
+  FAIL 48831414: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7716460/I7716460__Angajament de plata.docx
+  [9.6%] 820 downloaded, 0 skipped, 30 failed
+  [10.2%] 870 downloaded, 0 skipped, 30 failed
+  FAIL 11217795: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932702/O1932776__7 AVIZ  FUNC?IONARE TEMPLATE .pdf
+  FAIL 11218157: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1932861/O1932861__7 AVIZ  FUNC?IONARE TEMPLATE .pdf
+  FAIL 29248623: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4558242/I4579355__Formular carte tehnica.pdf
+  FAIL 29249393: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4558242/I4579355__Formular carte tehnica.pdf
+  FAIL 28507115: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4558242/I4579355__Formular carte tehnica.pdf
+  FAIL 10888047: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1867022/I1867113__Formular de înscriere în Colegiul Medicilor Gala?i.doc
+  [11.3%] 964 downloaded, 0 skipped, 36 failed
+  FAIL 28339981: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4533631/I4533655__Formular Cerere pentru emiterea Avizului UAT Constan?a în baza caruia se amplaseaza mijlocul de publicitate F02-DGEF12.doc
+  [11.9%] 1013 downloaded, 0 skipped, 37 failed
+  [12.5%] 1063 downloaded, 0 skipped, 37 failed
+  FAIL 5241648: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/950527/I962025__Cerere recunoa?terea in cadrul UTCB a calita?ii de conducator de doctorat.docx
+  FAIL 4892587: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/892073/I905883__Cerere pentru recunoa?terea automata a calita?ii de conducator de doctorat.docx
+  [13.0%] 1111 downloaded, 0 skipped, 39 failed
+  FAIL 8651259: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1514526/I7989018__Cerere tip privind recunoasterea automata a diplomei de doctor ?i a titlului de doctor in stiinte, obt. in strainatate.docx
+  [13.6%] 1160 downloaded, 0 skipped, 40 failed
+  FAIL 5534214: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1004209/O1010713__Cerere PCUe Recunoa?tere  diploma de doctor.docx
+  [14.2%] 1209 downloaded, 0 skipped, 41 failed
+  FAIL 5601114: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1013971/I1013980__Cerere privind recunoa?terea in cadrul UTCB a Diplomei si a titlului de Doctor în stiinte.pdf
+  [14.7%] 1258 downloaded, 0 skipped, 42 failed
+  [15.3%] 1308 downloaded, 0 skipped, 42 failed
+  [16.4%] 1366 downloaded, 42 skipped, 42 failed
+  FAIL 27055482: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4339144/I4339245__Cerere-Declara?ie componen?a gospodariei 2021.docx
+  FAIL 38319314: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5290311/I6084737__CERERE – DECLARATIE PE PROPRIA RASPUNDERE pentru acordarea unor drepturi de asistenta sociala - dosar încalzire.pdf
+  FAIL 38319294: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5290295/I6084732__CERERE – DECLARATIE PE PROPRIA RASPUNDERE pentru acordarea unor drepturi de asistenta sociala - dosar încalzire.pdf
+  [17.0%] 1413 downloaded, 42 skipped, 45 failed
+  FAIL 10006849: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1412250/I1723576__F-P.O.-C.E.A.A.-01.04.- Cerere acord prealabil, autoriza?ie de amplasare ?i sau acces la drum.docx
+  FAIL 8092567: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1429978/I1430207__Cerere acordare indemniza?ie lunara pentru persoana cu handicap grav.pdf
+  FAIL 32980497: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5282466/I5282531__Cerere acordare servicii sociale_Serviciul de Asistenta Comunitata Macin.docx
+  [17.6%] 1460 downloaded, 42 skipped, 48 failed
+  FAIL 49680014: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7845019/I7845065__Cerere Ancheta sociala plasament minor.doc
+  FAIL 7391482: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1321632/I1336366__Cerere_atestat_producator_Magiresti.pdf
+  [18.1%] 1508 downloaded, 42 skipped, 50 failed
+  FAIL 9856293: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1701388/I2315855__ANPIS CERERE pentru acordarea indemnizatiei lunare de hrana pentru adulti.pdf
+  [18.7%] 1557 downloaded, 42 skipped, 51 failed
+  FAIL 2693980: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560036/I5306925__cerere-declara?ie-?i-angajament-angajare-asistent-personal.doc
+  FAIL 2694004: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560042/I5307031__cerere-indemniza?ie-bolnav9c22a4718a6065e984ccff0000670d49.doc
+  [19.3%] 1605 downloaded, 42 skipped, 53 failed
+  FAIL 48909046: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7718949/I7728703__Cerere pentru acordarea aloca?iei de stat, indemnizatiei de cre?tere a copilului.doc
+  FAIL 33142132: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560036/I5306925__cerere-concediu-odihna-asistent-personal-?i-indemniza?ie-bolnav.doc
+  [19.8%] 1653 downloaded, 42 skipped, 55 failed
+  [20.4%] 1703 downloaded, 42 skipped, 55 failed
+  [21.0%] 1753 downloaded, 42 skipped, 55 failed
+  [21.5%] 1803 downloaded, 42 skipped, 55 failed
+  FAIL 2623: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25176/PISEG006158_O_1632_Anexa 1.doc(2)
+  FAIL 8652834: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1514802/I7989612__Cerere tip recunoasterea calita?ii de conducator de doctorat -abilitarii, obt. in strainatate.docx
+  FAIL 5279746: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/967713/I967713__Metodologie recunoa?tere func?ii didactice strainatate - anexa.doc
+  [22.1%] 1850 downloaded, 42 skipped, 58 failed
+  FAIL 49446290: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/952031/I7809860__Cerere de recunoa?tere a calita?ii de conducator de doctorat sau abilitare.pdf
+  [22.7%] 1899 downloaded, 42 skipped, 59 failed
+  FAIL 4170523: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/784029/I784029__CERERE pentru suspendarea calitatii de membru al CFZRO.doc
+  [23.2%] 1948 downloaded, 42 skipped, 60 failed
+  FAIL 33142216: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560036/I5306925__cerere-eliberare-adeverin?a.doc
+  [23.8%] 1997 downloaded, 42 skipped, 61 failed
+  FAIL 32613345: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5070084/I5225256__Cerere ALP pentru tehnician protezare auditiva audiolog terapeut vocal.docx
+  FAIL 57675200: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/9024136/I9024136__Cerere eliberare card-legitima?ie de parcare persoane cu handicap.pdf
+  FAIL 57675936: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/9024400/I9024400__Cerere eliberare card-legitima?ie de parcare persoane cu handicap ANEXA3.pdf
+  FAIL 57675923: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/9024400/I9024400__Cerere eliberare card-legitima?ie de parcare persoane cu handicap ANEXA2.pdf
+  [24.4%] 2043 downloaded, 42 skipped, 65 failed
+  FAIL 57675851: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/9024400/I9024400__Cerere eliberare card-legitima?ie de parcare persoane cu handicap ANEXA1.pdf
+  [24.9%] 2092 downloaded, 42 skipped, 66 failed
+  FAIL 57759549: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/804884/I9037184__CERERE DE EVALUARE ÎN VEDEREA ELIBERARII ATESTATULUI DE.docx
+  FAIL 4645540: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/870646/I870805__Cerere evaluare ini?iala AMP.doc
+  [25.5%] 2140 downloaded, 42 skipped, 68 failed
+  FAIL 26226480: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4213721/I4213721__Cerere-de-admitere-în-centrele-rezidentiale-pentru-persoane-cu-handicap (1).doc
+  FAIL 7646897: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1363135/I1363145__CERERE - DECLARATIE PE PROPRIA RASPUNDERE pentru acordarea stimulentului educational (tichet social pentru gradinita).pdf
+  FAIL 9451142: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1356215/I1632877__cerere incetare modificare
+  FAIL 9451183: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1373731/I1632910__cerere incetare modificare
+  [26.1%] 2186 downloaded, 42 skipped, 72 failed
+  FAIL 33142732: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560042/I5307031__cerere-indemniza?ie-tutorea622a4718a6065e984ccff0000670d49.doc
+  [26.7%] 2235 downloaded, 42 skipped, 73 failed
+  FAIL 4656150: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/872314/I872314__Cerere Cre?a.docx
+  FAIL 4144585: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/780126/I780202__Cerere eliberare licen?a pescuit comercial in ape continentale.pdf
+  [27.2%] 2283 downloaded, 42 skipped, 75 failed
+  FAIL 48917626: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7728832/I7729858__Cerere pentru acordarea aloca?iei de stat, indemnizatiei de cre?tere a copilului - 1 (pt. activ. de indemnizatie crestere si ingrijire a acopilului).doc
+  [27.8%] 2332 downloaded, 42 skipped, 76 failed
+  FAIL 48917859: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7728832/I7729858__Cerere pentru acordarea aloca?iei de stat, indemnizatiei de cre?tere a copilului - 2 (pt. activ. de stimulent de inser?ie).doc
+  FAIL 48840800: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7718313/I7718445__cerere tichete sociale pe suport electronic pentru produse alimentare si mese calde - persoane fara adapost.docx
+  FAIL 48840787: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7718313/I7718445__cerere tichete sociale pe suport electronic pentru produse alimentare si mese calde - familie cu copii.docx
+  FAIL 48919138: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7730009/I7730095__Cerere-pentru acordarea tichetului social pe suport electronic pentru nou-nascu?i, conf.OUG nr.34-2024.doc
+  [28.4%] 2378 downloaded, 42 skipped, 80 failed
+  FAIL 6861: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/26025/PISEG012441_cerere 18_19_20_21_22_23_24.pdf(3)
+  [28.9%] 2427 downloaded, 42 skipped, 81 failed
+  [29.5%] 2477 downloaded, 42 skipped, 81 failed
+  FAIL 2209875: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/482287/I482287__F8 - Cerere pentru emiterea autorizatiei de construire, desfiintare.doc
+  FAIL 33457089: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5355190/I5355209__2.CERERE_PENTRU_EXERCITAREA_DREPTULUI_LA_OPOZI?IE.pdf
+  FAIL 33457749: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5355326/I5355326__5.CERERE_PENTRU_EXERCITAREA_DREPTULUI_LA_RESTRIC?IONAREA_PRELUCRARII_DATELOR_CU_CARACTER_PERSONAL.pdf
+  FAIL 33457873: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5355347/I5355352__6.CERERE_PENTRU_EXERCITAREA_DREPTULUI_LA_?TERGEREA_DATELOR_CU_CARACTER_PERSONAL_-_dreptul_de_a_fi_uitat.pdf
+  FAIL 4170629: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/784057/I784057__CERERE pentru încetarea calitatii de membru sau renuntarea la calitatea de membru al CFZRO.doc
+  FAIL 4170616: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/784048/I784048__CERERE pentru încetarea suspendarii calitatii de membru al CFZRO.doc
+  FAIL 3455: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25340/PISEG007695_F-7.5-02_Cerere_inscriere_testare.doc(2)
+  [30.1%] 2520 downloaded, 42 skipped, 88 failed
+  FAIL 12280187: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/2105176/I2105228__model cerere pentru planificarea inspec?iei.docx
+  FAIL 34079592: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5450714/I5450714__Cerere predare locuin?a.pdf
+  [30.6%] 2568 downloaded, 42 skipped, 90 failed
+  FAIL 32812338: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24923/I5256313__Cerere_eliberare_licenta_societate_detectivi_particulari.pdf
+  FAIL 48881945: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7716206/I7724486__Cerere privind solicitarea încetarii masurii de plasament.docx
+  [31.2%] 2616 downloaded, 42 skipped, 92 failed
+  FAIL 49164439: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7701471/I7766022__Cerere autorizare procurare PRIMA arma letala neletala.pdf
+  FAIL 5269170: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/828651/I966151__Cerere recunoa?tere func?ie didactica.doc
+  [31.8%] 2664 downloaded, 42 skipped, 94 failed
+  FAIL 48509880: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1043093/I7666730__cerere reluarea calitatii de membru .doc
+  [32.3%] 2713 downloaded, 42 skipped, 95 failed
+  [32.9%] 2763 downloaded, 42 skipped, 95 failed
+  FAIL 33142867: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560054/I5307050__cerere-?i-documente-ptr-dgaspc.pdf
+  [33.5%] 2812 downloaded, 42 skipped, 96 failed
+  [34.0%] 2862 downloaded, 42 skipped, 96 failed
+  [34.6%] 2912 downloaded, 42 skipped, 96 failed
+  [35.2%] 2962 downloaded, 42 skipped, 96 failed
+  [35.7%] 3012 downloaded, 42 skipped, 96 failed
+  FAIL 5050980: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/925897/I926813__Cerere-pentru-înscrierea-modificarilor-actului-constitutiv-si.-sau-statutului.doc
+  [36.3%] 3061 downloaded, 42 skipped, 97 failed
+  [36.9%] 3111 downloaded, 42 skipped, 97 failed
+  FAIL 27053797: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4338951/I4338951__Cerere Adeverin?a de Rol.docx
+  [37.4%] 3160 downloaded, 42 skipped, 98 failed
+  FAIL 32657374: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5231958/I5231958__Cereri aferente serviciului public de autorizare zootehnica a centrelor de depozitare, pe specii.doc
+  FAIL 32661123: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5232335/I5232335__Cereri aferente serviciului public de autorizare zootehnica a centrelor de depozitare, pe specii.doc
+  FAIL 32664889: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5233203/I5233203__Cereri aferente serviciului public de autorizare pentru colectarea si comercializarea embrionilor, ?i transfer de embrioni, la specia bovine..doc
+  FAIL 32654959: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5231511/I5231511__Cereri aferente serviciului public de autorizare zootehnica a centrelor de colectare, pe specii.doc
+  FAIL 32666345: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5233464/I5233464__Cereri aferente serviciului public de autorizare zootehnica a centrelor de colectare, pe specii.doc
+  [38.0%] 3205 downloaded, 42 skipped, 103 failed
+  FAIL 60640337: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/9460318/I9460318__Cerere pentru eliberarea certificatului de atestare a edificariiextinderii construc?iei.pdf
+  [38.6%] 3254 downloaded, 42 skipped, 104 failed
+  [39.1%] 3304 downloaded, 42 skipped, 104 failed
+  [39.7%] 3354 downloaded, 42 skipped, 104 failed
+  [40.3%] 3404 downloaded, 42 skipped, 104 failed
+  [40.8%] 3454 downloaded, 42 skipped, 104 failed
+  FAIL 5690: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25767/PISEG011631_Cerere inregistrare vehicul.doc(2)
+  [41.4%] 3503 downloaded, 42 skipped, 105 failed
+  [42.0%] 3553 downloaded, 42 skipped, 105 failed
+  [42.5%] 3603 downloaded, 42 skipped, 105 failed
+  [43.1%] 3653 downloaded, 42 skipped, 105 failed
+  [43.7%] 3703 downloaded, 42 skipped, 105 failed
+  [44.2%] 3753 downloaded, 42 skipped, 105 failed
+  [44.8%] 3803 downloaded, 42 skipped, 105 failed
+  [45.4%] 3853 downloaded, 42 skipped, 105 failed
+  [45.9%] 3903 downloaded, 42 skipped, 105 failed
+  [46.5%] 3953 downloaded, 42 skipped, 105 failed
+  [47.1%] 4003 downloaded, 42 skipped, 105 failed
+  [47.6%] 4053 downloaded, 42 skipped, 105 failed
+  [48.2%] 4103 downloaded, 42 skipped, 105 failed
+  [48.8%] 4153 downloaded, 42 skipped, 105 failed
+  FAIL 8261747: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1455858/I1723516__F-P.O.-C.E.A.A.-01.04.- Cerere acord prealabil, autoriza?ie de amplasare ?i sau acces la drum.docx
+  [49.3%] 4202 downloaded, 42 skipped, 106 failed
+  [49.9%] 4252 downloaded, 42 skipped, 106 failed
+  [50.5%] 4302 downloaded, 42 skipped, 106 failed
+  [51.0%] 4352 downloaded, 42 skipped, 106 failed
+  [51.6%] 4402 downloaded, 42 skipped, 106 failed
+  [52.2%] 4452 downloaded, 42 skipped, 106 failed
+  [52.7%] 4502 downloaded, 42 skipped, 106 failed
+  FAIL 49149403: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7763543/I7763682__Cerere tip solicitanti servicii cantina sociala copii vârsta de pâna la 18 ani.docx
+  FAIL 49149589: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7763543/I7763682__Cerere tip solicitanti servicii cantina sociala Orice persoana care temporar nu realizeaza venituri.docx
+  FAIL 49149491: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7763543/I7763682__Cerere tip solicitanti servicii cantina sociala pensionari.docx
+  FAIL 49149559: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7763543/I7763682__Cerere tip solicitanti servicii cantina sociala invalizi ?i bolnavi cronici.docx
+  FAIL 49149537: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7763543/I7763682__Cerere tip solicitanti servicii cantina sociala pers. care au împlinit vârsta de pensionare- izolate social, nu au sus?inatori legali, sunt lipsite de venituri.docx
+  FAIL 4261648: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/482739/I3844078__2.Model oferta vanzare teren pers. juridice si entitati fara personalitate juridica.doc
+  FAIL 34027997: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5442893/I5442893__cerere cautare cap arhiva.docx
+  [53.9%] 4595 downloaded, 42 skipped, 113 failed
+  [54.4%] 4645 downloaded, 42 skipped, 113 failed
+  FAIL 4876359: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/903878/I903908__Cererea de înregistrare sanitar-veterinara a mijloacelor de transport.doc
+  FAIL 24: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24467/I825797__Formulare de înscriere a societa?ii în Tabloul Corpului.pdf
+  FAIL 132: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24852/I825623__Formulare de înscriere a societa?ii în Tabloul Corpului.pdf
+  FAIL 33983862: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5436091/I5442878__cerere cautare vechime munca.docx
+  FAIL 8823301: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1539891/I1539891__Model cerere copii arhiva 2020.docx
+  FAIL 6718840: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/1183356/
+  FAIL 4397717: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24852/I825672__Cerere pentru emiterea avizului de principiu în vederea constituirii unei societa?i.pdf
+  FAIL 4398814: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24467/I825877__Cerere pentru emiterea avizului de principiu în vederea constituirii unei societa?i.pdf
+  [55.6%] 4737 downloaded, 42 skipped, 121 failed
+  FAIL 27756053: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4076171/I4445633__Cerere formular tip eliberare adeverin?a de autenticitate.doc
+  [56.1%] 4786 downloaded, 42 skipped, 122 failed
+  FAIL 949: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24968/PISEG005515_ANEXA Nr. 3 la OM nr. 182 din 2009.docx(2)
+  [56.7%] 4835 downloaded, 42 skipped, 123 failed
+  FAIL 37054596: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5896793/I5896808__ANEXA NR. 3 din O.M.A.I. 180  Model de cerere tip pentru eliberarea avizului privind asigurarea posibilita?ilor de acces la drumurile publice.docx
+  [57.3%] 4884 downloaded, 42 skipped, 124 failed
+  FAIL 33274499: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5326534/
+  FAIL 2108115: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/457408/I457412__consim?amânt.doc
+  [57.8%] 4932 downloaded, 42 skipped, 126 failed
+  [58.4%] 4982 downloaded, 42 skipped, 126 failed
+  [59.0%] 5032 downloaded, 42 skipped, 126 failed
+  [59.5%] 5082 downloaded, 42 skipped, 126 failed
+  [60.1%] 5132 downloaded, 42 skipped, 126 failed
+  [60.7%] 5182 downloaded, 42 skipped, 126 failed
+  FAIL 5950401: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1065095/I1065157__Comunicare directa catre profesionistii din domeniul sanatatii (CDPDS) ENG.pdf
+  FAIL 5950120: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1065095/I1065157__Comunicare directa catre profesionistii din domeniul sanatatii (CDPDS).doc
+  FAIL 33388380: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5343813/I5357299__Formular-Comunicare-începere-lucrari.doc
+  FAIL 33475827: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5345670/I5358152__Comunicare privind încheierea execu?iei lucrarilor.docx
+  FAIL 26506864: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/4256719/I4256719__COMUNICARE-încheiere-executare-lucrari.pdf
+  FAIL 2485522: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/521722/I521737__F15-COMUNICARE-încheiere-executare-lucrari.pdf
+  FAIL 2485810: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/521757/I521776__F15-COMUNICARE-încheiere-executare-lucrari.pdf
+  FAIL 5269902: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/828651/O966151__Contesta?ie rezultat recunoa?tere func?ie didactica.doc
+  [61.2%] 5224 downloaded, 42 skipped, 134 failed
+  [61.8%] 5274 downloaded, 42 skipped, 134 failed
+  FAIL 48412428: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/526212/I7651464__Conventie-99.2015-V.3-3-ACTUALIZATA-MARTIE-2024.doc
+  FAIL 54173142: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/783669/I8515084__CONVEN?IE DE STAGIU.docx
+  FAIL 48411740: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/527390/I7651361__Conventie-10.120.2016-V.3-4-ACTUALIZATA-MARTIE-2024.doc
+  [62.4%] 5321 downloaded, 42 skipped, 137 failed
+  [62.9%] 5371 downloaded, 42 skipped, 137 failed
+  [63.5%] 5421 downloaded, 42 skipped, 137 failed
+  FAIL 2646: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25185/PISEG007489_O_324_Anexa 7.doc(2)
+  [64.1%] 5470 downloaded, 42 skipped, 138 failed
+  [64.6%] 5520 downloaded, 42 skipped, 138 failed
+  FAIL 5522452: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/831790/O966335__Decizie recunoa?tere calitate conducator de doctorat.pdf
+  FAIL 4442392: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/831790/O966335__Decizie recunoa?tere calitate conducator de doctorat.pdf
+  FAIL 4420093: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/828651/O966151__Decizie recunoa?tere func?ie didactica.pdf
+  FAIL 5400783: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/952070/O985784__Decizie de recunoa?tere Anexa 1.docx
+  FAIL 5123028: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/944615/O966302__Decizie recunoa?tere diploma de doctor.pdf
+  FAIL 34634404: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5532724/I5532724__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34633023: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5532318/I5532318__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34635438: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5532917/I5532917__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34702437: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5542973/I5542973__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34633212: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5530717/I5532619__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34633093: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5530377/I5532613__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 34620343: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5530377/I5530642__Declara?iea solicitantului-prelucrare date cu caracter personal.pdf
+  FAIL 13759306: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/2323038/
+  FAIL 32536583: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5194694/I5194891__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 50221797: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/999471/I7926143__Model-Declara?ie de incompabilitate.docx
+  [65.8%] 5605 downloaded, 42 skipped, 153 failed
+  FAIL 6854510: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1196230/I1205759__DECLARATIE VENIT.docx
+  FAIL 48801035: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7710866/I7712196__Declara?ie pe proprie raspundere AMP.docx
+  FAIL 5485255: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/984690/I997548__declaratie compatibilitate.doc
+  FAIL 33332043: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5335603/I5335621__DECLARA?IE DE CONSIM?AMÂNT.pdf
+  [66.9%] 5701 downloaded, 42 skipped, 157 failed
+  [67.5%] 5751 downloaded, 42 skipped, 157 failed
+  [68.0%] 5801 downloaded, 42 skipped, 157 failed
+  FAIL 4577828: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/860161/I860161__Declara?ie fiu, fiica.docx
+  [68.6%] 5850 downloaded, 42 skipped, 158 failed
+  FAIL 4577861: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/860161/I860161__Declara?ie parinte.docx
+  FAIL 4577883: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/860161/I860161__Declara?ie so? supravie?uitor.docx
+  FAIL 479: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24921/I986053__Declaratie privind îndeplinirea conditiei  prev. art. 5 lit. e din Lg. 329_2003.pdf
+  FAIL 48823478: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7715528/I7715834__DECLARATIE PE PROPRIA RASPUNDERE pentru gospodarirea împreuna.docx
+  FAIL 48831463: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7716460/I7716460__DECLARATIE PE PROPRIA RASPUNDERE pentru gospodarirea împreuna.docx
+  FAIL 48831396: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7716460/I7716460__Declaratie privind modificarile intervenite asupra componen?ei familiei sau a veniturilor.docx
+  FAIL 48822895: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7715528/I7715668__Declaratie privind modificarile intervenite asupra componen?ei familiei sau veniturilor.docx
+  FAIL 6854388: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1195827/I1205744__DECLARATIE VENIT.docx
+  FAIL 6854280: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1185174/I1205728__DECLARATIE VENIT.docx
+  FAIL 5419056: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/951733/I988666__Declara?ie de autenticitate a documentelor depuse pentru recunoa?tere a func?iei didactice.doc
+  FAIL 35679644: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24923/I5689052__Declaratie_privind_indeplinirea_conditiei_prev._art._5_lit._e_din_Lg._329_2003.pdf
+  [69.2%] 5889 downloaded, 42 skipped, 169 failed
+  FAIL 5418894: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/951046/I988596__Declara?ie de autenticitate a documentelor depuse pentru recunoa?terea diplomei de doctor.doc
+  FAIL 48535018: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7670477/I7670723__DECLARATIE prealabila în scopul furnizarii activitatilor de fizioterapie, temporar sau ocazional, în România.docx
+  FAIL 5428962: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/989939/I990080__model declara?ie 679din 2016.doc
+  FAIL 48549302: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/835394/I7672716__declara?ie .doc
+  FAIL 33983135: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5436003/I5436021__DECLARA?IE ANEXA 1 - L.263.pdf
+  FAIL 33983154: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5436003/I5436021__DECLARA?IE ANEXA 1 -OP.pdf
+  FAIL 32532769: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5194694/I5194891__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 32417477: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5194694/I5194891__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 32420406: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5194694/I5194891__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 32407539: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5192979/I5192979__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 33277845: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5327028/I5327056__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 33247947: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5322631/I5322707__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  FAIL 36507801: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5194694/I5194891__Declaratie de consimtamânt privind prelucrarea datelor cu caracter personal_GDPR.doc
+  [70.3%] 5976 downloaded, 42 skipped, 182 failed
+  FAIL 4876398: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/903878/I903908__Declaratia pe propria raspundere .doc
+  FAIL 4412685: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/827700/I827744__DECLARA?IE PREALABILA_ AM exercitare temporara.doc
+  [70.9%] 6024 downloaded, 42 skipped, 184 failed
+  FAIL 49691928: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/7846535/
+  FAIL 48412357: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/526212/I7651464__Declaratie-99.2015-V.3-2-ACTUALIZATA-1-MARTIE-2024.doc
+  FAIL 33142448: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560036/I5306925__declara?ie-contribuabil.pdf
+  [71.4%] 6071 downloaded, 42 skipped, 187 failed
+  FAIL 33140227: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560706/I5306651__declara?ie-gdpr.docx
+  FAIL 33501258: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/561585/I5362012__declara?ie-gdpr.docx
+  [72.0%] 6119 downloaded, 42 skipped, 189 failed
+  [72.6%] 6169 downloaded, 42 skipped, 189 failed
+  FAIL 7373795: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1321332/I1324651__DECLARA?IE RA PJ 2020 Magiresti.pdf
+  [73.1%] 6218 downloaded, 42 skipped, 190 failed
+  FAIL 4326724: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/806774/I7670321__DECLARATIE PE PROPRIA RASPUNDERE SOLICITANT.docx
+  FAIL 4910270: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/907493/I8050499__Declara?ie pe propria raspundere.doc
+  [73.7%] 6266 downloaded, 42 skipped, 192 failed
+  FAIL 56473100: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24879/I8849788__Declaratie pe proprie raspundere privind capacitatea de exerci?iu deplina.docx
+  [74.3%] 6315 downloaded, 42 skipped, 193 failed
+  FAIL 34382616: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25139/I5496180__Declara?ie pentru înregistrarea în Registrul de eviden?a a medicilor veterinari care presteaza temporar ocazional servicii medicale veterinare pe teritoriul României.pdf
+  FAIL 4401926: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/826312/I826331__DECLARA?IE PRIVIND CUNOA?TEREA LIMBII ROMÂNE_moasa.doc
+  FAIL 4412686: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/827700/I827744__DECLARA?IE PRIVIND CUNOA?TEREA LIMBII ROMÂNE.doc
+  FAIL 4410687: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/827381/I827436__DECLARA?IE PRIVIND CUNOA?TEREA LIMBII ROMÂNE_moasa.doc
+  FAIL 48535347: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7670477/I7670723__DECLARATIE privind cunoasterea limbii române în scopul furnizarii activitatilor de fizioterapie, temporar sau ocazional, în România.docx
+  [74.8%] 6360 downloaded, 42 skipped, 198 failed
+  [75.4%] 6410 downloaded, 42 skipped, 198 failed
+  FAIL 48411668: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/527390/I7651361__Declaratie-10.120.2016-V.3-3-ACTUALIZATA-MARTIE-2024.doc
+  FAIL 5384414: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/620455/I983654__DECLARA?IE GDPR ..docx
+  [76.0%] 6458 downloaded, 42 skipped, 200 failed
+  FAIL 3035360: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/461706/I1364115__DECLARA?IE GDPR ..docx
+  FAIL 3034457: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/485278/I1402847__DECLARA?IE GDPR.model nou.pdf
+  [76.5%] 6506 downloaded, 42 skipped, 202 failed
+  [77.1%] 6556 downloaded, 42 skipped, 202 failed
+  FAIL 2310736: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/493268/I496762__DECLARATIE.pdf
+  FAIL 9907790: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1412250/I1709117__Documente acord prealabil c-?ii ?i drumuri adiacente +instala?ii  CJA-SADP.pdf
+  FAIL 33274922: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5326534/
+  FAIL 9451257: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1359177/I1632920__documente  aj încalzire.docx
+  FAIL 9907839: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/1412250/I1709117__Documente necesare CJA-SADP pt PUG, PUZ ?i PUD.pdf
+  [77.7%] 6601 downloaded, 42 skipped, 207 failed
+  FAIL 37041813: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894811/I5894908__ANEXA NR. 7 din O.M.A.I. 180  Documente necesare pentru eliberarea avizelor de protectie civila.docx
+  FAIL 37063393: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5898147/I5898147__Documente pe baza carora se solicita acordurile de securitate la incendiu.docx
+  FAIL 37063774: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5898247/I5898247__Documente pe baza carora se solicita atestatele de securitate la incendiu.docx
+  FAIL 37042680: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5895050/I5895065__ANEXA NR. 13 din O.M.A.I. 180  Documente pe baza carora se solicita autorizatiile de protec?ie civila.docx
+  FAIL 37042336: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894994/I5895011__ANEXA NR. 12 din O.M.A.I. 180  Documente pe baza carora se solicita autorizatiile de securitate la incendiu.docx
+  FAIL 37038943: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894400/I5894496__ANEXA NR. 6 pct. A din O.M.A.I. 180  Documente pe baza carora se solicita avizele de securitate la incendiu.docx
+  FAIL 33274672: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5326534/
+  [78.2%] 6644 downloaded, 42 skipped, 214 failed
+  [78.8%] 6694 downloaded, 42 skipped, 214 failed
+  [79.4%] 6744 downloaded, 42 skipped, 214 failed
+  FAIL 2625: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25176/PISEG006159_O_324_Anexa 2.doc(2)
+  [80.0%] 6793 downloaded, 42 skipped, 215 failed
+  FAIL 44156922: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6992727/I6992727__Fis?a?-de-evaluare-psihologica?.pdf
+  FAIL 44156963: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6992727/I6992727__Fis?a?-medicala?-sintetica?.pdf
+  FAIL 44156987: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6992727/I6992727__Fis?a?-psihopedagogica?.pdf
+  FAIL 37075881: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5899774/I5899991__Foaie de capat.docx
+  [80.5%] 6839 downloaded, 42 skipped, 219 failed
+  FAIL 1965921: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/350786/
+  FAIL 2697893: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/560706/I5306588__cererea-declara?ie-respect-2022.pdf
+  FAIL 1965923: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/350786/
+  FAIL 1965924: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/350786/
+  FAIL 33680420: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5388800/I5388800__FORMULAR DE SOLICITARE A ACREDITARII PENTRU JURNALI?TI.doc
+  FAIL 48922087: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7730453/I7730513__Cerere sprijin pentru persoanele vulnerabile comunitatea roma.docx
+  FAIL 49676695: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7777260/I7844525__FORMULAR CERERE Ancheta sociala - Comisia pentru  Protec?ia Copilului Giurgiu.doc
+  FAIL 49676806: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7777260/I7844525__FORMULAR CERERE Ancheta sociala -Certificat orientare scolara ?i profesionala.doc
+  [81.7%] 6931 downloaded, 42 skipped, 227 failed
+  FAIL 33276192: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5327137/I5327169__Notificare transparenta decizionala.docx
+  [82.2%] 6980 downloaded, 42 skipped, 228 failed
+  FAIL 5022: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/25618/PISEG011114_DECLARATIE FISCALA-DECIZIE DE IMPUNERE PENTRU STABILIREA   IMPOZITULUI PE MIJLOACE DE TRANSPORT IN CAZUL CONTRIBUABILILOR PERSOANE   FIZICE-PERSOANE JURIDICE.pdf
+  FAIL 4397734: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/24852/I825672__Formulare de înscriere a societa?ii în Tabloul Corpului.pdf
+  [82.8%] 7028 downloaded, 42 skipped, 230 failed
+  [83.4%] 7078 downloaded, 42 skipped, 230 failed
+  [83.9%] 7128 downloaded, 42 skipped, 230 failed
+  FAIL 51591085: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/484375/I8129585__acte necesare înregistrare na?tere.docx
+  FAIL 3312334: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396342: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396358: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396369: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396404: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396428: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396432: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396436: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396593: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396585: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396589: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396548: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396552: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396556: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396560: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396569: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396573: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396577: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396581: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396441: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396445: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396449: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396459: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396468: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396472: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396476: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396484: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396480: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396488: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396492: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396496: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396540: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396536: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396544: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  FAIL 3396500: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/626157/I654405__Înscrierea candida?ilor pentru admiterea în înva?amântul postliceal.docx
+  [85.1%] 7192 downloaded, 42 skipped, 266 failed
+  [85.6%] 7242 downloaded, 42 skipped, 266 failed
+  [86.2%] 7292 downloaded, 42 skipped, 266 failed
+  [86.8%] 7342 downloaded, 42 skipped, 266 failed
+  [87.3%] 7392 downloaded, 42 skipped, 266 failed
+  [87.9%] 7442 downloaded, 42 skipped, 266 failed
+  FAIL 32196225: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5160080/O5160080__Men?iuni.doc
+  [88.5%] 7491 downloaded, 42 skipped, 267 failed
+  [89.0%] 7541 downloaded, 42 skipped, 267 failed
+  [89.6%] 7591 downloaded, 42 skipped, 267 failed
+  [90.2%] 7641 downloaded, 42 skipped, 267 failed
+  FAIL 37042762: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5895050/O5895065__Model de autorizatie de protectie civila.pdf
+  FAIL 37042405: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894994/O5895011__Model de autorizatie de securitate la incendiu.pdf
+  FAIL 37055163: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5896863/O5896863__Model de aviz de amplasare în parcela.pdf
+  FAIL 37054861: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5896793/O5896808__Model de aviz de amplasare în parcela.pdf
+  FAIL 37055037: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5896863/I5896863__ANEXA NR. 3 din O.M.A.I. 180  Model de cerere tip pentru eliberarea avizului privind asigurarea posibilita?ilor de acces la drumurile publice.docx
+  FAIL 49679417: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7844944/I7844979__FORMULAR  NOTA DE INFORMARE PRIVIND PRESTAREA DE CATRE COPII A ACTIVITA?II RENUMERATE ÎN DOMENIILE CULTURAL, ARTISTIC, SPORTIV, PUBLICITAR ?I DE MODELING.docx
+  FAIL 40073510: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354158/I6354239__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40074004: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354253/I6354253__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40074563: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354331/I6354331__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40075420: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354454/I6354454__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40076344: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354605/I6354605__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40076980: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354695/I6354695__Notificare - identificare la distan?a prin mijloace video.docx
+  FAIL 40078748: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6354931/I6354931__Notificare în vederea dobândirii calitatii de administrator al arhivei electronice.docx
+  [91.3%] 7728 downloaded, 42 skipped, 280 failed
+  FAIL 6158815: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/905422/I1094866__NOTA DE INFORMARE SPSCF.docx
+  FAIL 49162069: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7765640/O7765640__Fi?ier.pdf
+  [91.9%] 7776 downloaded, 42 skipped, 282 failed
+  FAIL 44158613: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/6992934/I6993235__LISTA ACTE INDEMNIZATIE CRESTERE COPIL.doc
+  FAIL 37042696: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5895050/I5895065__ANEXA NR. 19 din O.M.A.I. 180  OPIS cu documentele depuse pentru eliberarea autorizatiei de protec?ie civila.docx
+  FAIL 37042367: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894994/I5895011__ANEXA NR. 19 din O.M.A.I. 180  OPIS cu documentele depuse pentru eliberarea avizului sau autorizatiei de securitate la incendiu sau de protec?ie civila.docx
+  FAIL 37038754: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894400/I5894496__ANEXA NR. 19 din O.M.A.I. 180  OPIS cu documentele depuse pentru eliberarea avizului sau autorizatiei de securitate la incendiu sau de protec?ie civila.docx
+  FAIL 37041854: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5894811/I5894908__ANEXA NR. 19 din O.M.A.I. 180  OPIS cu documentele depuse pentru eliberarea avizului sau autorizatiei de securitate la incendiu sau de protec?ie civila.docx
+  FAIL 33272158: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5325694/I5325918__Op?iune parinte-tutore angajare AP - DGASPC.pdf
+  FAIL 37077207: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/5900145/I5900145__PETI?IE.docx
+  [93.0%] 7869 downloaded, 42 skipped, 289 failed
+  [93.6%] 7919 downloaded, 42 skipped, 289 failed
+  FAIL 4863318: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/892073/O902024__Procedura operationala privind recunoa?terea automata de catre UOC a calita?ii de conducator de doctorat ob?inute în institu?ii de înva?amânt universitar acreditate din strainatate.pdf
+  FAIL 5241521: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/950561/O961998__PO-30 recunoa?terea diplomei de doctor ?i a titlului de doctor în ?tiin?e sau într-un domeniu profesional ob?inut în institu?ii de înva?amânt din strainatate.pdf
+  [94.1%] 7967 downloaded, 42 skipped, 291 failed
+  FAIL 10148497: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/470840/I1752194__F02-PS10    Reclama?ie administrativa 1.docx
+  FAIL 10148504: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/470840/I1752224__F03-PS10    Reclama?ie administrativa 2.docx
+  [94.7%] 8015 downloaded, 42 skipped, 293 failed
+  [95.3%] 8065 downloaded, 42 skipped, 293 failed
+  [95.8%] 8115 downloaded, 42 skipped, 293 failed
+  FAIL 33278081: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5327018/
+  FAIL 49153199: HTTP 404 for https://edirect.e-guvernare.ro/Uploads/Procedura/7715528/I7764194__Formularul de cerere privind eliberarea de adeverin?e care beneficiaza de VMI.docx
+  [96.4%] 8163 downloaded, 42 skipped, 295 failed
+  [97.0%] 8213 downloaded, 42 skipped, 295 failed
+  [97.5%] 8263 downloaded, 42 skipped, 295 failed
+  [98.1%] 8313 downloaded, 42 skipped, 295 failed
+  [98.7%] 8363 downloaded, 42 skipped, 295 failed
+  [99.2%] 8413 downloaded, 42 skipped, 295 failed
+  FAIL 33278258: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5327018/
+  FAIL 33271856: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5315588/
+  [99.8%] 8461 downloaded, 42 skipped, 297 failed
+  FAIL 33274535: HTTP 403 for https://edirect.e-guvernare.ro/Uploads/Procedura/5326534/
+
+Done: 8478 downloaded, 42 skipped, 298 failed
+Files saved to: C:\Users\radu.iamandi\Projects\tipizatul.eu\scripts\edirect\downloads
