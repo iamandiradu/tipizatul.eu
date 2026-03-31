@@ -21,5 +21,10 @@ Thumbs.db
 .vscode/
 .idea/
 
+# eDirect scraper output
+scripts/edirect/index.json
+scripts/edirect/downloads/
+scripts/edirect/download-progress.json
+
 # Claude Code
 .claude/
