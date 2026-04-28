@@ -25,6 +25,16 @@ Thumbs.db
 scripts/edirect/index.json
 scripts/edirect/downloads/
 scripts/edirect/download-progress.json
+scripts/edirect/processed/
+scripts/edirect/needs-review/
+scripts/edirect/test-samples/
+
+# Paddle detector — local Python venv & batch artifacts
+scripts/edirect/paddle/.venv/
+scripts/edirect/paddle/__pycache__/
+scripts/edirect/paddle/lib/__pycache__/
+scripts/edirect/paddle/output/
+scripts/edirect/paddle/detections.log
 
 # Claude Code
 .claude/
