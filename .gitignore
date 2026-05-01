@@ -38,3 +38,13 @@ scripts/edirect/paddle/detections.log
 
 # Claude Code
 .claude/
+
+bundles/*
+scripts/edirect/bundles
+scripts/edirect/paddle/eval-set
+scripts/edirect/paddle/ground_truth
+scripts/edirect/.oauth-token.json
+scripts/edirect/upload-templates-progress.json
+scripts/edirect/convert-docs.log
+scripts/edirect/convert-docs-failed.json
+scripts/edirect/pdf-from-doc/
