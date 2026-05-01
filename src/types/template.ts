@@ -28,6 +28,8 @@ export interface Template {
   name: string
   description?: string
   category?: string
+  organization?: string
+  county?: string
   version: number
   createdAt: string
   fields: TemplateField[]
