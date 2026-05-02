@@ -1,7 +1,8 @@
 # tipizatul.eu
 
-A platform for filling out Romanian public institution PDF forms directly in the browser.
-Admins upload AcroForm PDFs; anyone can fill them in and download a completed copy — no account required.
+A free, open-source platform for filling out Romanian public institution PDF
+forms directly in the browser. Admins upload AcroForm PDFs; anyone can fill
+them in and download a completed copy — no account required, no fees.
 
 ---
 

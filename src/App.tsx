@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet, NavLink, Link } from 'react-router-dom'
 import { lazy, Suspense, useState } from 'react'
-import { Moon, Sun, Lightbulb } from 'lucide-react'
+import { Moon, Sun, Lightbulb, Github } from 'lucide-react'
 import { useDarkMode } from '@/lib/useDarkMode'
 import ProposalWidget from '@/components/ProposalWidget'
 import Logo from '@/components/Logo'
@@ -40,6 +40,16 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
               <span className="hidden sm:inline">Propune</span>
             </button>
             <ProposalWidget open={proposalOpen} onClose={() => setProposalOpen(false)} />
+            <a
+              href="https://github.com/iamandiradu/tipizatul.eu"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Cod sursă pe GitHub (proiect open-source)"
+              title="Open-source pe GitHub"
+              className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <Github className="w-5 h-5" />
+            </a>
             <button
               onClick={toggle}
               aria-label={dark ? 'Activează modul luminos' : 'Activează modul întunecat'}
