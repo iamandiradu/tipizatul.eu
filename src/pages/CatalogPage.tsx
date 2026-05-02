@@ -182,6 +182,19 @@ export default function CatalogPage() {
 
   return (
     <div>
+      <section className="mb-6 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 p-5">
+        <p className="text-sm text-gray-700 dark:text-gray-300 max-w-3xl">
+          Un catalog deschis de formulare tipizate emise de instituții publice din România.
+          Găsiți rapid documentul potrivit, completați-l direct în browser și descărcați PDF-ul
+          gata de imprimat sau de trimis prin canalele oficiale.
+        </p>
+        <ol className="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
+          <li>Filtrați după județ sau căutați după nume / instituție.</li>
+          <li>Apăsați pe formular pentru a-l completa în browser.</li>
+          <li>Descărcați PDF-ul completat și folosiți-l fizic sau electronic.</li>
+        </ol>
+      </section>
+
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Formulare disponibile</h1>
         <span className="text-sm text-gray-500 dark:text-gray-400">
