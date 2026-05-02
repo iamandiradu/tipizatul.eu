@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { signInAsAdmin } from '@/lib/auth'
+import Logo from '@/components/Logo'
 
 export default function AdminLoginPage() {
   const navigate = useNavigate()
@@ -23,8 +24,8 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8 w-full max-w-sm">
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-1">Admin</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">tipizatul.eu</p>
+        <div className="mb-4"><Logo size="sm" /></div>
+        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">Admin</h1>
 
         {error && (
           <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md px-3 py-2 mb-4">

@@ -3,6 +3,7 @@ import { lazy, Suspense, useState } from 'react'
 import { Moon, Sun, Lightbulb } from 'lucide-react'
 import { useDarkMode } from '@/lib/useDarkMode'
 import ProposalWidget from '@/components/ProposalWidget'
+import Logo from '@/components/Logo'
 
 const CatalogPage = lazy(() => import('@/pages/CatalogPage'))
 const FillPage = lazy(() => import('@/pages/FillPage'))
@@ -21,12 +22,12 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           {showBackLink ? (
-            <Link to="/" className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
-              tipizatul.eu
+            <Link to="/" className="hover:opacity-80 transition-opacity">
+              <Logo />
             </Link>
           ) : (
-            <NavLink to="/" className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
-              tipizatul.eu
+            <NavLink to="/" className="hover:opacity-80 transition-opacity">
+              <Logo />
             </NavLink>
           )}
           <div className="flex items-center gap-1 relative">
