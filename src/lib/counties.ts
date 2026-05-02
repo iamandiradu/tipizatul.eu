@@ -14,6 +14,20 @@ function diacriticless(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 }
 
+// Lookup table: diacriticless form → canonical name. Lets us match
+// "București" → "Bucuresti" without scanning the list each time.
+const CANONICAL_BY_DIACRITICLESS: ReadonlyMap<string, RomanianCounty> = new Map(
+  ROMANIAN_COUNTIES.map((c) => [diacriticless(c), c]),
+)
+
+// Returns the canonical ASCII name when the input matches a known county
+// (diacritic-insensitive, case-insensitive). Returns undefined for unknown
+// inputs so callers can decide whether to fall back to text-derivation.
+export function canonicalizeCounty(name: string | undefined | null): RomanianCounty | undefined {
+  if (!name) return undefined
+  return CANONICAL_BY_DIACRITICLESS.get(diacriticless(name))
+}
+
 // Build word-boundary regexes once. Hyphens and spaces in county names are
 // treated interchangeably so "Bistrița-Năsăud" matches "Bistrita Nasaud" too.
 const COUNTY_MATCHERS: Array<{ county: RomanianCounty; re: RegExp }> = ROMANIAN_COUNTIES.map((c) => {

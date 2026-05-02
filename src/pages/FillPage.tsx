@@ -101,6 +101,7 @@ export default function FillPage() {
   } = useForm<FormValues>({
     resolver: zodSchema ? zodResolver(zodSchema) : undefined,
     defaultValues: savedValues as FormValues | undefined,
+    mode: 'onBlur',
   })
 
   // Persist form values to session store as the user types
@@ -136,7 +137,22 @@ export default function FillPage() {
   }
 
   if (!template || !pdfBytes) {
-    return <div className="text-center py-16 text-gray-400">Se încarcă...</div>
+    return (
+      <div className="animate-pulse">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-9 h-9 rounded-md bg-gray-200 dark:bg-gray-800" />
+          <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+        </div>
+        <div className="space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i}>
+              <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-1/4 mb-2" />
+              <div className="h-10 bg-gray-200 dark:bg-gray-800 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   const visibleFields = template.fields
@@ -167,8 +183,12 @@ export default function FillPage() {
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-6">
-        <Link to="/" className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
+      <div className="flex items-center flex-wrap gap-2 mb-6">
+        <Link
+          to="/"
+          aria-label="Înapoi la catalog"
+          className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
           <ChevronLeft className="w-5 h-5" />
         </Link>
         <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{template.name}</h1>
@@ -201,7 +221,7 @@ export default function FillPage() {
         ))}
 
         {exportError && (
-          <p className="text-sm text-red-600 dark:text-red-400 mb-4">{exportError}</p>
+          <p role="alert" className="text-sm text-red-600 dark:text-red-400 mb-4">{exportError}</p>
         )}
 
         <button
