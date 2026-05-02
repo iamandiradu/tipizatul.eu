@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "catalog:rebuild": "node scripts/edirect/build-catalog-index.mjs && node scripts/edirect/build-sitemap.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans": "^5.2.10",
