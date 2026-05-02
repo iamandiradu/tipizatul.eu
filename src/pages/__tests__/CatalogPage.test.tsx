@@ -96,17 +96,4 @@ describe('CatalogPage smoke', () => {
     expect(await screen.findByText('Adeverință de venit')).toBeInTheDocument()
   })
 
-  it('toggles the "Cum funcționează" intro and persists to localStorage', async () => {
-    fetchCatalogMock.mockResolvedValue(sampleTemplates)
-    const user = userEvent.setup()
-    renderCatalog()
-    await screen.findByRole('heading', { level: 2, name: 'Cluj' })
-
-    const toggle = screen.getByRole('button', { name: /Cum funcționează/i })
-    expect(toggle).toHaveAttribute('aria-expanded', 'true')
-
-    await user.click(toggle)
-    expect(toggle).toHaveAttribute('aria-expanded', 'false')
-    expect(localStorage.getItem('tipizatul.intro.expanded')).toBe('false')
-  })
 })

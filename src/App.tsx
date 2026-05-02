@@ -5,6 +5,7 @@ import { useDarkMode } from '@/lib/useDarkMode'
 import ProposalWidget from '@/components/ProposalWidget'
 import Logo from '@/components/Logo'
 
+const HomePage = lazy(() => import('@/pages/HomePage'))
 const CatalogPage = lazy(() => import('@/pages/CatalogPage'))
 const FillPage = lazy(() => import('@/pages/FillPage'))
 const AdminLoginPage = lazy(() => import('@/pages/AdminLoginPage'))
@@ -96,7 +97,8 @@ const router = createBrowserRouter([
     element: <AppShell />,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <CatalogPage /> },
+      { index: true, element: <HomePage /> },
+      { path: 'formulare', element: <CatalogPage /> },
       { path: 'fill/:id', element: <FillPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

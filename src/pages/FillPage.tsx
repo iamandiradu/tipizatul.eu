@@ -119,7 +119,7 @@ export default function FillPage() {
     return (
       <div className="text-center py-16">
         <p className="text-gray-500">Formularul nu a fost găsit.</p>
-        <Link to="/" className="text-blue-600 hover:underline text-sm mt-2 block">
+        <Link to="/formulare" className="text-blue-600 hover:underline text-sm mt-2 block">
           ← Înapoi la catalog
         </Link>
       </div>
@@ -131,7 +131,7 @@ export default function FillPage() {
       <div className="text-center py-16">
         <p className="text-red-500 dark:text-red-400 font-medium mb-1">Nu s-a putut încărca formularul.</p>
         <p className="text-sm text-gray-400 dark:text-gray-500 mb-4 font-mono">{loadError}</p>
-        <Link to="/" className="text-blue-600 hover:underline text-sm">
+        <Link to="/formulare" className="text-blue-600 hover:underline text-sm">
           ← Înapoi la catalog
         </Link>
       </div>
@@ -187,7 +187,7 @@ export default function FillPage() {
     <div>
       <div className="flex items-center flex-wrap gap-2 mb-6">
         <Link
-          to="/"
+          to="/formulare"
           aria-label="Înapoi la catalog"
           className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >

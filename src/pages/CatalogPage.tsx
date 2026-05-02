@@ -141,25 +141,8 @@ export default function CatalogPage() {
   const [templates, setTemplates] = useState<SlimTemplate[] | undefined>(undefined)
   const [search, setSearch] = useState('')
   const [county, setCounty] = useState<string>(ALL_COUNTIES)
-  const [introOpen, setIntroOpen] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true
-    return localStorage.getItem('tipizatul.intro.expanded') !== 'false'
-  })
   const searchId = useId()
   const countyId = useId()
-  const introPanelId = useId()
-
-  const toggleIntro = () => {
-    setIntroOpen((v) => {
-      const next = !v
-      try {
-        localStorage.setItem('tipizatul.intro.expanded', next ? 'true' : 'false')
-      } catch {
-        // localStorage may be unavailable; ignore
-      }
-      return next
-    })
-  }
 
   useEffect(() => {
     fetchCatalog()
@@ -171,10 +154,10 @@ export default function CatalogPage() {
   }, [])
 
   useDocumentMeta({
-    title: 'Tipizatul.eu — Catalog deschis de formulare tipizate românești',
+    title: 'Formulare tipizate · Tipizatul.eu',
     description:
       'Catalog deschis de formulare tipizate emise de instituții publice din România — primării, ministere, spitale, școli. Completați direct în browser și descărcați PDF-ul.',
-    canonical: 'https://tipizatul.eu/',
+    canonical: 'https://tipizatul.eu/formulare',
   })
 
   const counties = useMemo<string[]>(
@@ -197,49 +180,9 @@ export default function CatalogPage() {
 
   const grouped = useMemo(() => groupByCountyAndOrg(filtered), [filtered])
 
-  const IntroChevron = introOpen ? ChevronDown : ChevronRight
-  const intro = (
-    <section className="mb-6 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 p-5">
-      <p className="text-sm text-gray-700 dark:text-gray-300 max-w-3xl">
-        Un catalog deschis de formulare tipizate emise de instituții publice din România —{' '}
-        primării, ministere, spitale, școli, direcții de sănătate, prefecturi, agenții. Toate sunt
-        agregate din surse oficiale (eDirect / e-guvernare.ro) și pot fi completate{' '}
-        <strong>direct în browser</strong>, fără cont și fără descărcări de software. Tipizatul.eu
-        este gratuit și open-source.
-      </p>
-      <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 max-w-3xl italic">
-        * Formularele online se depun la ghișeul 3.
-      </p>
-      <button
-        type="button"
-        onClick={toggleIntro}
-        aria-expanded={introOpen}
-        aria-controls={introPanelId}
-        className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-blue-700 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
-      >
-        <IntroChevron className="w-4 h-4" />
-        Cum funcționează
-      </button>
-      {introOpen && (
-        <div id={introPanelId}>
-          <ol className="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
-            <li>Filtrați după județ sau căutați după nume, instituție sau județ.</li>
-            <li>Apăsați pe formular pentru a-l completa în browser.</li>
-            <li>Descărcați PDF-ul completat și folosiți-l fizic sau electronic.</li>
-          </ol>
-          <p className="mt-3 text-xs text-gray-500 dark:text-gray-500 max-w-3xl">
-            Lipsește un formular? Trimiteți o sugestie din butonul{' '}
-            <em>„Propune un formular”</em> — vom încerca să-l adăugăm.
-          </p>
-        </div>
-      )}
-    </section>
-  )
-
   if (templates === undefined) {
     return (
       <div>
-        {intro}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" aria-busy="true" aria-live="polite">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
@@ -264,7 +207,6 @@ export default function CatalogPage() {
   if (templates.length === 0) {
     return (
       <div>
-        {intro}
         <div className="text-center py-16">
           <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
           <p className="text-gray-500 dark:text-gray-400 font-medium">Niciun formular disponibil</p>
@@ -287,8 +229,6 @@ export default function CatalogPage() {
 
   return (
     <div>
-      {intro}
-
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Formulare disponibile</h1>
         <span className="text-sm text-gray-500 dark:text-gray-400">

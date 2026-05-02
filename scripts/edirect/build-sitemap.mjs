@@ -103,8 +103,15 @@ async function main() {
   lines.push('  <url>')
   lines.push(`    <loc>${SITE_BASE}/</loc>`)
   lines.push(`    <lastmod>${lastmod}</lastmod>`)
-  lines.push('    <changefreq>daily</changefreq>')
+  lines.push('    <changefreq>monthly</changefreq>')
   lines.push('    <priority>1.0</priority>')
+  lines.push('  </url>')
+
+  lines.push('  <url>')
+  lines.push(`    <loc>${SITE_BASE}/formulare</loc>`)
+  lines.push(`    <lastmod>${lastmod}</lastmod>`)
+  lines.push('    <changefreq>daily</changefreq>')
+  lines.push('    <priority>0.9</priority>')
   lines.push('  </url>')
 
   for (const t of active) {
@@ -121,7 +128,7 @@ async function main() {
 
   writeFileSync(SITEMAP_OUT, xml, 'utf-8')
   log(`${C.green}wrote${C.reset} ${SITEMAP_OUT}`)
-  log(`${C.dim}entries: ${active.length + 1} (homepage + forms)${C.reset}`)
+  log(`${C.dim}entries: ${active.length + 2} (homepage + catalog + forms)${C.reset}`)
   log(`${C.dim}size: ${(xml.length / 1024).toFixed(1)} KB${C.reset}`)
 }
 
