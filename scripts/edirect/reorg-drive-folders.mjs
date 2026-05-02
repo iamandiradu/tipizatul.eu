@@ -45,6 +45,8 @@ const OAUTH_REDIRECT_URI = `http://127.0.0.1:${OAUTH_LOOPBACK_PORT}`
 
 const DRIVE_ROOT_NAME = 'Tipizatul.eu'
 const DRIVE_PDFS_NAME = 'PDFs'
+// Subfolder name used inside each org folder for the truly-untouched bundle PDFs.
+const ORIGINAL_SUBFOLDER_NAME = 'Original'
 const FOLDER_ID_OVERRIDE = process.env.FOLDER_ID_OVERRIDE || null
 const NO_ORG_BUCKET = 'Altele'
 
@@ -266,9 +268,10 @@ function sanitizeFolderName(name) {
 
 function loadProgress() {
   if (existsSync(PROGRESS_PATH)) {
-    return JSON.parse(readFileSync(PROGRESS_PATH, 'utf-8'))
+    const raw = JSON.parse(readFileSync(PROGRESS_PATH, 'utf-8'))
+    return { moved: raw.moved || {}, movedOriginals: raw.movedOriginals || {} }
   }
-  return { moved: {} }
+  return { moved: {}, movedOriginals: {} }
 }
 
 function saveProgress(p) {
@@ -277,9 +280,12 @@ function saveProgress(p) {
 
 // ── Per-template move ───────────────────────────────────────────────────────
 
-async function reorgOne({ templateId, fileId, orgFolderName, pdfsFolderId }) {
+async function reorgOne({ templateId, fileId, orgFolderName, pdfsFolderId, subfolderName }) {
   const drive = await getDrive()
-  const targetFolderId = await getOrCreateFolder(drive, orgFolderName, pdfsFolderId)
+  const orgFolderId = await getOrCreateFolder(drive, orgFolderName, pdfsFolderId)
+  const targetFolderId = subfolderName
+    ? await getOrCreateFolder(drive, subfolderName, orgFolderId)
+    : orgFolderId
 
   // Look up current parents — skip if already in target folder.
   const meta = await withBackoff(() =>
@@ -404,7 +410,71 @@ async function main() {
   if (!dryRun) saveProgress(progress)
 
   log()
-  log(`${C.bold}done.${C.reset} moved=${movedCount} skipped=${skipCount} fail=${errCount}` +
+  log(`${C.bold}AcroForm pass:${C.reset} moved=${movedCount} skipped=${skipCount} fail=${errCount}` +
+    (dryRun ? `  ${C.dim}(dry-run, nothing changed)${C.reset}` : ''))
+
+  // ── Second pass: move originals into {org}/Original/ ──────────────────────
+  const alreadyDoneOrig = new Set(Object.keys(progress.movedOriginals))
+
+  const origQueue = []
+  for (const doc of snap.docs) {
+    const t = doc.data()
+    if (!t?.originalDriveFileId) continue
+    if (alreadyDoneOrig.has(t.id)) continue
+    const org = (t.organization && String(t.organization).trim()) || NO_ORG_BUCKET
+    if (filter && !org.toLowerCase().includes(filter.toLowerCase())) continue
+    const orgFolderName = sanitizeFolderName(org)
+    origQueue.push({ templateId: t.id, fileId: t.originalDriveFileId, orgFolderName })
+    if (origQueue.length >= limit) break
+  }
+  log()
+  log(`${C.bold}${origQueue.length}${C.reset} original(s) to reorg` + (limit !== Infinity ? ` (limited to ${limit})` : ''))
+
+  let origMoved = 0
+  let origSkip = 0
+  let origErr = 0
+  let origCounter = 0
+  const origTotal = origQueue.length
+
+  await runQueue(
+    origQueue,
+    async (item) => {
+      origCounter++
+      const i = origCounter
+      try {
+        const res = await reorgOne({ ...item, pdfsFolderId, subfolderName: ORIGINAL_SUBFOLDER_NAME })
+        if (res.action === 'already-in-place') {
+          origSkip++
+          if (i % 250 === 0 || i === 1) {
+            log(`[${i}/${origTotal}] ${C.dim}SKIP${C.reset} (already in ${item.orgFolderName}/${ORIGINAL_SUBFOLDER_NAME})`)
+          }
+        } else if (res.action === 'would-move') {
+          origMoved++
+          log(`[${i}/${origTotal}] ${C.cyan}DRY${C.reset} → ${item.orgFolderName}/${ORIGINAL_SUBFOLDER_NAME}`)
+        } else {
+          origMoved++
+          progress.movedOriginals[item.templateId] = {
+            fileId: item.fileId,
+            targetFolderId: res.targetFolderId,
+            movedAt: new Date().toISOString(),
+          }
+          if (i % 50 === 0 || i === 1) saveProgress(progress)
+          if (i % 100 === 0 || i === 1) {
+            log(`[${i}/${origTotal}] ${C.green}MOVED${C.reset} → ${item.orgFolderName}/${ORIGINAL_SUBFOLDER_NAME}`)
+          }
+        }
+      } catch (err) {
+        origErr++
+        logErr(`[${i}/${origTotal}] ${C.red}FAIL${C.reset} orig ${item.templateId} (${item.fileId}) — ${err?.message || err}`)
+      }
+    },
+    concurrency,
+  )
+
+  if (!dryRun) saveProgress(progress)
+
+  log()
+  log(`${C.bold}Originals pass:${C.reset} moved=${origMoved} skipped=${origSkip} fail=${origErr}` +
     (dryRun ? `  ${C.dim}(dry-run, nothing changed)${C.reset}` : ''))
 }
 

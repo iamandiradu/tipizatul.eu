@@ -21,6 +21,7 @@ export default function FillPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
+  const [downloadingOriginal, setDownloadingOriginal] = useState(false)
 
   const { formDraft, setFormDraft } = useSessionStore()
 
@@ -239,11 +240,36 @@ export default function FillPage() {
           </button>
           <button
             type="button"
-            onClick={() => triggerPdfDownload(pdfBytes, `${template.name} (necompletat).pdf`)}
-            className="inline-flex items-center gap-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+            disabled={downloadingOriginal}
+            onClick={async () => {
+              if (!template) return
+              const fileName = `${template.name} (necompletat).pdf`
+              // Prefer the truly-untouched bundle PDF when its Drive id is set;
+              // fall back to the AcroForm-injected bytes already loaded so this
+              // works for templates not yet backfilled.
+              if (!template.originalDriveFileId) {
+                triggerPdfDownload(pdfBytes, fileName)
+                return
+              }
+              setDownloadingOriginal(true)
+              setExportError(null)
+              try {
+                const bytes = await fetchPdfFromDrive(template.originalDriveFileId)
+                triggerPdfDownload(bytes, fileName)
+              } catch (err) {
+                setExportError(err instanceof Error ? err.message : 'Nu s-a putut descărca PDF-ul original.')
+              } finally {
+                setDownloadingOriginal(false)
+              }
+            }}
+            className="inline-flex items-center gap-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
           >
-            <Download className="w-4 h-4" />
-            Descarcă PDF original
+            {downloadingOriginal ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {downloadingOriginal ? 'Se descarcă...' : 'Descarcă PDF original'}
           </button>
         </div>
       </form>

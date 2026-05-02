@@ -45,7 +45,10 @@ scripts/edirect/paddle/eval-set
 scripts/edirect/paddle/ground_truth
 scripts/edirect/.oauth-token.json
 scripts/edirect/upload-templates-progress.json
+scripts/edirect/upload-originals-progress.json
 scripts/edirect/reorg-drive-folders-progress.json
 scripts/edirect/convert-docs.log
 scripts/edirect/convert-docs-failed.json
 scripts/edirect/pdf-from-doc/
+scripts/edirect/*.log
+graphify-out/

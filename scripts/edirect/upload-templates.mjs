@@ -73,6 +73,9 @@ const PROGRESS_PATH = resolve(__dirname, 'upload-templates-progress.json')
 
 const DRIVE_ROOT_NAME = 'Tipizatul.eu'
 const DRIVE_PDFS_NAME = 'PDFs'
+// Flat staging folder for the truly-untouched bundle PDFs. reorg-drive-folders
+// later moves each one into `{Organization}/Original/`.
+const DRIVE_ORIGINALS_NAME = 'Originals'
 const FOLDER_ID_OVERRIDE = process.env.FOLDER_ID_OVERRIDE || null
 const OAUTH_TOKEN_PATH = resolve(__dirname, '.oauth-token.json')
 const OAUTH_LOOPBACK_PORT = parseInt(process.env.OAUTH_LOOPBACK_PORT || '53682', 10)
@@ -256,10 +259,17 @@ async function getPdfFolderId() {
   return _pdfFolderId
 }
 
-async function uploadPdf(filePath, displayName) {
+let _originalsFolderId = null
+async function getOriginalsFolderId() {
+  if (_originalsFolderId) return _originalsFolderId
   const drive = await getDrive()
-  const folderId = await getPdfFolderId()
+  const pdfsId = await getPdfFolderId()
+  _originalsFolderId = await getOrCreateFolder(drive, DRIVE_ORIGINALS_NAME, pdfsId)
+  return _originalsFolderId
+}
 
+async function uploadPdfTo(filePath, displayName, folderId) {
+  const drive = await getDrive()
   const create = await withBackoff(() =>
     drive.files.create({
       requestBody: {
@@ -286,6 +296,14 @@ async function uploadPdf(filePath, displayName) {
   )
 
   return fileId
+}
+
+async function uploadPdf(filePath, displayName) {
+  return uploadPdfTo(filePath, displayName, await getPdfFolderId())
+}
+
+async function uploadOriginalPdf(filePath, displayName) {
+  return uploadPdfTo(filePath, displayName, await getOriginalsFolderId())
 }
 
 // ── Backoff for 429 / 5xx ────────────────────────────────────────────────────
@@ -511,18 +529,33 @@ async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap }) {
   }
 
   if (dryRun) {
-    return { template, fileId: null, needsReview, acroFieldCount, detectorFieldCount }
+    return { template, fileId: null, originalFileId: null, needsReview, acroFieldCount, detectorFieldCount }
   }
 
   const fileId = await uploadPdf(pdfPath, name)
   template.driveFileId = fileId
+
+  // Upload the truly-untouched bundle PDF alongside the AcroForm-injected one.
+  // Soft-fail if the source path is missing so the AcroForm upload still lands.
+  let originalFileId = null
+  const originalPath = typeof detector.source === 'string' ? detector.source : null
+  if (originalPath && existsSync(originalPath)) {
+    try {
+      originalFileId = await uploadOriginalPdf(originalPath, name)
+      template.originalDriveFileId = originalFileId
+    } catch (err) {
+      logErr(`${C.yellow}  original upload failed for ${stem}: ${err?.message || err}${C.reset}`)
+    }
+  } else {
+    logErr(`${C.yellow}  no original on disk for ${stem} (source="${originalPath}")${C.reset}`)
+  }
 
   const db = getFirestore()
   // Strip undefineds the same way the platform's saveTemplate does.
   const data = JSON.parse(JSON.stringify(template))
   await withBackoff(() => db.collection('templates').doc(id).set(data))
 
-  return { template, fileId, needsReview, acroFieldCount, detectorFieldCount }
+  return { template, fileId, originalFileId, needsReview, acroFieldCount, detectorFieldCount }
 }
 
 // ── Concurrency runner ───────────────────────────────────────────────────────
@@ -625,12 +658,14 @@ async function main() {
           progress.uploaded[item.key] = {
             templateId: res.template.id,
             driveFileId: res.fileId,
+            originalDriveFileId: res.originalFileId || undefined,
             uploadedAt: new Date().toISOString(),
           }
           saveProgress(progress)
+          const origMark = res.originalFileId ? `+orig` : `${C.yellow}-orig${C.reset}`
           log(
             `[${i}/${total}] [${item.bundleDir}] ${C.green}OK${C.reset}: ${item.stem}` +
-            `  →  ${C.blue}${res.fileId}${C.reset}, fields=${res.template.fields.length},` +
+            `  →  ${C.blue}${res.fileId}${C.reset} ${origMark}, fields=${res.template.fields.length},` +
             ` needsReview=${!!res.needsReview}`
           )
         }

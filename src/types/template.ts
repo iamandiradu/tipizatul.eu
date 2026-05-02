@@ -35,6 +35,9 @@ export interface Template {
   fields: TemplateField[]
   archived?: boolean
   driveFileId: string
+  // Drive file id of the truly-untouched bundle PDF (no AcroForm fields,
+  // straight from eDirect). Optional during the backfill rollout.
+  originalDriveFileId?: string
 }
 
 // Catalog/admin list entries — same shape minus the heavy `fields[]` array,
@@ -51,6 +54,7 @@ export interface SlimTemplate {
   visibleFieldCount: number
   archived?: boolean
   driveFileId: string
+  originalDriveFileId?: string
 }
 
 export type FormValues = Record<string, string | boolean>
