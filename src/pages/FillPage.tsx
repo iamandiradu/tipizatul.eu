@@ -7,6 +7,7 @@ import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
 import { fillAndDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
+import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview from '@/components/PdfPreview'
 import FormField from '@/components/FormField'
@@ -44,6 +45,49 @@ export default function FillPage() {
       })
       .catch(() => setNotFound(true))
   }, [id])
+
+  // SEO metadata for this form. Falls back to a generic title while loading
+  // so search engines that respect <title> changes still index something.
+  const seoTitle = template
+    ? `${template.name}${template.organization ? ' — ' + template.organization : ''}`
+    : 'Formular tipizat'
+  const seoDescription = template
+    ? `Completați online formularul „${template.name}"${template.organization ? ` emis de ${template.organization}` : ''}${template.county ? ` (${template.county})` : ''}. Descărcați PDF-ul gata de imprimat sau de transmis prin canalele oficiale.`
+    : 'Completați online un formular tipizat emis de o instituție publică din România.'
+  useDocumentMeta({
+    title: seoTitle,
+    description: seoDescription,
+    canonical: id ? `https://tipizatul.eu/fill/${id}` : undefined,
+    noindex: notFound || !template,
+  })
+
+  // JSON-LD structured data so search engines treat each form as a real
+  // government document, not a generic SPA URL. Mounted only when the
+  // template loads; cleaned up on unmount or template change.
+  useEffect(() => {
+    if (!template) return
+    const ld: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'DigitalDocument',
+      name: template.name,
+      description: seoDescription,
+      inLanguage: 'ro',
+      isAccessibleForFree: true,
+      fileFormat: 'application/pdf',
+      url: `https://tipizatul.eu/fill/${template.id}`,
+    }
+    if (template.organization) {
+      ld.publisher = { '@type': 'GovernmentOrganization', name: template.organization }
+    }
+    if (template.county) {
+      ld.spatialCoverage = { '@type': 'AdministrativeArea', name: template.county }
+    }
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.text = JSON.stringify(ld)
+    document.head.appendChild(script)
+    return () => { script.remove() }
+  }, [template, seoDescription])
 
   const zodSchema = template ? buildZodSchema(template) : null
 

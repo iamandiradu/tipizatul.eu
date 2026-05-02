@@ -8,6 +8,7 @@ import {
   presentCounties,
   templateCounty,
 } from '@/lib/template-grouping'
+import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import type { SlimTemplate } from '@/types/template'
 
 const ALL_COUNTIES = '__all__'
@@ -134,6 +135,13 @@ export default function CatalogPage() {
         setTemplates([])
       })
   }, [])
+
+  useDocumentMeta({
+    title: 'Tipizatul.eu — Catalog deschis de formulare tipizate românești',
+    description:
+      'Catalog deschis de formulare tipizate emise de instituții publice din România — primării, ministere, spitale, școli. Completați direct în browser și descărcați PDF-ul.',
+    canonical: 'https://tipizatul.eu/',
+  })
 
   const counties = useMemo<string[]>(
     () => (templates ? presentCounties(templates) : []),
