@@ -57,10 +57,13 @@ export async function fillAndDownload(
   form.flatten()
 
   const filledBytes = await pdfDoc.save()
-  triggerDownload(filledBytes, fileName ?? `${template.name}.pdf`)
+  triggerPdfDownload(filledBytes, fileName ?? `${template.name}.pdf`)
 }
 
-function triggerDownload(bytes: Uint8Array, fileName: string): void {
+export function triggerPdfDownload(
+  bytes: Uint8Array | ArrayBuffer,
+  fileName: string,
+): void {
   const blob = new Blob([bytes], { type: 'application/pdf' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
