@@ -2,6 +2,11 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
     match /admins/{email} {
       allow read: if request.auth != null && request.auth.token.email == email;
       allow write: if false;
@@ -9,8 +14,43 @@ service cloud.firestore {
 
     match /templates/{templateId} {
       allow read: if true;
-      allow write: if request.auth != null
-        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+      // Admins can edit anything. Anonymous voters can update *only* the
+      // denormalized vote counters (delta of ±1 per write), and the timestamp.
+      allow update: if isAdmin()
+        || (
+          request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['voteCount', 'lastVoteAt'])
+          && request.resource.data.voteCount.up is int
+          && request.resource.data.voteCount.down is int
+          && request.resource.data.voteCount.up >= 0
+          && request.resource.data.voteCount.down >= 0
+          // Each write may shift either counter by ±1 at most, so a single
+          // tab can't fabricate large counts even if it spams the endpoint.
+          && (
+            request.resource.data.voteCount.up - resource.data.get('voteCount', {'up': 0}).get('up', 0) <= 1
+            && resource.data.get('voteCount', {'up': 0}).get('up', 0) - request.resource.data.voteCount.up <= 1
+          )
+          && (
+            request.resource.data.voteCount.down - resource.data.get('voteCount', {'down': 0}).get('down', 0) <= 1
+            && resource.data.get('voteCount', {'down': 0}).get('down', 0) - request.resource.data.voteCount.down <= 1
+          )
+        );
+      allow create, delete: if isAdmin();
+
+      match /votes/{deviceId} {
+        // Comments may carry user feedback so reads are admin-only.
+        allow read: if isAdmin();
+        // One vote per (template, deviceId). The doc id IS the deviceId so
+        // the rule can pin both. Comment is optional and length-capped.
+        allow create, update: if request.resource.data.deviceId == deviceId
+          && request.resource.data.value in [1, -1]
+          && (
+            !('comment' in request.resource.data)
+            || request.resource.data.comment == null
+            || (request.resource.data.comment is string && request.resource.data.comment.size() <= 1000)
+          );
+        allow delete: if isAdmin();
+      }
     }
 
     match /proposals/{proposalId} {

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
-import { Upload, Trash2, LogOut, PlusCircle, Save, Loader2, Pencil, X, ArchiveX, ArchiveRestore, ChevronDown, ChevronRight, ChevronUp, AlertTriangle, MapPin, Search } from 'lucide-react'
+import { Upload, Trash2, LogOut, PlusCircle, Save, Loader2, Pencil, X, ArchiveX, ArchiveRestore, ChevronDown, ChevronRight, ChevronUp, AlertTriangle, MapPin, Search, ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
 import { signOut } from '@/lib/auth'
 import { uploadPdfToDrive, replacePdfOnDrive, deletePdfFromDrive, archivePdfOnDrive, restorePdfOnDrive } from '@/lib/drive'
 import { fetchCatalog, fetchTemplate, saveTemplate, patchTemplate } from '@/lib/firestore'
+import { fetchMostDownvotedTemplates, fetchVotesForTemplate, type AdminVote } from '@/lib/votes'
 import { introspectPdf } from '@/lib/pdf-introspect'
 import {
   diacriticless,
@@ -494,6 +495,179 @@ function CountyGroup({
   )
 }
 
+// ─── Reported issues (votes) ─────────────────────────────────────────────────
+
+function VoteRatioBadge({ up, down }: { up: number; down: number }) {
+  const total = up + down
+  const ratio = total > 0 ? Math.round((up / total) * 100) : 0
+  const tone =
+    total === 0 ? 'text-gray-400 dark:text-gray-500' :
+    ratio >= 75 ? 'text-green-600 dark:text-green-400' :
+    ratio >= 40 ? 'text-amber-600 dark:text-amber-400' :
+                  'text-red-600 dark:text-red-400'
+  return <span className={`text-xs font-mono tabular-nums ${tone}`}>{ratio}%</span>
+}
+
+function ReportedIssueRow({
+  template,
+  expanded,
+  onToggle,
+  onOpenEdit,
+}: {
+  template: Template
+  expanded: boolean
+  onToggle: () => void
+  onOpenEdit: (t: Template) => void
+}) {
+  const [comments, setComments] = useState<AdminVote[] | null>(null)
+  const [loading, setLoading] = useState(false)
+  const up = template.voteCount?.up ?? 0
+  const down = template.voteCount?.down ?? 0
+
+  useEffect(() => {
+    if (!expanded || comments) return
+    setLoading(true)
+    fetchVotesForTemplate(template.id)
+      .then(setComments)
+      .catch(() => setComments([]))
+      .finally(() => setLoading(false))
+  }, [expanded, comments, template.id])
+
+  const downvotedComments = (comments ?? []).filter((c) => c.value === -1 && c.comment)
+
+  return (
+    <div className="border border-gray-200 dark:border-gray-800 rounded-md bg-white dark:bg-gray-900 overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label={expanded ? 'Restrânge' : 'Extinde'}
+          className="text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 shrink-0"
+        >
+          {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+        </button>
+        <div className="min-w-0 flex-1">
+          <button
+            type="button"
+            onClick={() => onOpenEdit(template)}
+            className="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 truncate text-left w-full"
+          >
+            {template.name}
+          </button>
+          <p className="text-xs text-gray-400 dark:text-gray-500 truncate">
+            {template.organization || '—'}{template.county ? ` · ${template.county}` : ''}
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="inline-flex items-center gap-1 text-xs text-green-700 dark:text-green-400 tabular-nums">
+            <ThumbsUp className="w-3.5 h-3.5" /> {up}
+          </span>
+          <span className="inline-flex items-center gap-1 text-xs text-red-700 dark:text-red-400 tabular-nums">
+            <ThumbsDown className="w-3.5 h-3.5" /> {down}
+          </span>
+          <VoteRatioBadge up={up} down={down} />
+        </div>
+      </div>
+      {expanded && (
+        <div className="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 px-4 py-3">
+          {loading && <p className="text-xs text-gray-400">Se încarcă comentariile...</p>}
+          {!loading && comments && downvotedComments.length === 0 && (
+            <p className="text-xs text-gray-400 dark:text-gray-500">Niciun comentariu lăsat de votanți.</p>
+          )}
+          {!loading && downvotedComments.length > 0 && (
+            <ul className="space-y-2">
+              {downvotedComments.map((c) => (
+                <li key={c.deviceId} className="flex items-start gap-2 text-xs">
+                  <MessageSquare className="w-3.5 h-3.5 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-words">{c.comment}</p>
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">
+                      {c.updatedAtIso ? new Date(c.updatedAtIso).toLocaleString('ro-RO') : ''}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ReportedIssuesPanel({ onOpenEdit }: { onOpenEdit: (t: Template) => void }) {
+  const [items, setItems] = useState<Template[] | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [sort, setSort] = useState<'down' | 'ratio'>('down')
+
+  useEffect(() => {
+    fetchMostDownvotedTemplates(50)
+      .then(setItems)
+      .catch((err) => setError(err instanceof Error ? err.message : 'Eroare la încărcarea voturilor.'))
+  }, [])
+
+  const sorted = useMemo(() => {
+    if (!items) return []
+    if (sort === 'down') return [...items].sort((a, b) => (b.voteCount?.down ?? 0) - (a.voteCount?.down ?? 0))
+    return [...items].sort((a, b) => {
+      const ra = ratio(a)
+      const rb = ratio(b)
+      return ra - rb
+    })
+  }, [items, sort])
+
+  if (error) return null
+  if (items === null) return null
+  if (items.length === 0) return null
+
+  return (
+    <div className="mb-8">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Probleme raportate
+        </h2>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-gray-400 dark:text-gray-500">Sortează:</span>
+          <button
+            type="button"
+            onClick={() => setSort('down')}
+            className={sort === 'down' ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}
+          >
+            voturi negative
+          </button>
+          <span className="text-gray-300 dark:text-gray-700">·</span>
+          <button
+            type="button"
+            onClick={() => setSort('ratio')}
+            className={sort === 'ratio' ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}
+          >
+            cele mai slabe
+          </button>
+        </div>
+      </div>
+      <div className="space-y-2">
+        {sorted.map((t) => (
+          <ReportedIssueRow
+            key={t.id}
+            template={t}
+            expanded={expandedId === t.id}
+            onToggle={() => setExpandedId((cur) => (cur === t.id ? null : t.id))}
+            onOpenEdit={onOpenEdit}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ratio(t: Template): number {
+  const up = t.voteCount?.up ?? 0
+  const down = t.voteCount?.down ?? 0
+  const total = up + down
+  return total > 0 ? up / total : 1
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 type ActivePanel = { mode: 'add' } | { mode: 'edit'; template: Template } | null
@@ -618,6 +792,8 @@ export default function AdminPage() {
       </div>
 
       {!driveAccessToken && <DriveTokenWarning />}
+
+      {!active && <ReportedIssuesPanel onOpenEdit={(t) => setActive({ mode: 'edit', template: t })} />}
 
       {active?.mode === 'add' && (
         <div className="mb-8">

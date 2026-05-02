@@ -11,6 +11,7 @@ import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview from '@/components/PdfPreview'
 import FormField from '@/components/FormField'
+import VoteWidget from '@/components/VoteWidget'
 import type { Template, FormValues } from '@/types/template'
 
 export default function FillPage() {
@@ -273,6 +274,14 @@ export default function FillPage() {
           </button>
         </div>
       </form>
+
+      <div className="mt-6">
+        <VoteWidget
+          templateId={template.id}
+          initialUp={template.voteCount?.up ?? 0}
+          initialDown={template.voteCount?.down ?? 0}
+        />
+      </div>
 
       <div className="mt-10">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
