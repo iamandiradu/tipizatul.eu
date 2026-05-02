@@ -17,6 +17,7 @@
     "dexie": "^4.0.10",
     "dexie-react-hooks": "^4.4.0",
     "firebase": "^11.6.0",
+    "firebase-admin": "^13.8.0",
     "google-auth-library": "^10.6.2",
     "lucide-react": "^0.475.0",
     "pdf-lib": "^1.17.1",

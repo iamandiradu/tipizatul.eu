@@ -62,10 +62,12 @@ export default function FillPage() {
   })
 
   // JSON-LD structured data so search engines treat each form as a real
-  // government document, not a generic SPA URL. Mounted only when the
-  // template loads; cleaned up on unmount or template change.
+  // government document, not a generic SPA URL. The Vercel function for
+  // /fill/:id already injects this server-side (marked data-ssr); skip when
+  // present so we don't ship two copies on first paint.
   useEffect(() => {
     if (!template) return
+    if (document.head.querySelector('script[type="application/ld+json"][data-ssr]')) return
     const ld: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'DigitalDocument',
