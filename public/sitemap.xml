@@ -3,8 +3,14 @@
   <url>
     <loc>https://tipizatul.eu/</loc>
     <lastmod>2026-05-02</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://tipizatul.eu/formulare</loc>
+    <lastmod>2026-05-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://tipizatul.eu/fill/9f8445f1-868e-4c9f-a255-00d42100c207</loc>
