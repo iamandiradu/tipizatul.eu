@@ -10,7 +10,9 @@ Admins upload AcroForm PDFs; anyone can fill them in and download a completed co
 - **Admins** sign in with Google, upload PDF forms, and annotate fields (labels, hints, validation)
 - **Users** visit the catalog, pick a form, fill in the fields, and download the completed PDF
 - All form processing happens **client-side** — filled data never leaves the browser
-- PDFs are stored on **Google Drive** (publicly readable); template metadata is stored in **Firestore**
+- PDFs are stored on **Google Drive** (publicly readable, browse the catalog folder
+  [here](https://drive.google.com/drive/folders/1fJaJBz2JG-h_F84QTxw1AHN2gY3qcn0E?usp=sharing));
+  template metadata is stored in **Firestore**
 
 ---
 

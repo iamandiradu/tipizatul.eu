@@ -10,6 +10,10 @@ Citizens and businesses use these forms to interact with the public administrati
 
 All documents on the platform are publicly accessible and free to download.
 
+The processed catalog (AcroForm PDFs, organised per institution) is mirrored to
+a public Google Drive folder for direct browsing:
+[**Tipizatul.eu/PDFs**](https://drive.google.com/drive/folders/1fJaJBz2JG-h_F84QTxw1AHN2gY3qcn0E?usp=sharing).
+
 ## Overview
 
 The scraper works in two steps:
