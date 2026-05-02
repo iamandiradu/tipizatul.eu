@@ -13,6 +13,15 @@ export default function ProposalWidget({ open, onClose }: Props) {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const panelRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLInputElement>(null)
+
+  // Autofocus title on open + restore focus to trigger on close
+  useEffect(() => {
+    if (!open) return
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    titleRef.current?.focus()
+    return () => { previouslyFocused?.focus() }
+  }, [open])
 
   // Close on Escape
   useEffect(() => {
@@ -75,6 +84,10 @@ export default function ProposalWidget({ open, onClose }: Props) {
   return (
     <div
       ref={panelRef}
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="proposal-heading"
+      id="proposal-panel"
       className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 z-50"
     >
       {success ? (
@@ -83,29 +96,37 @@ export default function ProposalWidget({ open, onClose }: Props) {
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">
-          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <h2 id="proposal-heading" className="text-sm font-medium text-gray-900 dark:text-gray-100">
             Propune un formular
-          </p>
+          </h2>
 
           <div>
+            <label htmlFor="proposal-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Titlu <span className="text-red-500" aria-hidden="true">*</span>
+              <span className="sr-only">(obligatoriu)</span>
+            </label>
             <input
+              id="proposal-title"
+              ref={titleRef}
               type="text"
-              placeholder="Titlu *"
               maxLength={100}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-base placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
+            <label htmlFor="proposal-description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Descriere
+            </label>
             <textarea
-              placeholder="Descriere (opțional)"
+              id="proposal-description"
               maxLength={500}
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 text-base placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             />
           </div>
 

@@ -1,4 +1,4 @@
-import { ROMANIAN_COUNTIES, deriveCountyFromText } from '@/lib/counties'
+import { ROMANIAN_COUNTIES, canonicalizeCounty, deriveCountyFromText } from '@/lib/counties'
 
 export const NO_COUNTY = 'Național / Necunoscut'
 export const NO_ORG = 'Altele'
@@ -13,11 +13,18 @@ export interface GroupableTemplate {
 }
 
 export function templateCounty(t: GroupableTemplate): string {
-  return (
-    t.county ||
-    deriveCountyFromText(`${t.organization ?? ''} ${t.name}`) ||
-    NO_COUNTY
-  )
+  if (t.county) {
+    // Normalize "București" / "BUCURESTI" / "Bucuresti" all to the same bucket;
+    // fall back to text-derivation when the value has extra wording like
+    // "Municipiul București"; finally keep the raw value so unknown counties
+    // still group together with themselves.
+    return (
+      canonicalizeCounty(t.county) ||
+      deriveCountyFromText(t.county) ||
+      t.county
+    )
+  }
+  return deriveCountyFromText(`${t.organization ?? ''} ${t.name}`) || NO_COUNTY
 }
 
 export function diacriticless(s: string): string {
