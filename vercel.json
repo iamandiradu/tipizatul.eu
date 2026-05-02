@@ -1,6 +1,12 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/fill/:id", "destination": "/api/fill?id=:id" },
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "functions": {
+    "api/fill.ts": {
+      "includeFiles": "dist/index.html"
+    }
+  }
 }
