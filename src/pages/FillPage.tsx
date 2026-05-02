@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeft, Download, Loader2 } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
-import { fillAndDownload } from '@/lib/pdf-fill'
+import { fillAndDownload, triggerPdfDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useSessionStore } from '@/stores/sessionStore'
@@ -224,21 +224,31 @@ export default function FillPage() {
           <p role="alert" className="text-sm text-red-600 dark:text-red-400 mb-4">{exportError}</p>
         )}
 
-        <button
-          type="submit"
-          disabled={exporting}
-          className="flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-        >
-          {exporting ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="submit"
+            disabled={exporting}
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          >
+            {exporting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Download className="w-4 h-4" />
+            )}
+            {exporting ? 'Se generează...' : 'Descarcă PDF completat'}
+          </button>
+          <button
+            type="button"
+            onClick={() => triggerPdfDownload(pdfBytes, `${template.name} (necompletat).pdf`)}
+            className="inline-flex items-center gap-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+          >
             <Download className="w-4 h-4" />
-          )}
-          {exporting ? 'Se generează...' : 'Descarcă PDF completat'}
-        </button>
+            Descarcă PDF original
+          </button>
+        </div>
       </form>
 
-      <div className="mt-10 hidden md:block">
+      <div className="mt-10">
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
         <PdfPreview pdfBytes={pdfBytes} />
       </div>
