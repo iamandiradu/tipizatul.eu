@@ -38,8 +38,13 @@ service cloud.firestore {
       allow create, delete: if isAdmin();
 
       match /votes/{deviceId} {
-        // Comments may carry user feedback so reads are admin-only.
-        allow read: if isAdmin();
+        // Single-doc reads are public (the deviceId IS a random UUID — only
+        // the device that voted knows its own id, so this is private in
+        // practice). The transactional submitVote needs to read its own
+        // prior vote to compute the counter delta on flip.
+        allow get: if true;
+        // Listing the collection exposes every comment, so admin-only.
+        allow list: if isAdmin();
         // One vote per (template, deviceId). The doc id IS the deviceId so
         // the rule can pin both. Comment is optional and length-capped.
         allow create, update: if request.resource.data.deviceId == deviceId
