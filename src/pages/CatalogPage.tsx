@@ -155,22 +155,54 @@ export default function CatalogPage() {
 
   const grouped = useMemo(() => groupByCountyAndOrg(filtered), [filtered])
 
+  const intro = (
+    <section className="mb-6 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 p-5">
+      <p className="text-sm text-gray-700 dark:text-gray-300 max-w-3xl">
+        Un catalog deschis de formulare tipizate emise de instituții publice din România —{' '}
+        primării, ministere, spitale, școli, direcții de sănătate, prefecturi, agenții. Toate sunt
+        agregate din surse oficiale (eDirect / e-guvernare.ro) și pot fi completate{' '}
+        <strong>direct în browser</strong>, fără cont și fără descărcări de software. Tipizatul.eu
+        este gratuit și open-source.
+      </p>
+      <p className="mt-3 text-sm text-gray-600 dark:text-gray-400 max-w-3xl italic">
+        * Formularele online se depun la ghișeul 3.
+      </p>
+      <ol className="mt-4 text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
+        <li>Filtrați după județ sau căutați după nume, instituție sau județ.</li>
+        <li>Apăsați pe formular pentru a-l completa în browser.</li>
+        <li>Descărcați PDF-ul completat și folosiți-l fizic sau electronic.</li>
+      </ol>
+      <p className="mt-3 text-xs text-gray-500 dark:text-gray-500 max-w-3xl">
+        Lipsește un formular? Trimiteți o sugestie din butonul{' '}
+        <em>„Propune un formular”</em> — vom încerca să-l adăugăm.
+      </p>
+    </section>
+  )
+
   if (templates === undefined) {
-    return <div className="text-center py-16 text-gray-400 dark:text-gray-500">Se încarcă...</div>
+    return (
+      <div>
+        {intro}
+        <div className="text-center py-16 text-gray-400 dark:text-gray-500">Se încarcă...</div>
+      </div>
+    )
   }
 
   if (templates.length === 0) {
     return (
-      <div className="text-center py-16">
-        <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-        <p className="text-gray-500 dark:text-gray-400 font-medium">Niciun formular disponibil</p>
-        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-          Adăugați formulare din secțiunea{' '}
-          <Link to="/admin" className="text-blue-600 dark:text-blue-400 hover:underline">
-            Admin
-          </Link>
-          .
-        </p>
+      <div>
+        {intro}
+        <div className="text-center py-16">
+          <FileText className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-500 dark:text-gray-400 font-medium">Niciun formular disponibil</p>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+            Adăugați formulare din secțiunea{' '}
+            <Link to="/admin" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Admin
+            </Link>
+            .
+          </p>
+        </div>
       </div>
     )
   }
@@ -182,18 +214,7 @@ export default function CatalogPage() {
 
   return (
     <div>
-      <section className="mb-6 rounded-lg bg-blue-50/60 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 p-5">
-        <p className="text-sm text-gray-700 dark:text-gray-300 max-w-3xl">
-          Un catalog deschis de formulare tipizate emise de instituții publice din România.
-          Găsiți rapid documentul potrivit, completați-l direct în browser și descărcați PDF-ul
-          gata de imprimat sau de trimis prin canalele oficiale.
-        </p>
-        <ol className="mt-3 text-sm text-gray-600 dark:text-gray-400 space-y-1 list-decimal list-inside">
-          <li>Filtrați după județ sau căutați după nume / instituție.</li>
-          <li>Apăsați pe formular pentru a-l completa în browser.</li>
-          <li>Descărcați PDF-ul completat și folosiți-l fizic sau electronic.</li>
-        </ol>
-      </section>
+      {intro}
 
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Formulare disponibile</h1>
