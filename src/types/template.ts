@@ -37,4 +37,20 @@ export interface Template {
   driveFileId: string
 }
 
+// Catalog/admin list entries — same shape minus the heavy `fields[]` array,
+// with a precomputed `visibleFieldCount` for the card label. Read in bulk
+// from the `catalog/index` aggregate doc.
+export interface SlimTemplate {
+  id: string
+  name: string
+  description?: string
+  category?: string
+  organization?: string
+  county?: string
+  version: number
+  visibleFieldCount: number
+  archived?: boolean
+  driveFileId: string
+}
+
 export type FormValues = Record<string, string | boolean>

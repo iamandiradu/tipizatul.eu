@@ -1,31 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronRight, FileText, MapPin, Search } from 'lucide-react'
-import { fetchAllTemplates } from '@/lib/firestore'
-import { ROMANIAN_COUNTIES, deriveCountyFromText } from '@/lib/counties'
-import type { Template } from '@/types/template'
+import { fetchCatalog } from '@/lib/firestore'
+import {
+  diacriticless,
+  groupByCountyAndOrg,
+  presentCounties,
+  templateCounty,
+} from '@/lib/template-grouping'
+import type { SlimTemplate } from '@/types/template'
 
 const ALL_COUNTIES = '__all__'
-const NO_COUNTY = 'Național / Necunoscut'
-const NO_ORG = 'Altele'
 
-function diacriticless(s: string): string {
-  return s
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-}
-
-function templateCounty(t: Template): string {
-  return (
-    t.county ||
-    deriveCountyFromText(`${t.organization ?? ''} ${t.name}`) ||
-    NO_COUNTY
-  )
-}
-
-function TemplateCard({ template }: { template: Template }) {
-  const fieldCount = template.fields.filter((f) => !f.hidden).length
+function TemplateCard({ template }: { template: SlimTemplate }) {
+  const fieldCount = template.visibleFieldCount
 
   return (
     <Link
@@ -61,7 +49,7 @@ function OrganizationSection({
   defaultOpen,
 }: {
   organization: string
-  templates: Template[]
+  templates: SlimTemplate[]
   defaultOpen: boolean
 }) {
   const [open, setOpen] = useState(defaultOpen)
@@ -98,7 +86,7 @@ function CountySection({
   defaultOrgOpen,
 }: {
   county: string
-  orgs: Array<[string, Template[]]>
+  orgs: Array<[string, SlimTemplate[]]>
   totalTemplates: number
   defaultOpen: boolean
   defaultOrgOpen: boolean
@@ -134,29 +122,25 @@ function CountySection({
 }
 
 export default function CatalogPage() {
-  const [templates, setTemplates] = useState<Template[] | undefined>(undefined)
+  const [templates, setTemplates] = useState<SlimTemplate[] | undefined>(undefined)
   const [search, setSearch] = useState('')
   const [county, setCounty] = useState<string>(ALL_COUNTIES)
 
   useEffect(() => {
-    fetchAllTemplates()
-      .then(setTemplates)
+    fetchCatalog()
+      .then((all) => setTemplates(all.filter((t) => !t.archived)))
       .catch((err) => {
-        console.error('[CatalogPage] Failed to load templates:', err)
+        console.error('[CatalogPage] Failed to load catalog:', err)
         setTemplates([])
       })
   }, [])
 
-  const counties = useMemo<string[]>(() => {
-    if (!templates) return []
-    const present = new Set<string>()
-    for (const t of templates) present.add(templateCounty(t))
-    const ordered = ROMANIAN_COUNTIES.filter((c) => present.has(c)) as string[]
-    if (present.has(NO_COUNTY)) ordered.push(NO_COUNTY)
-    return ordered
-  }, [templates])
+  const counties = useMemo<string[]>(
+    () => (templates ? presentCounties(templates) : []),
+    [templates],
+  )
 
-  const filtered = useMemo<Template[]>(() => {
+  const filtered = useMemo<SlimTemplate[]>(() => {
     if (!templates) return []
     const needle = diacriticless(search.trim())
     return templates.filter((t) => {
@@ -169,34 +153,7 @@ export default function CatalogPage() {
     })
   }, [templates, search, county])
 
-  const grouped = useMemo(() => {
-    const byCounty = new Map<string, Map<string, Template[]>>()
-    for (const t of filtered) {
-      const c = templateCounty(t)
-      const o = t.organization || NO_ORG
-      let orgMap = byCounty.get(c)
-      if (!orgMap) {
-        orgMap = new Map()
-        byCounty.set(c, orgMap)
-      }
-      const list = orgMap.get(o) ?? []
-      list.push(t)
-      orgMap.set(o, list)
-    }
-    const ordered: Array<{ county: string; orgs: Array<[string, Template[]]>; total: number }> = []
-    const keys = [...byCounty.keys()].sort((a, b) => {
-      if (a === NO_COUNTY) return 1
-      if (b === NO_COUNTY) return -1
-      return a.localeCompare(b, 'ro')
-    })
-    for (const c of keys) {
-      const orgMap = byCounty.get(c)!
-      const orgs = [...orgMap.entries()].sort((a, b) => a[0].localeCompare(b[0], 'ro'))
-      const total = orgs.reduce((n, [, items]) => n + items.length, 0)
-      ordered.push({ county: c, orgs, total })
-    }
-    return ordered
-  }, [filtered])
+  const grouped = useMemo(() => groupByCountyAndOrg(filtered), [filtered])
 
   if (templates === undefined) {
     return <div className="text-center py-16 text-gray-400 dark:text-gray-500">Se încarcă...</div>
