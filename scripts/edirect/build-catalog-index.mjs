@@ -81,6 +81,12 @@ function slim(t) {
   if (t.organization) out.organization = t.organization
   if (t.county) out.county = t.county
   if (t.archived) out.archived = true
+  // Procedure linkage — used by the procedure detail page to render
+  // "Completează online" next to the matching document.
+  if (t.procedureId) out.procedureId = t.procedureId
+  if (t.procedure) out.procedure = t.procedure
+  if (t.eDirectDocId) out.eDirectDocId = t.eDirectDocId
+  if (t.originalDriveFileId) out.originalDriveFileId = t.originalDriveFileId
   return out
 }
 

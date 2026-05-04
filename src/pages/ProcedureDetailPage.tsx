@@ -59,12 +59,25 @@ function FactCard({
   )
 }
 
-function DocumentCard({ doc }: { doc: ProcedureDocument }) {
+function DocumentCard({
+  doc,
+  template,
+}: {
+  doc: ProcedureDocument
+  template: SlimTemplate | null
+}) {
   const [expanded, setExpanded] = useState(false)
   const longDescription = !!doc.description && doc.description.length > 220
+  const editable = !!template
 
   return (
-    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+    <div
+      className={`bg-white dark:bg-gray-900 border rounded-lg p-4 transition-colors ${
+        editable
+          ? 'border-blue-200 dark:border-blue-900/60 hover:border-blue-400 dark:hover:border-blue-500'
+          : 'border-gray-200 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-500'
+      }`}
+    >
       <div className="flex items-start gap-3">
         <div className="p-2 bg-blue-50 dark:bg-blue-950 rounded-md shrink-0">
           <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -94,6 +107,11 @@ function DocumentCard({ doc }: { doc: ProcedureDocument }) {
                 <FileSignature className="w-3 h-3" /> Semnătură electronică
               </span>
             )}
+            {editable && (
+              <span className="inline-flex items-center gap-1 text-xs bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                Completabil online
+              </span>
+            )}
           </div>
           {doc.description && (
             <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -111,8 +129,17 @@ function DocumentCard({ doc }: { doc: ProcedureDocument }) {
               )}
             </div>
           )}
-          {doc.downloadUrl && (
-            <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
+            {template && (
+              <Link
+                to={`/fill/${template.id}`}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+              >
+                Completează online
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            )}
+            {doc.downloadUrl && (
               <a
                 href={doc.downloadUrl}
                 target="_blank"
@@ -122,8 +149,8 @@ function DocumentCard({ doc }: { doc: ProcedureDocument }) {
                 <Download className="w-4 h-4" />
                 Descarcă original
               </a>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -213,7 +240,7 @@ function ContactBlock({ raw }: { raw: string }) {
 export default function ProcedureDetailPage() {
   const { id } = useParams<{ id: string }>()
   const [p, setP] = useState<Procedure | null>(null)
-  const [forms, setForms] = useState<SlimTemplate[]>([])
+  const [catalog, setCatalog] = useState<SlimTemplate[] | null>(null)
   const [notFound, setNotFound] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { dev } = useDevMode()
@@ -224,7 +251,6 @@ export default function ProcedureDetailPage() {
     setNotFound(false)
     setError(null)
     setP(null)
-    setForms([])
     loadProcedure(id)
       .then((proc) => {
         if (cancelled) return
@@ -234,25 +260,44 @@ export default function ProcedureDetailPage() {
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : String(err))
       })
-    // Catalog read is cached + cheap; filtering client-side avoids a Firestore
-    // composite index for procedureId queries.
-    fetchCatalog()
-      .then((catalog) => {
-        if (cancelled) return
-        setForms(
-          catalog
-            .filter((t) => t.procedureId === id && !t.archived)
-            .sort((a, b) => a.name.localeCompare(b.name, 'ro')),
-        )
-      })
-      .catch(() => {
-        // Ignore catalog errors — the procedure detail still renders without
-        // the forms section.
-      })
     return () => {
       cancelled = true
     }
   }, [id])
+
+  // Catalog read is cached and shared across navigations — fetch once. We
+  // filter against the loaded procedure below to find both procedureId
+  // matches and direct eDirectDocId matches (the latter rescues templates
+  // whose procedureId field hasn't been backfilled yet).
+  useEffect(() => {
+    let cancelled = false
+    fetchCatalog()
+      .then((c) => {
+        if (!cancelled) setCatalog(c)
+      })
+      .catch(() => {
+        if (!cancelled) setCatalog([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const forms: SlimTemplate[] = (() => {
+    if (!p || !catalog) return []
+    const docIds = new Set<string>()
+    for (const d of p.documents) {
+      if (d.eDirectDocId) docIds.add(d.eDirectDocId)
+    }
+    return catalog
+      .filter(
+        (t) =>
+          !t.archived &&
+          (t.procedureId === id ||
+            (t.eDirectDocId && docIds.has(t.eDirectDocId))),
+      )
+      .sort((a, b) => a.name.localeCompare(b.name, 'ro'))
+  })()
 
   useDocumentMeta({
     title: p
@@ -298,6 +343,24 @@ export default function ProcedureDetailPage() {
   }
 
   const sourceUrl = `${EDIRECT_BASE_URL}${p.procedureId}`
+
+  // Pair each procedure document with its editable Template (if any) by
+  // eDirect doc id. Templates whose linkage didn't make it into a specific
+  // document fall through to "Alte formulare" below the document list, so
+  // the user can still reach them.
+  const formByDocId = new Map<string, SlimTemplate>()
+  for (const f of forms) {
+    if (f.eDirectDocId) formByDocId.set(f.eDirectDocId, f)
+  }
+  const matchedDocIds = new Set<string>()
+  for (const d of p.documents) {
+    if (d.eDirectDocId && formByDocId.has(d.eDirectDocId)) {
+      matchedDocIds.add(d.eDirectDocId)
+    }
+  }
+  const orphanForms = forms.filter(
+    (f) => !f.eDirectDocId || !matchedDocIds.has(f.eDirectDocId),
+  )
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -378,18 +441,41 @@ export default function ProcedureDetailPage() {
             </section>
           )}
 
-          {forms.length > 0 && (
+          {p.documents.length > 0 && (
             <section>
               <div className="flex items-baseline justify-between mb-3">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  Formulare disponibile pe Tipizatul
+                  Documente necesare
                 </h2>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {forms.length} {forms.length === 1 ? 'formular' : 'formulare'}
+                  {p.documents.length}{' '}
+                  {p.documents.length === 1 ? 'document' : 'documente'}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {p.documents.map((d) => (
+                  <DocumentCard
+                    key={d.nr}
+                    doc={d}
+                    template={d.eDirectDocId ? formByDocId.get(d.eDirectDocId) ?? null : null}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {orphanForms.length > 0 && (
+            <section>
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Alte formulare disponibile
+                </h2>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {orphanForms.length} {orphanForms.length === 1 ? 'formular' : 'formulare'}
                 </span>
               </div>
               <ul className="space-y-2">
-                {forms.map((f) => (
+                {orphanForms.map((f) => (
                   <li key={f.id}>
                     <Link
                       to={`/fill/${f.id}`}
@@ -413,25 +499,6 @@ export default function ProcedureDetailPage() {
                   </li>
                 ))}
               </ul>
-            </section>
-          )}
-
-          {p.documents.length > 0 && (
-            <section>
-              <div className="flex items-baseline justify-between mb-3">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                  Documente necesare
-                </h2>
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {p.documents.length}{' '}
-                  {p.documents.length === 1 ? 'document' : 'documente'}
-                </span>
-              </div>
-              <div className="space-y-3">
-                {p.documents.map((d) => (
-                  <DocumentCard key={d.nr} doc={d} />
-                ))}
-              </div>
             </section>
           )}
 

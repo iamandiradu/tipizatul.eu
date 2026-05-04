@@ -35,6 +35,11 @@ export interface Template {
   // upload filename stem (`..._<docId>.pdf`). See Procedure.
   procedure?: string
   procedureId?: string
+  // The eDirect listing record id (index.json `id`). Lets us match this
+  // editable template back to a specific entry in `procedure.documents[]`
+  // so the procedure detail page can offer a "Completează online" link
+  // next to the right document.
+  eDirectDocId?: string
   version: number
   createdAt: string
   fields: TemplateField[]
@@ -79,6 +84,7 @@ export interface SlimTemplate {
   county?: string
   procedure?: string
   procedureId?: string
+  eDirectDocId?: string
   version: number
   visibleFieldCount: number
   archived?: boolean
@@ -101,6 +107,10 @@ export interface ProcedureDocument {
   eSignature: boolean
   type: string
   downloadUrl: string | null
+  // eDirect listing record id, joined in by build-procedures.mjs from
+  // index.json. Same key Templates carry, so the procedure detail page
+  // can pair this document with its editable Template if one exists.
+  eDirectDocId?: string
 }
 
 export interface ProcedureOutputDocument {

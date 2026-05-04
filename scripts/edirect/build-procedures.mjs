@@ -29,7 +29,22 @@ const TARGET_INSTITUTIONS = [
   'Primaria Municipiului Constanta',
 ]
 
-function slim(p, meta) {
+// Normalize the URL the same way both sides do — trim, strip trailing slashes,
+// percent-decode where it's safe — so an index.json entry matches a
+// procedure-detail document URL even if one of them is decoded and the other
+// isn't. eDirect rewrites whitespace inconsistently between the two scrapes.
+function normalizeUrl(u) {
+  if (!u) return ''
+  let s = String(u).trim()
+  try {
+    s = decodeURI(s)
+  } catch {
+    /* ignore — keep encoded form */
+  }
+  return s
+}
+
+function slim(p, meta, urlToDocId) {
   const institution =
     meta?.institution ||
     (p.fields?.institutiaResponsabila || '').split(',')[0].trim() ||
@@ -53,15 +68,21 @@ function slim(p, meta) {
       termenCompletareDosar: p.fields?.termenCompletareDosar,
       taxe: p.fields?.taxe,
     },
-    documents: (p.documents ?? []).map((d) => ({
-      nr: d.nr,
-      name: d.name,
-      description: d.description || '',
-      required: !!d.required,
-      eSignature: !!d.eSignature,
-      type: d.type || '',
-      downloadUrl: d.downloadUrl || null,
-    })),
+    documents: (p.documents ?? []).map((d) => {
+      const eDirectDocId = d.downloadUrl
+        ? urlToDocId.get(normalizeUrl(d.downloadUrl)) ?? null
+        : null
+      return {
+        nr: d.nr,
+        name: d.name,
+        description: d.description || '',
+        required: !!d.required,
+        eSignature: !!d.eSignature,
+        type: d.type || '',
+        downloadUrl: d.downloadUrl || null,
+        ...(eDirectDocId ? { eDirectDocId } : {}),
+      }
+    }),
     outputDocuments: (p.outputDocuments ?? []).map((d) => ({
       nr: d.nr,
       name: d.name,
@@ -85,14 +106,20 @@ async function main() {
   const index = JSON.parse(indexRaw).entries
 
   const meta = new Map()
+  const urlToDocId = new Map()
   for (const e of index) {
-    if (!e.procedureId) continue
-    if (!meta.has(e.procedureId)) {
+    if (e.procedureId && !meta.has(e.procedureId)) {
       meta.set(e.procedureId, {
         institution: e.institution,
         county: e.county,
         city: e.city,
       })
+    }
+    // Build url → eDirect doc id (the listing record id). Used by slim() to
+    // tag each procedure document so the runtime can match it to a Template.
+    if (e.id && e.downloadUrl) {
+      const k = normalizeUrl(e.downloadUrl)
+      if (!urlToDocId.has(k)) urlToDocId.set(k, String(e.id))
     }
   }
 
@@ -105,7 +132,7 @@ async function main() {
       m?.institution ||
       (procedures[id].fields?.institutiaResponsabila || '').split(',')[0].trim()
     if (!targetSet.has(inst)) continue
-    out[id] = slim(procedures[id], m)
+    out[id] = slim(procedures[id], m, urlToDocId)
     kept++
   }
 
