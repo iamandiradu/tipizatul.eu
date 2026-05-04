@@ -19,7 +19,8 @@ import {
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
 import { loadProcedure } from '@/lib/procedures'
-import type { Procedure, ProcedureDocument } from '@/types/template'
+import { fetchCatalog } from '@/lib/firestore'
+import type { Procedure, ProcedureDocument, SlimTemplate } from '@/types/template'
 
 const EDIRECT_BASE_URL =
   'https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare='
@@ -212,6 +213,7 @@ function ContactBlock({ raw }: { raw: string }) {
 export default function ProcedureDetailPage() {
   const { id } = useParams<{ id: string }>()
   const [p, setP] = useState<Procedure | null>(null)
+  const [forms, setForms] = useState<SlimTemplate[]>([])
   const [notFound, setNotFound] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { dev } = useDevMode()
@@ -222,6 +224,7 @@ export default function ProcedureDetailPage() {
     setNotFound(false)
     setError(null)
     setP(null)
+    setForms([])
     loadProcedure(id)
       .then((proc) => {
         if (cancelled) return
@@ -230,6 +233,21 @@ export default function ProcedureDetailPage() {
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : String(err))
+      })
+    // Catalog read is cached + cheap; filtering client-side avoids a Firestore
+    // composite index for procedureId queries.
+    fetchCatalog()
+      .then((catalog) => {
+        if (cancelled) return
+        setForms(
+          catalog
+            .filter((t) => t.procedureId === id && !t.archived)
+            .sort((a, b) => a.name.localeCompare(b.name, 'ro')),
+        )
+      })
+      .catch(() => {
+        // Ignore catalog errors — the procedure detail still renders without
+        // the forms section.
       })
     return () => {
       cancelled = true
@@ -246,7 +264,7 @@ export default function ProcedureDetailPage() {
   if (notFound) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-500 dark:text-gray-400">Procedura nu a fost găsită în demo.</p>
+        <p className="text-gray-500 dark:text-gray-400">Procedura nu a fost găsită.</p>
         <Link to="/procedures" className="text-blue-600 hover:underline text-sm mt-2 block">
           ← Înapoi la proceduri
         </Link>
@@ -317,6 +335,8 @@ export default function ProcedureDetailPage() {
             <span className="opacity-70">outputDocuments:</span> {p.outputDocuments.length}
             {' · '}
             <span className="opacity-70">laws:</span> {p.laws.length}
+            {' · '}
+            <span className="opacity-70">linkedTemplates:</span> {forms.length}
           </div>
         </div>
       )}
@@ -355,6 +375,44 @@ export default function ProcedureDetailPage() {
               <div className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                 {p.fields.descriere}
               </div>
+            </section>
+          )}
+
+          {forms.length > 0 && (
+            <section>
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Formulare disponibile pe Tipizatul
+                </h2>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {forms.length} {forms.length === 1 ? 'formular' : 'formulare'}
+                </span>
+              </div>
+              <ul className="space-y-2">
+                {forms.map((f) => (
+                  <li key={f.id}>
+                    <Link
+                      to={`/fill/${f.id}`}
+                      className="group flex items-start gap-3 p-3 bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-900/60 rounded-md hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/40 dark:hover:bg-blue-950/30 transition-colors"
+                    >
+                      <div className="p-1.5 bg-blue-100 dark:bg-blue-950 rounded-md shrink-0">
+                        <FileText className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-blue-700 dark:group-hover:text-blue-300 transition-colors">
+                          {f.name}
+                        </div>
+                        <div className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                          {f.visibleFieldCount}{' '}
+                          {f.visibleFieldCount === 1 ? 'câmp' : 'câmpuri'}
+                          {' · completează online'}
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 mt-1 text-gray-400 dark:text-gray-500 shrink-0 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 

@@ -35,21 +35,47 @@ export interface InstitutionGroup {
   procedures: Procedure[]
 }
 
-export function groupByInstitution(payload: ProceduresPayload): InstitutionGroup[] {
-  const map = new Map<string, Procedure[]>()
+export interface CountyGroup {
+  county: string
+  institutions: InstitutionGroup[]
+  total: number
+}
+
+// Procedures whose county is null (typically central agencies that don't tie
+// to a specific county) bucket under this label so they remain browseable.
+export const NATIONAL_COUNTY = 'Național'
+
+export function groupByCountyAndInstitution(payload: ProceduresPayload): CountyGroup[] {
+  // county -> institution -> procedures[]
+  const counties = new Map<string, Map<string, Procedure[]>>()
   for (const p of Object.values(payload.procedures)) {
-    const key = p.institution ?? 'Necunoscut'
-    if (!map.has(key)) map.set(key, [])
-    map.get(key)!.push(p)
+    const county = p.county || NATIONAL_COUNTY
+    const institution = p.institution ?? 'Necunoscut'
+    if (!counties.has(county)) counties.set(county, new Map())
+    const insts = counties.get(county)!
+    if (!insts.has(institution)) insts.set(institution, [])
+    insts.get(institution)!.push(p)
   }
-  return [...map.entries()]
-    .map(([institution, procedures]) => ({
-      institution,
-      procedures: procedures.sort((a, b) =>
-        (a.title ?? '').localeCompare(b.title ?? '', 'ro'),
-      ),
-    }))
-    .sort((a, b) => a.institution.localeCompare(b.institution, 'ro'))
+
+  return [...counties.entries()]
+    .map(([county, insts]) => {
+      const institutions: InstitutionGroup[] = [...insts.entries()]
+        .map(([institution, procedures]) => ({
+          institution,
+          procedures: procedures.sort((a, b) =>
+            (a.title ?? '').localeCompare(b.title ?? '', 'ro'),
+          ),
+        }))
+        .sort((a, b) => a.institution.localeCompare(b.institution, 'ro'))
+      const total = institutions.reduce((acc, g) => acc + g.procedures.length, 0)
+      return { county, institutions, total }
+    })
+    .sort((a, b) => {
+      // Pin Național to the bottom; otherwise alphabetical.
+      if (a.county === NATIONAL_COUNTY) return 1
+      if (b.county === NATIONAL_COUNTY) return -1
+      return a.county.localeCompare(b.county, 'ro')
+    })
 }
 
 // Counts only procedures whose primary input forms include a fillable PDF —
