@@ -240,8 +240,10 @@ async function fetchProcedureHtml(id, attempt = 1) {
     }
     return html
   } catch (err) {
-    if (attempt < 3) {
-      await new Promise((r) => setTimeout(r, 500 * attempt))
+    // 5 attempts with exponential backoff (1s, 2s, 4s, 8s) — empty-body
+    // 200s recover much better with patience than with concurrency.
+    if (attempt < 5) {
+      await new Promise((r) => setTimeout(r, 1000 * 2 ** (attempt - 1)))
       return fetchProcedureHtml(id, attempt + 1)
     }
     throw err
