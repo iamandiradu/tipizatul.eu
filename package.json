@@ -23,6 +23,7 @@
     "google-auth-library": "^10.6.2",
     "lucide-react": "^0.475.0",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^5.6.205",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",

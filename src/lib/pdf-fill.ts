@@ -3,12 +3,11 @@ import fontkit from '@pdf-lib/fontkit'
 import type { Template, FormValues } from '@/types/template'
 import { getNotoSansBytes } from '@/lib/drive'
 
-export async function fillAndDownload(
+export async function fillPdf(
   template: Template,
   pdfBytes: ArrayBuffer,
   values: FormValues,
-  fileName?: string,
-): Promise<void> {
+): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.load(pdfBytes)
   pdfDoc.registerFontkit(fontkit)
   const form = pdfDoc.getForm()
@@ -56,7 +55,16 @@ export async function fillAndDownload(
   form.updateFieldAppearances(font)
   form.flatten()
 
-  const filledBytes = await pdfDoc.save()
+  return pdfDoc.save()
+}
+
+export async function fillAndDownload(
+  template: Template,
+  pdfBytes: ArrayBuffer,
+  values: FormValues,
+  fileName?: string,
+): Promise<void> {
+  const filledBytes = await fillPdf(template, pdfBytes, values)
   triggerPdfDownload(filledBytes, fileName ?? `${template.name}.pdf`)
 }
 
