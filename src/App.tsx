@@ -13,13 +13,14 @@ const AdminPage = lazy(() => import('@/pages/AdminPage'))
 const RequireAdmin = lazy(() => import('@/components/RequireAdmin'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'))
+const PrivacyPage = lazy(() => import('@/pages/PrivacyPage'))
 
 function AppShell({ showBackLink }: { showBackLink?: boolean }) {
   const { dark, toggle } = useDarkMode()
   const [proposalOpen, setProposalOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white dark:focus:bg-gray-900 focus:text-gray-900 dark:focus:text-gray-100 focus:px-3 focus:py-2 focus:rounded-md focus:shadow-md"
@@ -83,11 +84,42 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
           </p>
         </div>
       </div>
-      <main id="main" className="max-w-6xl mx-auto px-4 py-8">
+      <main id="main" className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
         <Suspense fallback={<div className="text-center py-16 text-gray-500 dark:text-gray-400">Se încarcă...</div>}>
           <Outlet />
         </Suspense>
       </main>
+      <footer className="border-t border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 mt-8">
+        <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-400">
+          <p>
+            © {new Date().getFullYear()} Tipizatul.eu — gratuit, fără cont,{' '}
+            <a
+              href="https://github.com/iamandiradu/tipizatul.eu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors underline-offset-2 hover:underline"
+            >
+              open-source
+            </a>.
+          </p>
+          <nav className="flex items-center gap-5">
+            <Link
+              to="/confidentialitate"
+              className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              Confidențialitate
+            </Link>
+            <a
+              href="https://github.com/iamandiradu/tipizatul.eu"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            >
+              GitHub
+            </a>
+          </nav>
+        </div>
+      </footer>
     </div>
   )
 }
@@ -112,6 +144,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'formulare', element: <CatalogPage /> },
       { path: 'fill/:id', element: <FillPage /> },
+      { path: 'confidentialitate', element: <PrivacyPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
