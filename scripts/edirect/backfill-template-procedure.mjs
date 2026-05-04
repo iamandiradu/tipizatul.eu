@@ -6,22 +6,26 @@
  *
  * The eDirect doc id was baked into the bundle filename (`<name>_<id>.pdf`)
  * but stripped during the original upload because the user-facing template
- * name shouldn't carry it. This script walks `bundles/` to recover the id,
- * joins index.json to find the procedureId, and patches each template by
- * matching on (name, organization).
+ * name shouldn't carry it. Recover the id by parsing each entry in
+ * `upload-templates-progress.json` (an authoritative mapping from local
+ * stem → Firestore templateId) and joining `index.json` for procedureId.
+ *
+ * The progress file is preferred over a name-based join because many forms
+ * inside one institution share the same name ("Cerere", "Anexa 1", etc.) —
+ * matching by name is ambiguous, matching by stem is 1:1.
  *
  * Defaults to dry-run. Pass --commit to actually write to Firestore.
  *
  * Env vars: GOOGLE_SERVICE_ACCOUNT_KEY (Firestore).
  */
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
-import { resolve, dirname, join } from 'node:path'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import admin from 'firebase-admin'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const BUNDLES_ROOT = resolve(__dirname, 'bundles')
+const PROGRESS_PATH = resolve(__dirname, 'upload-templates-progress.json')
 const INDEX_PATH = resolve(__dirname, 'index.json')
 
 const args = process.argv.slice(2)
@@ -42,60 +46,29 @@ function parseServiceAccount() {
   }
 }
 
-function deriveTemplateName(stem) {
-  // Mirror upload-templates.mjs::deriveTemplateName so backfill matches
-  // exactly the same name we wrote at upload time.
-  return stem.replace(/_\d+$/, '').replace(/_/g, ' ').trim()
-}
-
+// Stem trailing `_<digits>` is the eDirect listing record id baked in by
+// the bundle downloader; same key procedure documents carry.
 function eDirectDocIdFromStem(stem) {
   const m = /_(\d+)$/.exec(stem)
   return m ? m[1] : null
 }
 
-// Walks bundles/{batch}/{institution}/<stem>_<id>.pdf and yields one
-// candidate { stem, eDirectDocId, organization, bundleDir } per file.
-function* walkBundles() {
-  if (!existsSync(BUNDLES_ROOT)) {
-    throw new Error(`bundles/ root not found at ${BUNDLES_ROOT}`)
-  }
-  for (const batch of readdirSync(BUNDLES_ROOT)) {
-    const batchPath = join(BUNDLES_ROOT, batch)
-    if (!statSync(batchPath).isDirectory()) continue
-    if (batch === 'processed') continue
-    for (const org of readdirSync(batchPath)) {
-      const orgPath = join(batchPath, org)
-      if (!statSync(orgPath).isDirectory()) continue
-      for (const file of readdirSync(orgPath)) {
-        if (!file.endsWith('.pdf')) continue
-        const stem = file.slice(0, -'.pdf'.length)
-        const eDirectDocId = eDirectDocIdFromStem(stem)
-        if (!eDirectDocId) continue
-        yield {
-          stem,
-          eDirectDocId,
-          organization: org,
-          bundleDir: batch,
-          name: deriveTemplateName(stem),
-        }
-      }
-    }
-  }
-}
-
 function buildDocIdMap() {
-  const map = new Map()
   if (!existsSync(INDEX_PATH)) {
     throw new Error(`index.json not found at ${INDEX_PATH}`)
   }
   const idx = JSON.parse(readFileSync(INDEX_PATH, 'utf-8'))
   const entries = Array.isArray(idx) ? idx : (idx.entries || [])
+  const map = new Map()
   for (const e of entries) {
     if (!e.id || !e.procedureId) continue
-    map.set(String(e.id), {
-      procedureId: String(e.procedureId),
-      procedure: e.procedure || undefined,
-    })
+    const k = String(e.id)
+    if (!map.has(k)) {
+      map.set(k, {
+        procedureId: String(e.procedureId),
+        procedure: e.procedure || undefined,
+      })
+    }
   }
   return map
 }
@@ -103,33 +76,58 @@ function buildDocIdMap() {
 async function main() {
   log(`${C.bold}backfill-template-procedure.mjs${C.reset}${C.dim} — ${commit ? 'LIVE (--commit)' : 'DRY-RUN'}${C.reset}`)
 
+  if (!existsSync(PROGRESS_PATH)) {
+    throw new Error(`progress file not found at ${PROGRESS_PATH}`)
+  }
+  const progress = JSON.parse(readFileSync(PROGRESS_PATH, 'utf-8'))
+  const uploaded = progress.uploaded || {}
+  log(`${C.dim}progress: ${Object.keys(uploaded).length} uploaded entries${C.reset}`)
+
   const docIdMap = buildDocIdMap()
   log(`${C.dim}index.json: ${docIdMap.size} doc-ids with procedureId${C.reset}`)
 
-  // Build (name, organization) → { eDirectDocId, procedureId, procedure }
-  // from disk. Skip ambiguous keys (same name+org with conflicting doc-ids)
-  // since we can't be confident which template they map to.
-  const byKey = new Map()
-  let walked = 0
-  let skippedNoMatch = 0
-  for (const f of walkBundles()) {
-    walked++
-    const proc = docIdMap.get(f.eDirectDocId)
-    if (!proc) {
-      skippedNoMatch++
+  // Build templateId → patch from the progress file.
+  const patches = new Map()
+  let noTemplateId = 0
+  let noStemId = 0
+  let noIndexHit = 0
+  for (const [key, val] of Object.entries(uploaded)) {
+    if (!val?.templateId) {
+      noTemplateId++
       continue
     }
-    const key = `${f.organization}::${f.name}`
-    const cur = byKey.get(key)
-    if (!cur) {
-      byKey.set(key, { ...f, ...proc, conflicts: 0 })
-    } else if (cur.eDirectDocId !== f.eDirectDocId) {
-      // Two distinct files map to the same (name, organization). We can't
-      // safely pick one — bump the conflict counter so we skip later.
-      cur.conflicts = (cur.conflicts || 0) + 1
+    const slashIdx = key.indexOf('/')
+    const stem = slashIdx >= 0 ? key.slice(slashIdx + 1) : key
+    const eDirectDocId = eDirectDocIdFromStem(stem)
+    if (!eDirectDocId) {
+      noStemId++
+      if (verbose && noStemId <= 3) log(`${C.dim}  stem missing _<id>: ${stem}${C.reset}`)
+      continue
     }
+    const proc = docIdMap.get(eDirectDocId)
+    if (!proc) {
+      noIndexHit++
+      if (verbose && noIndexHit <= 3) log(`${C.dim}  id ${eDirectDocId} not in index.json (stem ${stem})${C.reset}`)
+      continue
+    }
+    patches.set(val.templateId, {
+      eDirectDocId,
+      procedureId: proc.procedureId,
+      ...(proc.procedure ? { procedure: proc.procedure } : {}),
+    })
   }
-  log(`${C.dim}bundles: ${walked} pdfs · keys ${byKey.size} · skipped (no index match): ${skippedNoMatch}${C.reset}`)
+  log()
+  log(`${C.bold}derived patch set${C.reset}`)
+  log(`  patches:           ${patches.size}`)
+  log(`  no templateId:     ${noTemplateId}`)
+  log(`  no stem-id:        ${noStemId}`)
+  log(`  no index match:    ${noIndexHit}`)
+  log()
+
+  if (patches.size === 0) {
+    log(`${C.yellow}nothing to patch — exiting.${C.reset}`)
+    return
+  }
 
   const credentials = parseServiceAccount()
   if (!admin.apps.length) {
@@ -139,48 +137,33 @@ async function main() {
     })
   }
   const db = admin.firestore()
+
+  // Skip templates that are already set or that no longer exist. Cheap to
+  // scan since we read the whole collection anyway for the catalog rebuild.
   const snap = await db.collection('templates').get()
+  const existing = new Map(snap.docs.map((d) => [d.id, d.data()]))
   log(`${C.dim}firestore: ${snap.size} template docs${C.reset}`)
 
-  let toWrite = []
   let alreadySet = 0
-  let noMatch = 0
-  let ambiguous = 0
-  for (const doc of snap.docs) {
-    const t = doc.data()
-    if (t.archived) continue
-    if (t.eDirectDocId && t.procedureId) {
+  let missing = 0
+  const toWrite = []
+  for (const [tid, patch] of patches) {
+    const t = existing.get(tid)
+    if (!t) { missing++; continue }
+    if (
+      t.eDirectDocId === patch.eDirectDocId &&
+      t.procedureId === patch.procedureId
+    ) {
       alreadySet++
       continue
     }
-    const key = `${t.organization || ''}::${t.name}`
-    const hit = byKey.get(key)
-    if (!hit) {
-      noMatch++
-      if (verbose) log(`${C.dim}  no bundle match: ${key}${C.reset}`)
-      continue
-    }
-    if (hit.conflicts > 0) {
-      ambiguous++
-      if (verbose) log(`${C.yellow}  ambiguous (${hit.conflicts + 1} bundles): ${key}${C.reset}`)
-      continue
-    }
-    toWrite.push({
-      id: doc.id,
-      patch: {
-        eDirectDocId: hit.eDirectDocId,
-        procedureId: hit.procedureId,
-        ...(hit.procedure ? { procedure: hit.procedure } : {}),
-      },
-    })
+    toWrite.push({ id: tid, patch })
   }
 
-  log()
-  log(`${C.bold}match summary${C.reset}`)
-  log(`  already set:   ${alreadySet}`)
-  log(`  to patch:      ${toWrite.length}`)
-  log(`  no match:      ${noMatch}`)
-  log(`  ambiguous:     ${ambiguous}`)
+  log(`${C.bold}firestore reconciliation${C.reset}`)
+  log(`  already set:    ${alreadySet}`)
+  log(`  to patch:       ${toWrite.length}`)
+  log(`  templateId not in firestore (orphan progress): ${missing}`)
   log()
 
   if (!commit) {
