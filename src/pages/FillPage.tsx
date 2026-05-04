@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight, Download, Loader2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { ChevronRight, Code2, Download, Loader2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
 import { fillAndDownload, fillPdf, triggerPdfDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
+import { useDevMode } from '@/lib/useDevMode'
 import { NO_ORG, templateCounty } from '@/lib/template-grouping'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview from '@/components/PdfPreview'
@@ -30,6 +31,7 @@ export default function FillPage() {
   const [iframeUrl, setIframeUrl] = useState<string | null>(null)
 
   const { formDraft, setFormDraft } = useSessionStore()
+  const { dev } = useDevMode()
 
   // Restore saved defaults from session if user navigated back to this template
   const savedValues = formDraft !== null && formDraft.templateId === id ? formDraft.values : undefined
@@ -260,6 +262,12 @@ export default function FillPage() {
   const breadcrumbCounty = templateCounty(template)
   const breadcrumbOrg = template.organization || NO_ORG
 
+  const fieldsByType = template.fields.reduce<Record<string, number>>((acc, f) => {
+    acc[f.type] = (acc[f.type] ?? 0) + 1
+    return acc
+  }, {})
+  const hiddenFieldCount = template.fields.filter((f) => f.hidden).length
+
   return (
     <div>
       <nav aria-label="Breadcrumb" className="mb-3">
@@ -282,6 +290,53 @@ export default function FillPage() {
           <li className="px-1.5 py-0.5 text-gray-800 dark:text-gray-200 font-medium break-words">{breadcrumbOrg}</li>
         </ol>
       </nav>
+      {dev && (
+        <div className="mb-4 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1">
+          <div className="flex items-center gap-2 uppercase tracking-wide font-sans font-semibold text-[10px] opacity-80">
+            <Code2 className="w-3.5 h-3.5" />
+            Dev
+          </div>
+          <div>
+            <span className="opacity-70">id:</span> {template.id}
+            {' · '}
+            <span className="opacity-70">version:</span> {template.version}
+            {' · '}
+            <span className="opacity-70">createdAt:</span> {template.createdAt}
+            {template.archived && (
+              <>
+                {' · '}
+                <span className="text-red-600 dark:text-red-400">archived</span>
+              </>
+            )}
+          </div>
+          <div className="break-all">
+            <span className="opacity-70">driveFileId:</span> {template.driveFileId}
+          </div>
+          {template.originalDriveFileId && (
+            <div className="break-all">
+              <span className="opacity-70">originalDriveFileId:</span> {template.originalDriveFileId}
+            </div>
+          )}
+          <div>
+            <span className="opacity-70">fields:</span> {template.fields.length} total
+            {' · '}
+            {visibleFields.length} visible
+            {hiddenFieldCount > 0 && <> · {hiddenFieldCount} hidden</>}
+            {' · '}
+            {Object.entries(fieldsByType)
+              .map(([t, n]) => `${t}:${n}`)
+              .join(' ')}
+          </div>
+          {template.voteCount && (
+            <div>
+              <span className="opacity-70">votes:</span> ↑{template.voteCount.up} ↓{template.voteCount.down}
+              {template.voteCount.lastVoteAt && (
+                <> · <span className="opacity-70">last:</span> {template.voteCount.lastVoteAt}</>
+              )}
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex items-center flex-wrap gap-2 mb-6">
         <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{template.name}</h1>
         {template.category && (
