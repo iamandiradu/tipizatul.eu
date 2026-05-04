@@ -90,6 +90,9 @@ export interface SlimTemplate {
 // individual documents. Sourced from procedures.json (the
 // fetch-procedures.mjs scrape) and lives in `procedures/{procedureId}`
 // in Firestore.
+//
+// Document downloadUrls are nullable because non-form attachments
+// (`Document scanat`, `Fotografie`, `Dovada de plata`...) carry no link.
 export interface ProcedureDocument {
   nr: string
   name: string
@@ -97,20 +100,20 @@ export interface ProcedureDocument {
   required: boolean
   eSignature: boolean
   type: string
-  downloadUrl: string
+  downloadUrl: string | null
 }
 
 export interface ProcedureOutputDocument {
   nr: string
   name: string
   type: string
-  downloadUrl: string
+  downloadUrl: string | null
 }
 
 export interface ProcedureLaw {
   nr: string
   name: string
-  downloadUrl: string
+  downloadUrl: string | null
 }
 
 export interface ProcedureRawField {
@@ -141,17 +144,24 @@ export interface ProcedureFields {
 export interface Procedure {
   procedureId: string
   title: string | null
+  // Joined from index.json. The scrape itself doesn't carry these — they
+  // come from the bundle listing that owns each procedureId.
+  institution?: string
+  county?: string | null
+  city?: string | null
   // Set when the eDirect listing shows the "Procedura este informationala
   // si nu permite lansarea de solicitari" notice — the institution does
   // not accept online submissions for this procedure.
   informational: boolean
   informationalNotice: string | null
   fields: ProcedureFields
-  rawFields: ProcedureRawField[]
+  // rawFields preserved on the full Firestore record; the slimmed
+  // bundle in public/procedures-demo.json drops them.
+  rawFields?: ProcedureRawField[]
   documents: ProcedureDocument[]
   outputDocuments: ProcedureOutputDocument[]
   laws: ProcedureLaw[]
-  fetchedAt: string
+  fetchedAt?: string
 }
 
 export type FormValues = Record<string, string | boolean>

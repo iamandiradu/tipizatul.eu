@@ -1,5 +1,5 @@
-import { Fragment, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Fragment, useEffect, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import {
   AlertCircle,
   Building2,
@@ -19,203 +19,11 @@ import {
 } from 'lucide-react'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
+import { loadProcedure } from '@/lib/procedures'
+import type { Procedure, ProcedureDocument } from '@/types/template'
 
 const EDIRECT_BASE_URL =
   'https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare='
-
-interface ProcDoc {
-  nr: string
-  name: string
-  description?: string
-  required: boolean
-  eSignature: boolean
-  type: string
-  downloadUrl: string
-}
-
-interface ProcOutputDoc {
-  nr: string
-  name: string
-  type: string
-  downloadUrl: string
-}
-
-interface ProcLaw {
-  nr: string
-  name: string
-  downloadUrl: string
-}
-
-interface ProcedureSample {
-  procedureId: string
-  title: string
-  county: string
-  institution: string
-  informational: boolean
-  informationalNotice: string | null
-  fields: {
-    descriere?: string
-    caiDeAtac?: string
-    dateContact?: string
-    institutiaResponsabila?: string
-    modalitatePrestare?: string
-    timpSolutionare?: string
-    termenArhivare?: string
-    termenCompletareDosar?: string
-    taxe?: string
-  }
-  documents: ProcDoc[]
-  outputDocuments: ProcOutputDoc[]
-  laws: ProcLaw[]
-}
-
-// Sample data: parsed from
-// https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare=405713
-// Trimmed for readability — full payload lives in the live procedures.json.
-const SAMPLE: ProcedureSample = {
-  procedureId: '405713',
-  title:
-    'Recunoaşterea Grupurilor și organizațiilor de producători din sectorul agricol și/sau silvic',
-  county: 'Bucuresti',
-  institution: 'Ministerul Agriculturii și Dezvoltării Rurale',
-  informational: true,
-  informationalNotice:
-    'Procedura este informațională și nu permite lansarea de solicitări online — depunerea se face fizic la instituție.',
-  fields: {
-    descriere:
-      'Recunoaşterea grupurilor și organizațiilor de producători din sectorul agricol și/sau silvic.\nRegistre publice: https://madr.ro/grupurile-de-producatori-si-organizatiile-recunoscute-in-romania.html',
-    caiDeAtac:
-      'Sunt prevăzute la art. 17 alin. (1) din Ordinul nr. 358/2016. Litigiile intervenite între beneficiar și autoritatea competentă sunt soluționate conform dispozițiilor de drept comun.',
-    dateContact:
-      'Adresa: B-dul Carol I, nr. 2-4, sector 3, Bucuresti\nTelefon: 021 307 24 46 / 021 307 24 22\nE-mail: relatii.publice@madr.ro',
-    institutiaResponsabila: 'Ministerul Agriculturii și Dezvoltării Rurale, Județ BUCURESTI',
-    modalitatePrestare: 'National',
-    timpSolutionare: '90 zile calendaristice',
-    termenArhivare: '2 ani',
-    termenCompletareDosar: '15 zile calendaristice',
-  },
-  documents: [
-    {
-      nr: '1',
-      name: 'Cererea pentru solicitarea recunoașterii ca grup de producători',
-      description:
-        'Cererea se depune de societăți comerciale, societăți agricole, asociații, fundații, cooperative agricole și alte forme juridice de asociere, însoțită de actul constitutiv, dovada calității de producător, listele membrilor titulari, copiile contractelor de prestări servicii etc. Anexa nr. 2, Anexa nr. 3 și Anexa nr. 4 la Ordinul 358/2016 sunt incluse.',
-      required: true,
-      eSignature: false,
-      type: 'Formular predefinit',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/I405715__Cerere.docx',
-    },
-    {
-      nr: '2',
-      name: 'Cerere de recunoaștere ca organizație de producători',
-      description:
-        'Pentru una sau mai multe grupe de produse din grupele menționate la art.6, al.2 lit.a și lit.b — Ordin 358/2016. Se depune împreună cu actul constitutiv, dovada calității de producător agricol și documentele Anexei 5.',
-      required: true,
-      eSignature: false,
-      type: 'Formular predefinit',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/I405715__Cerere.docx',
-    },
-    {
-      nr: '3',
-      name:
-        'Verificarea conformității documentelor pentru eliberarea avizului de recunoaștere',
-      description:
-        'Structura de specialitate din MADR/DAJ verifică conformitatea documentelor și întocmește procesul verbal de constatare. Anexele nr. 7, 11 și 13 la Ordinul 358/2016 sunt aplicabile.',
-      required: true,
-      eSignature: false,
-      type: 'Formular predefinit',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/I405715__Proces%20verbal%20de%20constatare.docx',
-    },
-    {
-      nr: '4',
-      name: 'Eliberarea avizului de recunoaștere',
-      description:
-        'MADR eliberează avizul de recunoaștere grupurilor și organizațiilor care îndeplinesc criteriile legale.',
-      required: true,
-      eSignature: false,
-      type: 'Formular predefinit',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/I405719__Aviz.docx',
-    },
-    {
-      nr: '5',
-      name: 'Înregistrarea în Registrul de evidență',
-      description:
-        'Înregistrarea grupurilor și organizațiilor de producători recunoscute în registrul de evidență al MADR.',
-      required: true,
-      eSignature: false,
-      type: 'Formular predefinit',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/I405715__Registru%20evidenta.docx',
-    },
-  ],
-  outputDocuments: [
-    {
-      nr: '1',
-      name: 'Proces verbal de conformitate / neconformitate',
-      type: 'Document',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/O405719__PV%20constatare%20momentul%20recunoasterii.docx',
-    },
-    {
-      nr: '2',
-      name: 'Decizia de respingere a recunoașterii',
-      type: 'Document',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/O405719__Decizia%20retragere%20a%20recunoasterii.docx',
-    },
-    {
-      nr: '3',
-      name: 'Aviz de recunoaștere a grupurilor și organizațiilor de producători',
-      type: 'Document',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/O405719__Aviz.docx',
-    },
-    {
-      nr: '4',
-      name: 'Registrul de evidență a grupurilor și organizațiilor de producători',
-      type: 'Document',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Procedura/405713/O405719__Registru%20evidenta.docx',
-    },
-  ],
-  laws: [
-    {
-      nr: '1',
-      name: 'LEGE nr. 24 din 4 martie 2016 — aprobarea OG nr. 32/2015',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Legi/15317/Lege%2024%202016.docx',
-    },
-    {
-      nr: '2',
-      name:
-        'ORDONANȚĂ nr. 37 din 14 iulie 2005 — recunoașterea grupurilor de producători',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Legi/15318/OG%2037%202005.docx',
-    },
-    {
-      nr: '3',
-      name: 'NORME METODOLOGICE din 23 martie 2016 de aplicare a OG nr. 37/2005',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Legi/15319/Norme%20met%20OG%2037%202005.docx',
-    },
-    {
-      nr: '4',
-      name: 'ORDONANȚĂ nr. 32 din 26 august 2015',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Legi/15320/OG%2032%202015.docx',
-    },
-    {
-      nr: '5',
-      name: 'ORDIN nr. 358 din 23 martie 2016',
-      downloadUrl:
-        'https://edirect.e-guvernare.ro/Uploads/Legi/15321/Ordin%20358%202016.docx',
-    },
-  ],
-}
 
 function MultiLine({ text }: { text: string }) {
   return (
@@ -251,9 +59,8 @@ function FactCard({
   )
 }
 
-function DocumentCard({ doc }: { doc: ProcDoc }) {
+function DocumentCard({ doc }: { doc: ProcedureDocument }) {
   const [expanded, setExpanded] = useState(false)
-  const isFillable = doc.type === 'Formular predefinit'
   const longDescription = !!doc.description && doc.description.length > 220
 
   return (
@@ -272,9 +79,11 @@ function DocumentCard({ doc }: { doc: ProcDoc }) {
             </h3>
           </div>
           <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full">
-              {doc.type}
-            </span>
+            {doc.type && (
+              <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 px-2 py-0.5 rounded-full">
+                {doc.type}
+              </span>
+            )}
             {doc.required && (
               <span className="text-xs bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full">
                 Obligatoriu
@@ -302,51 +111,58 @@ function DocumentCard({ doc }: { doc: ProcDoc }) {
               )}
             </div>
           )}
-          <div className="mt-3 flex flex-wrap gap-2">
-            {isFillable ? (
-              <Link
-                to="/fill/demo"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors"
+          {doc.downloadUrl && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              <a
+                href={doc.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
               >
-                Completează online
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            ) : null}
-            <a
-              href={doc.downloadUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
-            >
-              <Download className="w-4 h-4" />
-              Descarcă original
-            </a>
-          </div>
+                <Download className="w-4 h-4" />
+                Descarcă original
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </div>
   )
 }
 
-function Breadcrumbs({ county, institution }: { county: string; institution: string }) {
+function Breadcrumbs({
+  county,
+  institution,
+}: {
+  county: string | null | undefined
+  institution: string | undefined
+}) {
   return (
     <nav
       aria-label="Breadcrumb"
       className="flex items-center flex-wrap gap-1 text-sm text-gray-500 dark:text-gray-400 mb-4"
     >
-      <Link to="/formulare" className="hover:text-gray-900 dark:hover:text-gray-100">
-        Formulare
+      <Link to="/demo/procedures" className="hover:text-gray-900 dark:hover:text-gray-100">
+        Proceduri
       </Link>
-      <ChevronRight className="w-3.5 h-3.5" />
-      <span className="inline-flex items-center gap-1">
-        <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-        {county}
-      </span>
-      <ChevronRight className="w-3.5 h-3.5" />
-      <span className="inline-flex items-center gap-1">
-        <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-        {institution}
-      </span>
+      {county && (
+        <>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            {county}
+          </span>
+        </>
+      )}
+      {institution && (
+        <>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1">
+            <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            {institution}
+          </span>
+        </>
+      )}
       <ChevronRight className="w-3.5 h-3.5" />
       <span className="text-gray-900 dark:text-gray-100 font-medium">Procedură</span>
     </nav>
@@ -354,7 +170,6 @@ function Breadcrumbs({ county, institution }: { county: string; institution: str
 }
 
 function ContactBlock({ raw }: { raw: string }) {
-  // Cheap parser: pull "Adresa:", "Telefon:", "E-mail:" lines.
   const map = new Map<string, string>()
   for (const line of raw.split('\n')) {
     const m = line.match(/^([^:]+):\s*(.+)$/)
@@ -375,7 +190,10 @@ function ContactBlock({ raw }: { raw: string }) {
       {telefon && (
         <div className="flex items-start gap-2 text-gray-700 dark:text-gray-300">
           <Phone className="w-4 h-4 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0" />
-          <a href={`tel:${telefon.split(/[/,]/)[0].trim().replace(/\s+/g, '')}`} className="hover:underline">
+          <a
+            href={`tel:${telefon.split(/[/,]/)[0].trim().replace(/\s+/g, '')}`}
+            className="hover:underline"
+          >
             {telefon}
           </a>
         </div>
@@ -392,14 +210,76 @@ function ContactBlock({ raw }: { raw: string }) {
   )
 }
 
-export default function ProcedureDemoPage() {
+export default function ProcedureDetailPage() {
+  const { id } = useParams<{ id: string }>()
+  const [p, setP] = useState<Procedure | null>(null)
+  const [notFound, setNotFound] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { dev } = useDevMode()
+
+  useEffect(() => {
+    if (!id) return
+    let cancelled = false
+    setNotFound(false)
+    setError(null)
+    setP(null)
+    loadProcedure(id)
+      .then((proc) => {
+        if (cancelled) return
+        if (!proc) setNotFound(true)
+        else setP(proc)
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : String(err))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
   useDocumentMeta({
-    title: `${SAMPLE.title} · Tipizatul.eu (demo)`,
-    description: SAMPLE.fields.descriere?.split('\n')[0],
+    title: p
+      ? `${p.title ?? 'Procedură'} · Tipizatul.eu (demo)`
+      : 'Procedură · Tipizatul.eu (demo)',
+    description: p?.fields.descriere?.split('\n')[0],
   })
 
-  const p = SAMPLE
-  const { dev } = useDevMode()
+  if (notFound) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-gray-500 dark:text-gray-400">Procedura nu a fost găsită în demo.</p>
+        <Link to="/demo/procedures" className="text-blue-600 hover:underline text-sm mt-2 block">
+          ← Înapoi la proceduri
+        </Link>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-16">
+        <p className="text-red-500 dark:text-red-400 font-medium mb-1">
+          Nu s-a putut încărca procedura.
+        </p>
+        <p className="text-sm text-gray-400 dark:text-gray-500 font-mono">{error}</p>
+      </div>
+    )
+  }
+
+  if (!p) {
+    return (
+      <div className="max-w-5xl mx-auto animate-pulse space-y-4">
+        <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/3" />
+        <div className="h-8 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-16 bg-gray-200 dark:bg-gray-800 rounded" />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   const sourceUrl = `${EDIRECT_BASE_URL}${p.procedureId}`
 
   return (
@@ -407,9 +287,8 @@ export default function ProcedureDemoPage() {
       <div className="mb-4 inline-flex items-start gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-900 dark:text-blue-200 text-sm">
         <Info className="w-4 h-4 mt-0.5 shrink-0" />
         <span>
-          <strong className="font-semibold">Demo</strong> — așa va arăta o procedură după importul
-          datelor din eDirect. Conținutul e static; rutele <code>/fill/...</code> nu sunt încă
-          conectate.
+          <strong className="font-semibold">Demo</strong> — date scrapate din eDirect.
+          Rutele <code>/fill/...</code> nu sunt încă conectate pentru aceste proceduri.
         </span>
       </div>
 
@@ -421,6 +300,14 @@ export default function ProcedureDemoPage() {
           </div>
           <div>
             <span className="opacity-70">procedureId:</span> {p.procedureId}
+            {' · '}
+            <span className="opacity-70">institution:</span> {p.institution}
+            {p.county && (
+              <>
+                {' · '}
+                <span className="opacity-70">county:</span> {p.county}
+              </>
+            )}
           </div>
           <div className="break-all">
             <span className="opacity-70">eDirect:</span>{' '}
@@ -447,10 +334,10 @@ export default function ProcedureDemoPage() {
 
       <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-gray-100 leading-tight">
-          {p.title}
+          {p.title ?? '(fără titlu)'}
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          {p.fields.institutiaResponsabila}
+          {p.fields.institutiaResponsabila || p.institution}
         </p>
         {p.informational && p.informationalNotice && (
           <div className="mt-4 flex items-start gap-2 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-sm">
@@ -480,22 +367,24 @@ export default function ProcedureDemoPage() {
             </section>
           )}
 
-          <section>
-            <div className="flex items-baseline justify-between mb-3">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                Documente necesare
-              </h2>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {p.documents.length}{' '}
-                {p.documents.length === 1 ? 'document' : 'documente'}
-              </span>
-            </div>
-            <div className="space-y-3">
-              {p.documents.map((d) => (
-                <DocumentCard key={d.nr} doc={d} />
-              ))}
-            </div>
-          </section>
+          {p.documents.length > 0 && (
+            <section>
+              <div className="flex items-baseline justify-between mb-3">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Documente necesare
+                </h2>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {p.documents.length}{' '}
+                  {p.documents.length === 1 ? 'document' : 'documente'}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {p.documents.map((d) => (
+                  <DocumentCard key={d.nr} doc={d} />
+                ))}
+              </div>
+            </section>
+          )}
 
           {p.outputDocuments.length > 0 && (
             <section>
@@ -515,15 +404,17 @@ export default function ProcedureDemoPage() {
                         {d.name}
                       </div>
                     </div>
-                    <a
-                      href={d.downloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Descarcă ${d.name}`}
-                      className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 shrink-0"
-                    >
-                      <Download className="w-4 h-4" />
-                    </a>
+                    {d.downloadUrl && (
+                      <a
+                        href={d.downloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Descarcă ${d.name}`}
+                        className="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 shrink-0"
+                      >
+                        <Download className="w-4 h-4" />
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -572,15 +463,22 @@ export default function ProcedureDemoPage() {
               <ul className="space-y-2">
                 {p.laws.map((law) => (
                   <li key={law.nr} className="text-sm">
-                    <a
-                      href={law.downloadUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-start gap-1.5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                      <span>{law.name}</span>
-                    </a>
+                    {law.downloadUrl ? (
+                      <a
+                        href={law.downloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-start gap-1.5 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                        <span>{law.name}</span>
+                      </a>
+                    ) : (
+                      <span className="inline-flex items-start gap-1.5 text-gray-700 dark:text-gray-300">
+                        <ScrollText className="w-3.5 h-3.5 mt-0.5 shrink-0 opacity-60" />
+                        <span>{law.name}</span>
+                      </span>
+                    )}
                   </li>
                 ))}
               </ul>

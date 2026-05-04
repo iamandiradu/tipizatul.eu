@@ -15,7 +15,8 @@ const RequireAdmin = lazy(() => import('@/components/RequireAdmin'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 const ErrorPage = lazy(() => import('@/pages/ErrorPage'))
 const PrivacyPage = lazy(() => import('@/pages/PrivacyPage'))
-const ProcedureDemoPage = lazy(() => import('@/pages/ProcedureDemoPage'))
+const ProceduresIndexPage = lazy(() => import('@/pages/ProceduresIndexPage'))
+const ProcedureDetailPage = lazy(() => import('@/pages/ProcedureDetailPage'))
 
 function AppShell({ showBackLink }: { showBackLink?: boolean }) {
   const { dark, toggle } = useDarkMode()
@@ -161,7 +162,8 @@ const router = createBrowserRouter([
       { path: 'formulare', element: <CatalogPage /> },
       { path: 'fill/:id', element: <FillPage /> },
       { path: 'confidentialitate', element: <PrivacyPage /> },
-      { path: 'demo/procedure', element: <ProcedureDemoPage /> },
+      { path: 'demo/procedures', element: <ProceduresIndexPage /> },
+      { path: 'demo/procedures/:id', element: <ProcedureDetailPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
