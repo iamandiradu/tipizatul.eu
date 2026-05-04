@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronRight, Download, Loader2 } from 'lucide-react'
+import { ChevronRight, Download, Loader2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
 import { fillAndDownload, fillPdf, triggerPdfDownload } from '@/lib/pdf-fill'
@@ -26,6 +26,8 @@ export default function FillPage() {
   const [downloadingOriginal, setDownloadingOriginal] = useState(false)
   const [previewBytes, setPreviewBytes] = useState<Uint8Array | null>(null)
   const [previewing, setPreviewing] = useState(false)
+  const [pdfOnly, setPdfOnly] = useState(false)
+  const [iframeUrl, setIframeUrl] = useState<string | null>(null)
 
   const { formDraft, setFormDraft } = useSessionStore()
 
@@ -171,6 +173,22 @@ export default function FillPage() {
     }
   }, [template, pdfBytes, watch, getValues])
 
+  // PDF-only mode renders the document in an <iframe> so browser-native
+  // AcroForm interaction kicks in (clickable fields, on-page typing). Build
+  // a blob URL only while that mode is active, and only on screens where the
+  // form/PDF split exists in the first place.
+  useEffect(() => {
+    if (!pdfOnly || !pdfBytes) return
+    const bytes = previewBytes ?? pdfBytes
+    const blob = new Blob([bytes], { type: 'application/pdf' })
+    const url = URL.createObjectURL(blob)
+    setIframeUrl(url)
+    return () => {
+      URL.revokeObjectURL(url)
+      setIframeUrl(null)
+    }
+  }, [pdfOnly, pdfBytes, previewBytes])
+
   if (notFound) {
     return (
       <div className="text-center py-16">
@@ -273,8 +291,8 @@ export default function FillPage() {
         )}
       </div>
 
-      <div className="lg:grid lg:grid-cols-[minmax(360px,520px)_minmax(0,1fr)] lg:gap-8 lg:items-start">
-        <div>
+      <div className={pdfOnly ? '' : 'lg:grid lg:grid-cols-[minmax(360px,520px)_minmax(0,1fr)] lg:gap-8 lg:items-start'}>
+        <div className={pdfOnly ? 'lg:hidden' : ''}>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {Object.entries(groups).map(([groupName, fields]) => (
               <section key={groupName} className="mb-6">
@@ -358,19 +376,53 @@ export default function FillPage() {
           </div>
         </div>
 
-        <div className="mt-10 lg:mt-0 lg:sticky lg:top-20">
+        <div className={`mt-10 lg:mt-0 ${pdfOnly ? '' : 'lg:sticky lg:top-20'}`}>
           <div className="flex items-center justify-between gap-2 mb-2">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {previewBytes ? 'Previzualizare formular completat' : 'Formular original (necompletat)'}
-            </p>
-            {previewing && (
-              <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
-                <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
-                Se actualizează...
-              </span>
-            )}
+            <div className="flex items-center gap-2 min-w-0">
+              <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                {pdfOnly
+                  ? 'Completare directă în PDF'
+                  : previewBytes
+                    ? 'Previzualizare formular completat'
+                    : 'Formular original (necompletat)'}
+              </p>
+              {previewing && !pdfOnly && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 shrink-0">
+                  <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+                  Se actualizează...
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setPdfOnly((v) => !v)}
+              aria-pressed={pdfOnly}
+              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors shrink-0"
+            >
+              {pdfOnly ? (
+                <PanelLeftOpen className="w-4 h-4" aria-hidden="true" />
+              ) : (
+                <PanelLeftClose className="w-4 h-4" aria-hidden="true" />
+              )}
+              {pdfOnly ? 'Afișează formularul' : 'Doar PDF'}
+            </button>
           </div>
-          <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
+          {pdfOnly ? (
+            <>
+              {iframeUrl && (
+                <iframe
+                  src={iframeUrl}
+                  className="hidden lg:block w-full h-[calc(100vh-10rem)] min-h-[600px] border border-gray-200 dark:border-gray-700 rounded-lg bg-white"
+                  title="Formular interactiv"
+                />
+              )}
+              <div className="lg:hidden">
+                <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
+              </div>
+            </>
+          ) : (
+            <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
+          )}
         </div>
       </div>
     </div>
