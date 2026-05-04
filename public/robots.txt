@@ -3,4 +3,16 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/login
 
-Sitemap: https://tipizatul.eu/sitemap.xml
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: facebookcatalog
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+Sitemap: https://www.tipizatul.eu/sitemap.xml
