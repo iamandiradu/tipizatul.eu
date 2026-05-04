@@ -70,13 +70,13 @@ function OrganizationSection({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="w-full flex items-center justify-between px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+        className="w-full flex items-start justify-between px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
       >
-        <div className="flex items-center gap-2 min-w-0">
-          <Chevron className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200 text-left truncate">{organization}</h3>
+        <div className="flex items-start gap-2 min-w-0">
+          <Chevron className="w-4 h-4 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0" />
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-200 text-left break-words">{organization}</h3>
         </div>
-        <span className="text-xs text-gray-500 dark:text-gray-400 ml-3 shrink-0">{templates.length}</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400 ml-3 mt-0.5 shrink-0">{templates.length}</span>
       </button>
       {open && (
         <div id={panelId} className="px-3 pb-3 pt-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -115,14 +115,14 @@ function CountySection({
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={panelId}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
+        className="w-full flex items-start justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
       >
-        <div className="flex items-center gap-2 min-w-0">
-          <Chevron className="w-4 h-4 text-gray-400 dark:text-gray-500 shrink-0" />
-          <MapPin className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 text-left truncate">{county}</h2>
+        <div className="flex items-start gap-2 min-w-0">
+          <Chevron className="w-4 h-4 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0" />
+          <MapPin className="w-4 h-4 mt-0.5 text-blue-600 dark:text-blue-400 shrink-0" />
+          <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200 text-left break-words">{county}</h2>
         </div>
-        <span className="text-xs text-gray-500 dark:text-gray-400 ml-3 shrink-0">
+        <span className="text-xs text-gray-500 dark:text-gray-400 ml-3 mt-0.5 shrink-0">
           {orgs.length} {orgs.length === 1 ? 'instituție' : 'instituții'} · {totalTemplates}{' '}
           {totalTemplates === 1 ? 'formular' : 'formulare'}
         </span>
