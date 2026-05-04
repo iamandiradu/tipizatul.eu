@@ -162,7 +162,7 @@ const router = createBrowserRouter([
       { path: 'formulare', element: <CatalogPage /> },
       { path: 'fill/:id', element: <FillPage /> },
       { path: 'confidentialitate', element: <PrivacyPage /> },
-      { path: 'procedures', element: <ProceduresIndexPage /> },
+      { path: 'proceduri', element: <ProceduresIndexPage /> },
       { path: 'procedura/:id', element: <ProcedureDetailPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],

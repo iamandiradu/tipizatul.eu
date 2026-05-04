@@ -142,7 +142,7 @@ function Breadcrumbs({
       aria-label="Breadcrumb"
       className="flex items-center flex-wrap gap-1 text-sm text-gray-500 dark:text-gray-400 mb-4"
     >
-      <Link to="/procedures" className="hover:text-gray-900 dark:hover:text-gray-100">
+      <Link to="/proceduri" className="hover:text-gray-900 dark:hover:text-gray-100">
         Proceduri
       </Link>
       {county && (
@@ -265,7 +265,7 @@ export default function ProcedureDetailPage() {
     return (
       <div className="text-center py-16">
         <p className="text-gray-500 dark:text-gray-400">Procedura nu a fost găsită.</p>
-        <Link to="/procedures" className="text-blue-600 hover:underline text-sm mt-2 block">
+        <Link to="/proceduri" className="text-blue-600 hover:underline text-sm mt-2 block">
           ← Înapoi la proceduri
         </Link>
       </div>
