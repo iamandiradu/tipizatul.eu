@@ -156,7 +156,7 @@ export interface Procedure {
   informationalNotice: string | null
   fields: ProcedureFields
   // rawFields preserved on the full Firestore record; the slimmed
-  // bundle in public/procedures-demo.json drops them.
+  // bundle in public/procedures.json drops them.
   rawFields?: ProcedureRawField[]
   documents: ProcedureDocument[]
   outputDocuments: ProcedureOutputDocument[]

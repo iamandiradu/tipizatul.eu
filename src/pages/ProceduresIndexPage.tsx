@@ -5,7 +5,6 @@ import {
   ChevronRight,
   Code2,
   FileText,
-  Info,
   Search,
 } from 'lucide-react'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
@@ -20,9 +19,9 @@ import type { Procedure } from '@/types/template'
 
 export default function ProceduresIndexPage() {
   useDocumentMeta({
-    title: 'Proceduri (demo) · Tipizatul.eu',
+    title: 'Proceduri publice · Tipizatul.eu',
     description:
-      'Lista demonstrativă de proceduri publice grupate pe instituții, scrapate din eDirect.',
+      'Proceduri publice românești grupate pe instituție — fiecare cu documentele și descrierea aferentă.',
   })
 
   const { dev } = useDevMode()
@@ -92,16 +91,6 @@ export default function ProceduresIndexPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-4 inline-flex items-start gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-900 dark:text-blue-200 text-sm">
-        <Info className="w-4 h-4 mt-0.5 shrink-0" />
-        <span>
-          <strong className="font-semibold">Demo</strong> — un eșantion curat de
-          {' '}
-          {payload.total} proceduri scrapate din eDirect, grupate pe instituție.
-          Datele de procedură sunt parțiale (~50% scrapate).
-        </span>
-      </div>
-
       {dev && (
         <div className="mb-4 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1">
           <div className="flex items-center gap-2 uppercase tracking-wide font-sans font-semibold text-[10px] opacity-80">
@@ -185,7 +174,7 @@ function InstitutionSection({
           return (
             <li key={p.procedureId}>
               <Link
-                to={`/demo/procedures/${p.procedureId}`}
+                to={`/procedures/${p.procedureId}`}
                 className="group flex items-start gap-3 p-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-md hover:border-blue-400 dark:hover:border-blue-500 transition-colors"
               >
                 <FileText className="w-4 h-4 mt-0.5 text-gray-400 dark:text-gray-500 shrink-0 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />

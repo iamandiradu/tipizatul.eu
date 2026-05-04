@@ -10,7 +10,6 @@ import {
   ExternalLink,
   FileSignature,
   FileText,
-  Info,
   Mail,
   MapPin,
   Phone,
@@ -142,7 +141,7 @@ function Breadcrumbs({
       aria-label="Breadcrumb"
       className="flex items-center flex-wrap gap-1 text-sm text-gray-500 dark:text-gray-400 mb-4"
     >
-      <Link to="/demo/procedures" className="hover:text-gray-900 dark:hover:text-gray-100">
+      <Link to="/procedures" className="hover:text-gray-900 dark:hover:text-gray-100">
         Proceduri
       </Link>
       {county && (
@@ -239,8 +238,8 @@ export default function ProcedureDetailPage() {
 
   useDocumentMeta({
     title: p
-      ? `${p.title ?? 'Procedură'} · Tipizatul.eu (demo)`
-      : 'Procedură · Tipizatul.eu (demo)',
+      ? `${p.title ?? 'Procedură'} · Tipizatul.eu`
+      : 'Procedură · Tipizatul.eu',
     description: p?.fields.descriere?.split('\n')[0],
   })
 
@@ -248,7 +247,7 @@ export default function ProcedureDetailPage() {
     return (
       <div className="text-center py-16">
         <p className="text-gray-500 dark:text-gray-400">Procedura nu a fost găsită în demo.</p>
-        <Link to="/demo/procedures" className="text-blue-600 hover:underline text-sm mt-2 block">
+        <Link to="/procedures" className="text-blue-600 hover:underline text-sm mt-2 block">
           ← Înapoi la proceduri
         </Link>
       </div>
@@ -284,14 +283,6 @@ export default function ProcedureDetailPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-4 inline-flex items-start gap-2 px-3 py-2 rounded-md bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 text-blue-900 dark:text-blue-200 text-sm">
-        <Info className="w-4 h-4 mt-0.5 shrink-0" />
-        <span>
-          <strong className="font-semibold">Demo</strong> — date scrapate din eDirect.
-          Rutele <code>/fill/...</code> nu sunt încă conectate pentru aceste proceduri.
-        </span>
-      </div>
-
       {dev && (
         <div className="mb-4 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1">
           <div className="flex items-center gap-2 uppercase tracking-wide font-sans font-semibold text-[10px] opacity-80">

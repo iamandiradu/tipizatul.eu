@@ -12,7 +12,7 @@ let cache: Promise<ProceduresPayload> | null = null
 
 export function loadProcedures(): Promise<ProceduresPayload> {
   if (!cache) {
-    cache = fetch('/procedures-demo.json')
+    cache = fetch('/procedures.json')
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json() as Promise<ProceduresPayload>
