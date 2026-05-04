@@ -45,7 +45,7 @@ function ProcedureRow({ procedure: p }: { procedure: Procedure }) {
               </span>
             )}
             {p.informational && (
-              <span className="text-amber-700 dark:text-amber-400">· informațională</span>
+              <span className="text-amber-700 dark:text-amber-400">· doar informativă</span>
             )}
           </div>
         </div>
