@@ -155,7 +155,7 @@ export default function FillPage() {
 
     const subscription = watch(() => {
       if (timer) clearTimeout(timer)
-      timer = setTimeout(regenerate, 1000)
+      timer = setTimeout(regenerate, 500)
     })
 
     // If the user returned with saved values, render those immediately.
