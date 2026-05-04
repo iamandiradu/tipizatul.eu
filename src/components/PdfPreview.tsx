@@ -78,15 +78,34 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
           const viewport = page.getViewport({ scale })
 
           const canvas = wrapper.children[i - 1] as HTMLCanvasElement
-          canvas.width = Math.round(viewport.width * dpr)
-          canvas.height = Math.round(viewport.height * dpr)
-          canvas.style.width = `${viewport.width}px`
-          canvas.style.height = `${viewport.height}px`
-          // annotationMode defaults to ENABLE, which paints AcroForm widgets
-          // directly on the canvas — so a raw template PDF renders with its
-          // form fields visible, without needing to pre-flatten.
+          const newW = Math.round(viewport.width * dpr)
+          const newH = Math.round(viewport.height * dpr)
+
+          // Render off-screen first, then drawImage onto the visible canvas in
+          // one atomic paint. pdfjs.render() fills white before drawing the
+          // page, and resizing canvas.width/height clears the bitmap — both
+          // cause a visible flicker when the user is just typing into a field.
+          // annotationMode defaults to ENABLE, so AcroForm widgets render
+          // directly on the canvas without needing to pre-flatten.
+          const offscreen = document.createElement('canvas')
+          offscreen.width = newW
+          offscreen.height = newH
           const transform = dpr === 1 ? undefined : [dpr, 0, 0, dpr, 0, 0]
-          await page.render({ canvas, viewport, transform }).promise
+          await page.render({ canvas: offscreen, viewport, transform }).promise
+
+          if (cancelled) {
+            pdf.destroy()
+            return
+          }
+
+          if (canvas.width !== newW || canvas.height !== newH) {
+            canvas.width = newW
+            canvas.height = newH
+            canvas.style.width = `${viewport.width}px`
+            canvas.style.height = `${viewport.height}px`
+          }
+          const ctx = canvas.getContext('2d')
+          if (ctx) ctx.drawImage(offscreen, 0, 0)
         }
 
         pdf.destroy()
