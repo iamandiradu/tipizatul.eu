@@ -1,4 +1,4 @@
-import { useEffect, useId, useMemo, useState } from 'react'
+import { memo, useEffect, useId, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronDown, ChevronRight, FileText, MapPin, Search } from 'lucide-react'
 import { fetchCatalog } from '@/lib/firestore'
@@ -13,7 +13,7 @@ import type { SlimTemplate } from '@/types/template'
 
 const ALL_COUNTIES = '__all__'
 
-function TemplateCard({ template }: { template: SlimTemplate }) {
+function TemplateCardImpl({ template }: { template: SlimTemplate }) {
   const fieldCount = template.visibleFieldCount
 
   return (
@@ -43,6 +43,7 @@ function TemplateCard({ template }: { template: SlimTemplate }) {
     </Link>
   )
 }
+const TemplateCard = memo(TemplateCardImpl)
 
 function OrganizationSection({
   organization,
@@ -140,7 +141,19 @@ function CountySection({
 export default function CatalogPage() {
   const [templates, setTemplates] = useState<SlimTemplate[] | undefined>(undefined)
   const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [county, setCounty] = useState<string>(ALL_COUNTIES)
+
+  useEffect(() => {
+    const trimmed = search.trim()
+    // Apply empty searches immediately so clearing the field feels instant.
+    if (trimmed === '') {
+      setDebouncedSearch('')
+      return
+    }
+    const id = setTimeout(() => setDebouncedSearch(search), 250)
+    return () => clearTimeout(id)
+  }, [search])
   const searchId = useId()
   const countyId = useId()
 
@@ -165,18 +178,27 @@ export default function CatalogPage() {
     [templates],
   )
 
-  const filtered = useMemo<SlimTemplate[]>(() => {
+  const indexed = useMemo(() => {
     if (!templates) return []
-    const needle = diacriticless(search.trim())
-    return templates.filter((t) => {
-      if (county !== ALL_COUNTIES && templateCounty(t) !== county) return false
-      if (!needle) return true
-      const haystack = diacriticless(
+    return templates.map((t) => ({
+      template: t,
+      county: templateCounty(t),
+      haystack: diacriticless(
         [t.name, t.organization, t.county, t.description, t.category].filter(Boolean).join(' '),
-      )
-      return haystack.includes(needle)
-    })
-  }, [templates, search, county])
+      ),
+    }))
+  }, [templates])
+
+  const filtered = useMemo<SlimTemplate[]>(() => {
+    const needle = diacriticless(debouncedSearch.trim())
+    const out: SlimTemplate[] = []
+    for (const entry of indexed) {
+      if (county !== ALL_COUNTIES && entry.county !== county) continue
+      if (needle && !entry.haystack.includes(needle)) continue
+      out.push(entry.template)
+    }
+    return out
+  }, [indexed, debouncedSearch, county])
 
   const grouped = useMemo(() => groupByCountyAndOrg(filtered), [filtered])
 
@@ -222,10 +244,19 @@ export default function CatalogPage() {
     )
   }
 
-  const isSearching = search.trim().length > 0
+  const isSearching = debouncedSearch.trim().length > 0
   const isFiltering = isSearching || county !== ALL_COUNTIES
-  const autoOpenCounty = isFiltering || grouped.length <= 8
-  const autoOpenOrg = isSearching
+  // Cap auto-expansion: with thousands of templates, opening every org during a
+  // broad search mounts thousands of cards on a single keystroke and locks the
+  // main thread. Only auto-open when the result set is narrow enough that the
+  // render is cheap.
+  const AUTO_OPEN_ORG_LIMIT = 200
+  const AUTO_OPEN_COUNTY_LIMIT = 1500
+  const autoOpenCounty = isFiltering
+    ? filtered.length <= AUTO_OPEN_COUNTY_LIMIT
+    : grouped.length <= 8
+  const autoOpenOrg = isSearching && filtered.length <= AUTO_OPEN_ORG_LIMIT
+  const tooManyToAutoExpand = isSearching && filtered.length > AUTO_OPEN_ORG_LIMIT
 
   return (
     <div>
@@ -268,6 +299,12 @@ export default function CatalogPage() {
           ))}
         </select>
       </div>
+
+      {tooManyToAutoExpand && (
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+          Prea multe rezultate pentru a deschide automat — rafinează căutarea sau extinde manual județele de mai jos.
+        </p>
+      )}
 
       {grouped.length === 0 ? (
         <div className="text-center py-16 text-gray-400 dark:text-gray-500">
