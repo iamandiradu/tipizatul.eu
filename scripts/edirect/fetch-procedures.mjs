@@ -231,7 +231,14 @@ async function fetchProcedureHtml(id, attempt = 1) {
       redirect: 'follow',
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    return await res.text()
+    const html = await res.text()
+    // Sanity check: under load eDirect occasionally serves a 200 with the chrome
+    // but no procedure body. Detect by absence of the preview panel marker and
+    // retry — a fresh request usually returns the real content.
+    if (!/pnlPrevizualizare/.test(html)) {
+      throw new Error('empty body (no pnlPrevizualizare)')
+    }
+    return html
   } catch (err) {
     if (attempt < 3) {
       await new Promise((r) => setTimeout(r, 500 * attempt))
