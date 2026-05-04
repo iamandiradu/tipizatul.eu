@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight, Download, Loader2 } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
-import { fillAndDownload, triggerPdfDownload } from '@/lib/pdf-fill'
+import { fillAndDownload, fillPdf, triggerPdfDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { NO_ORG, templateCounty } from '@/lib/template-grouping'
@@ -24,6 +24,8 @@ export default function FillPage() {
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
   const [downloadingOriginal, setDownloadingOriginal] = useState(false)
+  const [previewBytes, setPreviewBytes] = useState<Uint8Array | null>(null)
+  const [previewing, setPreviewing] = useState(false)
 
   const { formDraft, setFormDraft } = useSessionStore()
 
@@ -100,6 +102,7 @@ export default function FillPage() {
     register,
     handleSubmit,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodSchema ? zodResolver(zodSchema) : undefined,
@@ -115,6 +118,58 @@ export default function FillPage() {
     })
     return () => subscription.unsubscribe()
   }, [id, template, watch, setFormDraft])
+
+  // Live PDF preview — debounce form changes by 1s, then re-fill the PDF and
+  // swap the bytes shown in the iframe. Runs only on md+ where the iframe is
+  // actually visible (mobile shows an "open in OS viewer" link instead).
+  useEffect(() => {
+    if (!template || !pdfBytes) return
+    if (typeof window === 'undefined' || !window.matchMedia('(min-width: 768px)').matches) return
+
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout> | null = null
+    let inFlight = false
+    let pending = false
+
+    const regenerate = async () => {
+      if (inFlight) {
+        pending = true
+        return
+      }
+      inFlight = true
+      setPreviewing(true)
+      try {
+        do {
+          pending = false
+          const bytes = await fillPdf(template, pdfBytes, getValues())
+          if (cancelled) return
+          setPreviewBytes(bytes)
+        } while (pending && !cancelled)
+      } catch (err) {
+        console.warn('[fill preview]', err)
+      } finally {
+        inFlight = false
+        if (!cancelled) setPreviewing(false)
+      }
+    }
+
+    const subscription = watch(() => {
+      if (timer) clearTimeout(timer)
+      timer = setTimeout(regenerate, 1000)
+    })
+
+    // If the user returned with saved values, render those immediately.
+    const initial = getValues()
+    if (Object.values(initial).some((v) => v !== undefined && v !== '' && v !== false)) {
+      regenerate()
+    }
+
+    return () => {
+      cancelled = true
+      if (timer) clearTimeout(timer)
+      subscription.unsubscribe()
+    }
+  }, [template, pdfBytes, watch, getValues])
 
   if (notFound) {
     return (
@@ -304,8 +359,18 @@ export default function FillPage() {
         </div>
 
         <div className="mt-10 lg:mt-0 lg:sticky lg:top-20">
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
-          <PdfPreview pdfBytes={pdfBytes} />
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {previewBytes ? 'Previzualizare formular completat' : 'Formular original (necompletat)'}
+            </p>
+            {previewing && (
+              <span className="inline-flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500">
+                <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+                Se actualizează...
+              </span>
+            )}
+          </div>
+          <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
         </div>
       </div>
     </div>
