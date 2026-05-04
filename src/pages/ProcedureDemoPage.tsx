@@ -5,6 +5,7 @@ import {
   Building2,
   ChevronRight,
   Clock,
+  Code2,
   Download,
   ExternalLink,
   FileSignature,
@@ -17,6 +18,10 @@ import {
   ScrollText,
 } from 'lucide-react'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
+import { useDevMode } from '@/lib/useDevMode'
+
+const EDIRECT_BASE_URL =
+  'https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare='
 
 interface ProcDoc {
   nr: string
@@ -394,6 +399,8 @@ export default function ProcedureDemoPage() {
   })
 
   const p = SAMPLE
+  const { dev } = useDevMode()
+  const sourceUrl = `${EDIRECT_BASE_URL}${p.procedureId}`
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -405,6 +412,36 @@ export default function ProcedureDemoPage() {
           conectate.
         </span>
       </div>
+
+      {dev && (
+        <div className="mb-4 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1">
+          <div className="flex items-center gap-2 uppercase tracking-wide font-sans font-semibold text-[10px] opacity-80">
+            <Code2 className="w-3.5 h-3.5" />
+            Dev
+          </div>
+          <div>
+            <span className="opacity-70">procedureId:</span> {p.procedureId}
+          </div>
+          <div className="break-all">
+            <span className="opacity-70">eDirect:</span>{' '}
+            <a
+              href={sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:no-underline"
+            >
+              {sourceUrl}
+            </a>
+          </div>
+          <div>
+            <span className="opacity-70">documents:</span> {p.documents.length}
+            {' · '}
+            <span className="opacity-70">outputDocuments:</span> {p.outputDocuments.length}
+            {' · '}
+            <span className="opacity-70">laws:</span> {p.laws.length}
+          </div>
+        </div>
+      )}
 
       <Breadcrumbs county={p.county} institution={p.institution} />
 

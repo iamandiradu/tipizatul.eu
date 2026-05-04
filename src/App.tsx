@@ -1,7 +1,8 @@
 import { createBrowserRouter, RouterProvider, Outlet, NavLink, Link } from 'react-router-dom'
 import { lazy, Suspense, useState } from 'react'
-import { Moon, Sun, Lightbulb, Github, AlertTriangle } from 'lucide-react'
+import { Moon, Sun, Lightbulb, Github, AlertTriangle, Code2 } from 'lucide-react'
 import { useDarkMode } from '@/lib/useDarkMode'
+import { useDevMode } from '@/lib/useDevMode'
 import ProposalWidget from '@/components/ProposalWidget'
 import Logo from '@/components/Logo'
 
@@ -18,6 +19,7 @@ const ProcedureDemoPage = lazy(() => import('@/pages/ProcedureDemoPage'))
 
 function AppShell({ showBackLink }: { showBackLink?: boolean }) {
   const { dark, toggle } = useDarkMode()
+  const { dev, toggle: toggleDev } = useDevMode()
   const [proposalOpen, setProposalOpen] = useState(false)
 
   return (
@@ -62,6 +64,19 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
             >
               <Github className="w-5 h-5" />
             </a>
+            <button
+              onClick={toggleDev}
+              aria-label={dev ? 'Dezactivează modul Dev' : 'Activează modul Dev'}
+              aria-pressed={dev}
+              title={dev ? 'Mod Dev activ' : 'Mod Dev'}
+              className={`p-2.5 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-md transition-colors ${
+                dev
+                  ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-950/60'
+                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'
+              }`}
+            >
+              <Code2 className="w-5 h-5" />
+            </button>
             <button
               onClick={toggle}
               aria-label={dark ? 'Activează modul luminos' : 'Activează modul întunecat'}
