@@ -195,8 +195,8 @@ export default function FillPage() {
     return (
       <div className="text-center py-16">
         <p className="text-gray-500">Formularul nu a fost găsit.</p>
-        <Link to="/formulare" className="text-blue-600 hover:underline text-sm mt-2 block">
-          ← Înapoi la catalog
+        <Link to="/proceduri" className="text-blue-600 hover:underline text-sm mt-2 block">
+          ← Înapoi la proceduri
         </Link>
       </div>
     )
@@ -207,8 +207,8 @@ export default function FillPage() {
       <div className="text-center py-16">
         <p className="text-red-500 dark:text-red-400 font-medium mb-1">Nu s-a putut încărca formularul.</p>
         <p className="text-sm text-gray-400 dark:text-gray-500 mb-4 font-mono">{loadError}</p>
-        <Link to="/formulare" className="text-blue-600 hover:underline text-sm">
-          ← Înapoi la catalog
+        <Link to="/proceduri" className="text-blue-600 hover:underline text-sm">
+          ← Înapoi la proceduri
         </Link>
       </div>
     )
@@ -274,10 +274,10 @@ export default function FillPage() {
         <ol className="flex flex-wrap items-center gap-y-1 text-sm">
           <li>
             <Link
-              to="/formulare"
+              to={template.procedureId ? `/procedura/${template.procedureId}` : '/proceduri'}
               className="inline-flex items-center px-1.5 py-0.5 -ml-1.5 rounded text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
-              Formulare
+              {template.procedureId ? 'Procedură' : 'Proceduri'}
             </Link>
           </li>
           <li aria-hidden="true" className="text-gray-300 dark:text-gray-700 flex items-center">

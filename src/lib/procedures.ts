@@ -1,4 +1,5 @@
 import type { Procedure } from '@/types/template'
+import { canonicalizeCounty, deriveCountyFromText } from '@/lib/counties'
 
 export interface ProceduresPayload {
   builtAt: string
@@ -45,11 +46,28 @@ export interface CountyGroup {
 // to a specific county) bucket under this label so they remain browseable.
 export const NATIONAL_COUNTY = 'Național'
 
+// Normalize raw county strings from index.json (e.g. "BUCURESTI", "Cluj") to
+// the canonical RomanianCounty form so casing variations don't fragment the
+// tree. Falls back to text-derivation, then the raw value, then "Național".
+export function procedureCounty(p: Procedure): string {
+  if (p.county) {
+    return (
+      canonicalizeCounty(p.county) ||
+      deriveCountyFromText(p.county) ||
+      p.county
+    )
+  }
+  // Some entries miss an index.json join — try to recover from the
+  // institutiaResponsabila string (often suffixed with "Județ X").
+  const fromInst = deriveCountyFromText(p.fields?.institutiaResponsabila)
+  return fromInst || NATIONAL_COUNTY
+}
+
 export function groupByCountyAndInstitution(payload: ProceduresPayload): CountyGroup[] {
   // county -> institution -> procedures[]
   const counties = new Map<string, Map<string, Procedure[]>>()
   for (const p of Object.values(payload.procedures)) {
-    const county = p.county || NATIONAL_COUNTY
+    const county = procedureCounty(p)
     const institution = p.institution ?? 'Necunoscut'
     if (!counties.has(county)) counties.set(county, new Map())
     const insts = counties.get(county)!
