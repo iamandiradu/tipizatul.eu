@@ -154,7 +154,7 @@ export default function HomePage() {
 
           <div className="mt-10 flex flex-col sm:flex-row items-center gap-3 anim-fade-in">
             <Link
-              to="/formulare"
+              to="/proceduri"
               className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-md font-medium shadow-sm transition-colors"
             >
               {count !== null ? (
@@ -253,7 +253,7 @@ export default function HomePage() {
           formulare deja online. Și numărăm.
         </p>
         <Link
-          to="/formulare"
+          to="/proceduri"
           className="group inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-7 py-4 rounded-md text-base font-medium shadow-sm transition-colors"
         >
           Vezi catalogul

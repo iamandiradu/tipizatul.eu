@@ -30,6 +30,16 @@ export interface Template {
   category?: string
   organization?: string
   county?: string
+  // eDirect procedure this template belongs to; both backfilled from
+  // index.json by joining on the eDirect document id baked into the
+  // upload filename stem (`..._<docId>.pdf`). See Procedure.
+  procedure?: string
+  procedureId?: string
+  // The eDirect listing record id (index.json `id`). Lets us match this
+  // editable template back to a specific entry in `procedure.documents[]`
+  // so the procedure detail page can offer a "Completează online" link
+  // next to the right document.
+  eDirectDocId?: string
   version: number
   createdAt: string
   fields: TemplateField[]
@@ -72,11 +82,96 @@ export interface SlimTemplate {
   category?: string
   organization?: string
   county?: string
+  procedure?: string
+  procedureId?: string
+  eDirectDocId?: string
   version: number
   visibleFieldCount: number
   archived?: boolean
   driveFileId: string
   originalDriveFileId?: string
+}
+
+// One eDirect procedure — the layer between an institution and its
+// individual documents. Sourced from procedures.json (the
+// fetch-procedures.mjs scrape) and lives in `procedures/{procedureId}`
+// in Firestore.
+//
+// Document downloadUrls are nullable because non-form attachments
+// (`Document scanat`, `Fotografie`, `Dovada de plata`...) carry no link.
+export interface ProcedureDocument {
+  nr: string
+  name: string
+  description?: string
+  required: boolean
+  eSignature: boolean
+  type: string
+  downloadUrl: string | null
+  // eDirect listing record id, joined in by build-procedures.mjs from
+  // index.json. Same key Templates carry, so the procedure detail page
+  // can pair this document with its editable Template if one exists.
+  eDirectDocId?: string
+}
+
+export interface ProcedureOutputDocument {
+  nr: string
+  name: string
+  type: string
+  downloadUrl: string | null
+}
+
+export interface ProcedureLaw {
+  nr: string
+  name: string
+  downloadUrl: string | null
+}
+
+export interface ProcedureRawField {
+  label: string
+  valueHtml: string
+  valueText: string
+}
+
+// Mapped, well-known fields. Unknown labels stay in `rawFields` so the
+// schema can grow without dropping data.
+export interface ProcedureFields {
+  descriere?: string
+  caiDeAtac?: string
+  dateContact?: string
+  institutiaResponsabila?: string
+  modalitatePrestare?: string
+  timpSolutionare?: string
+  termenArhivare?: string
+  termenCompletareDosar?: string
+  taxe?: string
+  // Labels surfaced by the crawl that don't yet have a dedicated key.
+  // Kept on the type so consumers can opt-in without parsing rawFields.
+  notificareLaExpirareTermen?: string
+  registruDeLinkuri?: string
+  seAplicaAprobareaTacita?: string
+}
+
+export interface Procedure {
+  procedureId: string
+  title: string | null
+  // Joined from index.json. The scrape itself doesn't carry these — they
+  // come from the bundle listing that owns each procedureId.
+  institution?: string
+  county?: string | null
+  city?: string | null
+  // Set when the eDirect listing shows the "Procedura este informationala
+  // si nu permite lansarea de solicitari" notice — the institution does
+  // not accept online submissions for this procedure.
+  informational: boolean
+  informationalNotice: string | null
+  fields: ProcedureFields
+  // rawFields preserved on the full Firestore record; the slimmed
+  // bundle in public/procedures.json drops them.
+  rawFields?: ProcedureRawField[]
+  documents: ProcedureDocument[]
+  outputDocuments: ProcedureOutputDocument[]
+  laws: ProcedureLaw[]
+  fetchedAt?: string
 }
 
 export type FormValues = Record<string, string | boolean>

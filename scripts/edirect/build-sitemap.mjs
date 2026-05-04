@@ -108,7 +108,7 @@ async function main() {
   lines.push('  </url>')
 
   lines.push('  <url>')
-  lines.push(`    <loc>${SITE_BASE}/formulare</loc>`)
+  lines.push(`    <loc>${SITE_BASE}/proceduri</loc>`)
   lines.push(`    <lastmod>${lastmod}</lastmod>`)
   lines.push('    <changefreq>daily</changefreq>')
   lines.push('    <priority>0.9</priority>')

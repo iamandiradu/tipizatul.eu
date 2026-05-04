@@ -435,22 +435,42 @@ function listPairsInBundle(bundleDir) {
   return out
 }
 
-// ── Institution → county map ─────────────────────────────────────────────────
+// ── Institution → county / docId → procedure maps ───────────────────────────
 
-function buildCountyMap() {
-  const map = new Map()
+// Reads index.json once and derives two maps:
+//   - countyMap: institution → county (for templates that don't carry a
+//     county directly).
+//   - docIdToProcedure: eDirect doc id → { procedureId, procedure } so we
+//     can stamp the right procedure ref on each upload by its filename id.
+function buildIndexMaps() {
+  const countyMap = new Map()
+  const docIdToProcedure = new Map()
   if (!existsSync(INDEX_PATH)) {
-    logErr(`${C.yellow}index.json missing — county lookup disabled${C.reset}`)
-    return map
+    logErr(`${C.yellow}index.json missing — county/procedure lookup disabled${C.reset}`)
+    return { countyMap, docIdToProcedure }
   }
   const idx = JSON.parse(readFileSync(INDEX_PATH, 'utf-8'))
   const entries = Array.isArray(idx) ? idx : (idx.entries || [])
   for (const e of entries) {
-    if (e.institution && e.county && !map.has(e.institution)) {
-      map.set(e.institution, e.county)
+    if (e.institution && e.county && !countyMap.has(e.institution)) {
+      countyMap.set(e.institution, e.county)
+    }
+    if (e.id && e.procedureId && !docIdToProcedure.has(String(e.id))) {
+      docIdToProcedure.set(String(e.id), {
+        procedureId: String(e.procedureId),
+        procedure: e.procedure || undefined,
+      })
     }
   }
-  return map
+  return { countyMap, docIdToProcedure }
+}
+
+// Pulls the trailing `_<digits>` off a bundle stem. That suffix is the
+// eDirect listing record id (index.json `id`) embedded by the bundle
+// downloader; matches the same key used in `procedure.documents[].eDirectDocId`.
+function eDirectDocIdFromStem(stem) {
+  const m = /_(\d+)$/.exec(stem)
+  return m ? m[1] : null
 }
 
 // ── Name derivation ──────────────────────────────────────────────────────────
@@ -486,7 +506,7 @@ function saveProgress(p) {
 
 // ── Main per-pair pipeline ───────────────────────────────────────────────────
 
-async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap }) {
+async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap, docIdToProcedure }) {
   const pdfBytes = readFileSync(pdfPath)
   const detector = JSON.parse(readFileSync(jsonPath, 'utf-8'))
 
@@ -511,6 +531,9 @@ async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap }) {
   const organization = organizationFromSource(detector.source)
   const county = organization ? countyMap.get(organization) : undefined
 
+  const eDirectDocId = eDirectDocIdFromStem(stem)
+  const procRef = eDirectDocId ? docIdToProcedure?.get(eDirectDocId) : undefined
+
   const name = deriveTemplateName(stem)
   const id = randomUUID()
 
@@ -519,6 +542,9 @@ async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap }) {
     name,
     organization,
     county,
+    procedureId: procRef?.procedureId,
+    procedure: procRef?.procedure,
+    eDirectDocId: eDirectDocId || undefined,
     version: 1,
     createdAt: new Date().toISOString(),
     fields,
@@ -584,8 +610,8 @@ async function runQueue(items, worker, conc) {
 
 async function main() {
   log(`${C.bold}upload-templates.mjs${C.reset}${C.dim} — ${dryRun ? 'DRY-RUN' : 'LIVE'}${C.reset}`)
-  const countyMap = buildCountyMap()
-  log(`${C.dim}county map: ${countyMap.size} institutions${C.reset}`)
+  const { countyMap, docIdToProcedure } = buildIndexMaps()
+  log(`${C.dim}county map: ${countyMap.size} institutions · procedure map: ${docIdToProcedure.size} doc-ids${C.reset}`)
 
   const progress = loadProgress()
   const alreadyDone = new Set(Object.keys(progress.uploaded))
@@ -621,7 +647,7 @@ async function main() {
       counter++
       const i = counter
       try {
-        const res = await processPair({ ...item, countyMap })
+        const res = await processPair({ ...item, countyMap, docIdToProcedure })
         okCount++
         if (res.needsReview) reviewCount++
 
