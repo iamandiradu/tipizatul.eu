@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet, NavLink, Link } from 'react-router-dom'
 import { lazy, Suspense, useState } from 'react'
-import { Moon, Sun, Lightbulb, Github } from 'lucide-react'
+import { Moon, Sun, Lightbulb, Github, AlertTriangle } from 'lucide-react'
 import { useDarkMode } from '@/lib/useDarkMode'
 import ProposalWidget from '@/components/ProposalWidget'
 import Logo from '@/components/Logo'
@@ -71,6 +71,18 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
           </div>
         </div>
       </header>
+      <div
+        role="alert"
+        className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200"
+      >
+        <div className="max-w-6xl mx-auto px-4 py-2 flex items-start gap-2 text-sm">
+          <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
+          <p>
+            <strong className="font-semibold">Platformă în fază incipientă.</strong>{' '}
+            Conținutul și completarea formularelor pot conține erori — corectitudinea nu este garantată. Verifică datele înainte de a le folosi oficial.
+          </p>
+        </div>
+      </div>
       <main id="main" className="max-w-6xl mx-auto px-4 py-8">
         <Suspense fallback={<div className="text-center py-16 text-gray-500 dark:text-gray-400">Se încarcă...</div>}>
           <Outlet />
