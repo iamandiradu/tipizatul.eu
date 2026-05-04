@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronLeft, Download, Loader2 } from 'lucide-react'
+import { ChevronRight, Download, Loader2 } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
 import { fetchPdfFromDrive } from '@/lib/drive'
 import { fillAndDownload, triggerPdfDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
+import { NO_ORG, templateCounty } from '@/lib/template-grouping'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview from '@/components/PdfPreview'
 import FormField from '@/components/FormField'
@@ -183,16 +184,32 @@ export default function FillPage() {
     }
   }
 
+  const breadcrumbCounty = templateCounty(template)
+  const breadcrumbOrg = template.organization || NO_ORG
+
   return (
     <div>
+      <nav aria-label="Breadcrumb" className="mb-3">
+        <ol className="flex flex-wrap items-center gap-y-1 text-sm">
+          <li>
+            <Link
+              to="/formulare"
+              className="inline-flex items-center px-1.5 py-0.5 -ml-1.5 rounded text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              Formulare
+            </Link>
+          </li>
+          <li aria-hidden="true" className="text-gray-300 dark:text-gray-700 flex items-center">
+            <ChevronRight className="w-4 h-4 mx-0.5" />
+          </li>
+          <li className="px-1.5 py-0.5 text-gray-500 dark:text-gray-400 break-words">{breadcrumbCounty}</li>
+          <li aria-hidden="true" className="text-gray-300 dark:text-gray-700 flex items-center">
+            <ChevronRight className="w-4 h-4 mx-0.5" />
+          </li>
+          <li className="px-1.5 py-0.5 text-gray-800 dark:text-gray-200 font-medium break-words">{breadcrumbOrg}</li>
+        </ol>
+      </nav>
       <div className="flex items-center flex-wrap gap-2 mb-6">
-        <Link
-          to="/formulare"
-          aria-label="Înapoi la catalog"
-          className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </Link>
         <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{template.name}</h1>
         {template.category && (
           <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full">
