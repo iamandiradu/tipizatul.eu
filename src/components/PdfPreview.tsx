@@ -151,7 +151,7 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
 
       <div
         ref={containerRef}
-        className="hidden md:block w-full h-[60vh] lg:h-[calc(100vh-7rem)] min-h-[400px] border border-gray-200 dark:border-gray-700 rounded-lg overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4"
+        className="scrollbar-subtle hidden md:block w-full h-[60vh] lg:h-[calc(100vh-7rem)] min-h-[400px] border border-gray-200 dark:border-gray-700 rounded-lg overflow-y-auto bg-gray-100 dark:bg-gray-900 p-4"
         aria-label="Previzualizare formular"
       >
         {error ? (
