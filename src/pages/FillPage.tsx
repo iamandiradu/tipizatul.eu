@@ -218,91 +218,95 @@ export default function FillPage() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {Object.entries(groups).map(([groupName, fields]) => (
-          <section key={groupName} className="mb-6">
-            {Object.keys(groups).length > 1 && (
-              <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 pb-1 border-b border-gray-100 dark:border-gray-800">
-                {groupName}
-              </h2>
+      <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
+        <div>
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            {Object.entries(groups).map(([groupName, fields]) => (
+              <section key={groupName} className="mb-6">
+                {Object.keys(groups).length > 1 && (
+                  <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 pb-1 border-b border-gray-100 dark:border-gray-800">
+                    {groupName}
+                  </h2>
+                )}
+                <div className="space-y-4">
+                  {fields.map((f) => (
+                    <FormField
+                      key={f.pdfFieldName}
+                      field={f}
+                      register={register as Parameters<typeof FormField>[0]['register']}
+                      errors={errors as Parameters<typeof FormField>[0]['errors']}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+
+            {exportError && (
+              <p role="alert" className="text-sm text-red-600 dark:text-red-400 mb-4">{exportError}</p>
             )}
-            <div className="space-y-4">
-              {fields.map((f) => (
-                <FormField
-                  key={f.pdfFieldName}
-                  field={f}
-                  register={register as Parameters<typeof FormField>[0]['register']}
-                  errors={errors as Parameters<typeof FormField>[0]['errors']}
-                />
-              ))}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="submit"
+                disabled={exporting}
+                className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {exporting ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                {exporting ? 'Se generează...' : 'Descarcă PDF completat'}
+              </button>
+              <button
+                type="button"
+                disabled={downloadingOriginal}
+                onClick={async () => {
+                  if (!template) return
+                  const fileName = `${template.name} (necompletat).pdf`
+                  // Prefer the truly-untouched bundle PDF when its Drive id is set;
+                  // fall back to the AcroForm-injected bytes already loaded so this
+                  // works for templates not yet backfilled.
+                  if (!template.originalDriveFileId) {
+                    triggerPdfDownload(pdfBytes, fileName)
+                    return
+                  }
+                  setDownloadingOriginal(true)
+                  setExportError(null)
+                  try {
+                    const bytes = await fetchPdfFromDrive(template.originalDriveFileId)
+                    triggerPdfDownload(bytes, fileName)
+                  } catch (err) {
+                    setExportError(err instanceof Error ? err.message : 'Nu s-a putut descărca PDF-ul original.')
+                  } finally {
+                    setDownloadingOriginal(false)
+                  }
+                }}
+                className="inline-flex items-center gap-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              >
+                {downloadingOriginal ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4" />
+                )}
+                {downloadingOriginal ? 'Se descarcă...' : 'Descarcă PDF original'}
+              </button>
             </div>
-          </section>
-        ))}
+          </form>
 
-        {exportError && (
-          <p role="alert" className="text-sm text-red-600 dark:text-red-400 mb-4">{exportError}</p>
-        )}
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="submit"
-            disabled={exporting}
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-          >
-            {exporting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" />
-            )}
-            {exporting ? 'Se generează...' : 'Descarcă PDF completat'}
-          </button>
-          <button
-            type="button"
-            disabled={downloadingOriginal}
-            onClick={async () => {
-              if (!template) return
-              const fileName = `${template.name} (necompletat).pdf`
-              // Prefer the truly-untouched bundle PDF when its Drive id is set;
-              // fall back to the AcroForm-injected bytes already loaded so this
-              // works for templates not yet backfilled.
-              if (!template.originalDriveFileId) {
-                triggerPdfDownload(pdfBytes, fileName)
-                return
-              }
-              setDownloadingOriginal(true)
-              setExportError(null)
-              try {
-                const bytes = await fetchPdfFromDrive(template.originalDriveFileId)
-                triggerPdfDownload(bytes, fileName)
-              } catch (err) {
-                setExportError(err instanceof Error ? err.message : 'Nu s-a putut descărca PDF-ul original.')
-              } finally {
-                setDownloadingOriginal(false)
-              }
-            }}
-            className="inline-flex items-center gap-2 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 px-5 py-2.5 rounded-md text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/40 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-          >
-            {downloadingOriginal ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Download className="w-4 h-4" />
-            )}
-            {downloadingOriginal ? 'Se descarcă...' : 'Descarcă PDF original'}
-          </button>
+          <div className="mt-6">
+            <VoteWidget
+              templateId={template.id}
+              initialUp={template.voteCount?.up ?? 0}
+              initialDown={template.voteCount?.down ?? 0}
+            />
+          </div>
         </div>
-      </form>
 
-      <div className="mt-6">
-        <VoteWidget
-          templateId={template.id}
-          initialUp={template.voteCount?.up ?? 0}
-          initialDown={template.voteCount?.down ?? 0}
-        />
-      </div>
-
-      <div className="mt-10">
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
-        <PdfPreview pdfBytes={pdfBytes} />
+        <div className="mt-10 lg:mt-0 lg:sticky lg:top-20">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Formular original (necompletat)</p>
+          <PdfPreview pdfBytes={pdfBytes} />
+        </div>
       </div>
     </div>
   )

@@ -43,7 +43,7 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
 
       <iframe
         src={url}
-        className="hidden md:block w-full h-[60vh] min-h-[400px] border border-gray-200 dark:border-gray-700 rounded-lg"
+        className="hidden md:block w-full h-[60vh] lg:h-[calc(100vh-7rem)] min-h-[400px] border border-gray-200 dark:border-gray-700 rounded-lg"
         title="Previzualizare formular"
       />
     </>
