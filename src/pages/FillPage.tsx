@@ -8,6 +8,7 @@ import { fetchPdfFromDrive } from '@/lib/drive'
 import { fillAndDownload, triggerPdfDownload } from '@/lib/pdf-fill'
 import { buildZodSchema } from '@/lib/schema-builder'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
+import { NO_ORG, templateCounty } from '@/lib/template-grouping'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview from '@/components/PdfPreview'
 import FormField from '@/components/FormField'
@@ -183,16 +184,34 @@ export default function FillPage() {
     }
   }
 
+  const breadcrumbCounty = templateCounty(template)
+  const breadcrumbOrg = template.organization || NO_ORG
+
   return (
     <div>
-      <div className="flex items-center flex-wrap gap-2 mb-6">
+      <div className="flex items-start gap-2 mb-2">
         <Link
           to="/formulare"
           aria-label="Înapoi la catalog"
-          className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ml-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 shrink-0"
         >
           <ChevronLeft className="w-5 h-5" />
         </Link>
+        <nav aria-label="Breadcrumb" className="min-w-0 pt-2">
+          <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+            <li>
+              <Link to="/formulare" className="hover:text-gray-700 dark:hover:text-gray-200 hover:underline">
+                Formulare
+              </Link>
+            </li>
+            <li aria-hidden="true" className="text-gray-300 dark:text-gray-600">/</li>
+            <li className="break-words">{breadcrumbCounty}</li>
+            <li aria-hidden="true" className="text-gray-300 dark:text-gray-600">/</li>
+            <li className="break-words text-gray-700 dark:text-gray-300 font-medium">{breadcrumbOrg}</li>
+          </ol>
+        </nav>
+      </div>
+      <div className="flex items-center flex-wrap gap-2 mb-6 ml-9 -mt-1">
         <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{template.name}</h1>
         {template.category && (
           <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full">
