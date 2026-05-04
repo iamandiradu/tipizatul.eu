@@ -218,7 +218,7 @@ export default function FillPage() {
         )}
       </div>
 
-      <div className="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
+      <div className="lg:grid lg:grid-cols-[minmax(360px,520px)_minmax(0,1fr)] lg:gap-8 lg:items-start">
         <div>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             {Object.entries(groups).map(([groupName, fields]) => (

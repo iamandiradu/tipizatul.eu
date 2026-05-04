@@ -28,7 +28,7 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
         Sări la conținut
       </a>
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="max-w-screen-2xl mx-auto px-4 h-14 flex items-center justify-between">
           {showBackLink ? (
             <Link to="/" className="hover:opacity-80 transition-opacity">
               <Logo />
@@ -76,7 +76,7 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
         role="alert"
         className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200"
       >
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-start gap-2 text-sm">
+        <div className="max-w-screen-2xl mx-auto px-4 py-2 flex items-start gap-2 text-sm">
           <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
           <p>
             <strong className="font-semibold">Platformă în fază incipientă.</strong>{' '}
@@ -84,13 +84,13 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
           </p>
         </div>
       </div>
-      <main id="main" className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
+      <main id="main" className="flex-1 w-full max-w-screen-2xl mx-auto px-4 py-8">
         <Suspense fallback={<div className="text-center py-16 text-gray-500 dark:text-gray-400">Se încarcă...</div>}>
           <Outlet />
         </Suspense>
       </main>
       <footer className="border-t border-gray-200 dark:border-gray-800 bg-white/60 dark:bg-gray-900/60 mt-8">
-        <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-400">
+        <div className="max-w-screen-2xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-400">
           <p>
             © {new Date().getFullYear()} Tipizatul.eu — gratuit, fără cont,{' '}
             <a
