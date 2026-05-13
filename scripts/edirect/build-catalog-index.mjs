@@ -36,10 +36,13 @@ import { readFileSync, existsSync } from 'node:fs'
 import { resolve, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gzipSync } from 'node:zlib'
+import { config as loadDotenv } from 'dotenv'
 import admin from 'firebase-admin'
 import { deriveCountyFromOrg } from './lib/locality-county.mjs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+loadDotenv({ path: resolve(__dirname, '../../.env.local') })
+loadDotenv({ path: resolve(__dirname, '../../.env') })
 const PROGRESS_PATH = resolve(__dirname, 'upload-templates-progress.json')
 const OUTPUT_ROOT = resolve(__dirname, 'paddle/output')
 const INDEX_PATH = resolve(__dirname, 'index.json')
