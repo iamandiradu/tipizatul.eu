@@ -224,8 +224,8 @@ export default function ProceduresIndexPage() {
     const set = new Set<string>()
     for (const e of indexed) set.add(e.county)
     const sorted = [...set].sort((a, b) => {
-      if (a === NATIONAL_COUNTY) return 1
-      if (b === NATIONAL_COUNTY) return -1
+      if (a === NATIONAL_COUNTY) return -1
+      if (b === NATIONAL_COUNTY) return 1
       return a.localeCompare(b, 'ro')
     })
     return sorted

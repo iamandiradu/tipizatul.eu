@@ -375,6 +375,19 @@ export interface DeriveCountyOptions {
   skipNationalPatterns?: boolean
 }
 
+// Detect institutions that are national in scope by matching the curated
+// NATIONAL_PATTERNS. Lets consumers (e.g. procedureCounty) elevate ministries,
+// agencies, professional colleges, etc. to the Național bucket before
+// falling back to address-based text derivation that would otherwise pull
+// them into Bucuresti (because the eDirect scrape writes the HQ city into
+// institutiaResponsabila).
+export function isNationalInstitution(
+  organization: string | null | undefined,
+): boolean {
+  if (!organization) return false
+  return NATIONAL_PATTERNS.some((re) => re.test(organization))
+}
+
 export function deriveCountyFromOrg(
   organization: string | null | undefined,
   providedCity?: string | null,

@@ -45,6 +45,42 @@ describe('procedureCounty', () => {
     ).toBe(NATIONAL_COUNTY)
   })
 
+  it('promotes national-scope institutions to Național even when the address field names Bucharest', () => {
+    // Real shape from procedures.json: the scrape writes "Județ BUCURESTI"
+    // into institutiaResponsabila for every ministry HQ'd in Bucharest. The
+    // national-pattern check must win over that text-derivation fallback.
+    expect(
+      procedureCounty(
+        makeProcedure({
+          institution: 'Ministerul Justitiei',
+          fields: { institutiaResponsabila: 'Ministerul Justitiei,Județ BUCURESTI' },
+        }),
+      ),
+    ).toBe(NATIONAL_COUNTY)
+    expect(
+      procedureCounty(
+        makeProcedure({
+          institution: 'Inspectoratul de Stat in Constructii - I.S.C',
+          fields: { institutiaResponsabila: 'ISC,Județ BUCURESTI' },
+        }),
+      ),
+    ).toBe(NATIONAL_COUNTY)
+  })
+
+  it('respects explicit non-Național county on local branches of national bodies', () => {
+    // "Ministerul Apararii — Spitalul Militar Constanta" has county="Constanta"
+    // in the scrape. A local branch stays local even though the parent
+    // institution name matches a national pattern.
+    expect(
+      procedureCounty(
+        makeProcedure({
+          institution: 'Ministerul Apararii Nationale - Spitalul Militar Constanta',
+          county: 'Constanta',
+        }),
+      ),
+    ).toBe('Constanta')
+  })
+
   it('honors explicit county="Național" tagging', () => {
     expect(
       procedureCounty(
