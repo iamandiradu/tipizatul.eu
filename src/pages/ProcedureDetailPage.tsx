@@ -413,6 +413,16 @@ export default function ProcedureDetailPage() {
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {p.fields.institutiaResponsabila || p.institution}
         </p>
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Procedura, așa cum apare pe portalul oficial eDirect — sursa de unde Tipizatul.eu preia toate datele."
+          className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
+        >
+          Vezi pe eDirect
+          <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+        </a>
         {p.informational && p.informationalNotice && (
           <div className="mt-4 flex items-start gap-2 px-3 py-2 rounded-md bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200 text-sm">
             <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
