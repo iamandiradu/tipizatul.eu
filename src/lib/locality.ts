@@ -365,9 +365,20 @@ const ORG_OVERRIDE_NORMALIZED: Map<string, RomanianCounty> = new Map(
   Object.entries(ORG_OVERRIDES).map(([k, v]) => [diacriticless(k), v]),
 )
 
+export interface DeriveCountyOptions {
+  // Skip the NATIONAL_PATTERNS branch that routes "Ministerul X", "Agentia
+  // Nationala Y", etc. to Bucuresti. Consumers that prefer national-scope
+  // institutions to stay in their own "Național" bucket (the /proceduri
+  // page) pass true; the admin/template surface keeps the default false
+  // because it folds national bodies into Bucuresti for proximity to their
+  // HQ city.
+  skipNationalPatterns?: boolean
+}
+
 export function deriveCountyFromOrg(
   organization: string | null | undefined,
   providedCity?: string | null,
+  options: DeriveCountyOptions = {},
 ): RomanianCounty | undefined {
   if (!organization) return undefined
 
@@ -387,8 +398,10 @@ export function deriveCountyFromOrg(
     }
   }
 
-  for (const re of NATIONAL_PATTERNS) {
-    if (re.test(organization)) return 'Bucuresti'
+  if (!options.skipNationalPatterns) {
+    for (const re of NATIONAL_PATTERNS) {
+      if (re.test(organization)) return 'Bucuresti'
+    }
   }
 
   for (const { key, re } of LOCALITY_MATCHERS) {
