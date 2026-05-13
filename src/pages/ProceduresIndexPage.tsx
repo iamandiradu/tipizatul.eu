@@ -204,24 +204,28 @@ export default function ProceduresIndexPage() {
   }, [])
 
   // Build a haystack per procedure once. Search is diacritic-insensitive and
-  // matches across title, institution, county.
+  // matches across title, institution, county. Procedures with zero documents
+  // are scrape artifacts — nothing to fill, nothing to download — so they're
+  // dropped here rather than displayed as empty rows.
   const indexed = useMemo(() => {
     if (!payload) return []
-    return Object.values(payload.procedures).map((p) => ({
-      procedure: p,
-      county: procedureCounty(p),
-      haystack: diacriticless(
-        [p.title ?? '', p.institution ?? '', procedureCounty(p)].join(' '),
-      ),
-    }))
+    return Object.values(payload.procedures)
+      .filter((p) => p.documents.length > 0)
+      .map((p) => ({
+        procedure: p,
+        county: procedureCounty(p),
+        haystack: diacriticless(
+          [p.title ?? '', p.institution ?? '', procedureCounty(p)].join(' '),
+        ),
+      }))
   }, [payload])
 
   const presentCountyList = useMemo(() => {
     const set = new Set<string>()
     for (const e of indexed) set.add(e.county)
     const sorted = [...set].sort((a, b) => {
-      if (a === NATIONAL_COUNTY) return 1
-      if (b === NATIONAL_COUNTY) return -1
+      if (a === NATIONAL_COUNTY) return -1
+      if (b === NATIONAL_COUNTY) return 1
       return a.localeCompare(b, 'ro')
     })
     return sorted
@@ -276,7 +280,7 @@ export default function ProceduresIndexPage() {
     )
   }
 
-  const totalProcedures = Object.keys(payload.procedures).length
+  const totalProcedures = indexed.length
   const isSearching = debouncedSearch.trim().length > 0
   const isFiltering = isSearching || county !== ALL_COUNTIES
   // Mirror CatalogPage thresholds — broad searches that would mount thousands

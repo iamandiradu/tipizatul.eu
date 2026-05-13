@@ -18,8 +18,16 @@
  *   node scripts/edirect/patch-template-counties.mjs --limit 100
  */
 
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'node:path'
+import { config as loadDotenv } from 'dotenv'
 import admin from 'firebase-admin'
 import { deriveCountyFromOrg } from './lib/locality-county.mjs'
+
+// Load repo-root .env.local so credentials don't need to be exported manually.
+const __dirname = dirname(fileURLToPath(import.meta.url))
+loadDotenv({ path: resolve(__dirname, '../../.env.local') })
+loadDotenv({ path: resolve(__dirname, '../../.env') })
 
 const args = process.argv.slice(2)
 function getArg(name) {

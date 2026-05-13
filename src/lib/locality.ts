@@ -1,19 +1,16 @@
-// Romanian locality → county mapping for institutions whose `county` field is
-// missing in index.json. Covers every locality that appears as a substring in
-// the 331 institution names without a county. County names use the canonical
-// ASCII forms used elsewhere in the corpus (e.g. "Iasi", "Caras-Severin").
-//
-// When a locality has homonyms in multiple counties, we pick the largest /
-// most prominent one (e.g. "Stefanesti" → Botosani, the town, not the smaller
-// commune in Arges). That bias is fine because the corpus is dominated by
-// administrative bodies tied to the bigger settlement.
+// Runtime fallback for resolving a template's county from its institution
+// name when the `county` field is missing. Mirrors the offline backfill in
+// scripts/edirect/lib/locality-county.mjs — the .mjs version writes county
+// into Firestore via `patch-template-counties.mjs`, this version groups the
+// catalog correctly even before that script has run.
 //
 // IMPORTANT: keep the three data tables (LOCALITY_TO_COUNTY,
-// NATIONAL_PATTERNS, ORG_OVERRIDES) in sync with src/lib/locality.ts — the
-// runtime catalog page uses the TS copy for the same fallback.
+// NATIONAL_PATTERNS, ORG_OVERRIDES) in sync between the two files.
 
-export const LOCALITY_TO_COUNTY = {
-  // ── County self-references (so "X Judet/Judetean Brăila" resolves) ───────
+import type { RomanianCounty } from './counties'
+
+const LOCALITY_TO_COUNTY: Record<string, RomanianCounty> = {
+  // County self-references so "X Judetean Brăila" resolves to its own county.
   Alba: 'Alba',
   Arad: 'Arad',
   Arges: 'Arges',
@@ -56,7 +53,7 @@ export const LOCALITY_TO_COUNTY = {
   Vaslui: 'Vaslui',
   Vrancea: 'Vrancea',
 
-  // ── Municipalities, towns, communes mentioned in institution names ───────
+  // Municipalities, towns, communes that appear in institution names.
   Abrud: 'Alba',
   Aiud: 'Alba',
   'Alba Iulia': 'Alba',
@@ -75,7 +72,6 @@ export const LOCALITY_TO_COUNTY = {
   Bontida: 'Cluj',
   Borsa: 'Maramures',
   Borsec: 'Harghita',
-  Botosani: 'Botosani',
   Bragadiru: 'Ilfov',
   Brosteni: 'Suceava',
   Budesti: 'Calarasi',
@@ -90,11 +86,10 @@ export const LOCALITY_TO_COUNTY = {
   Ciochina: 'Ialomita',
   Ciorogarla: 'Ilfov',
   Ciuruleasa: 'Alba',
-  'Cisnadie': 'Sibiu',
+  Cisnadie: 'Sibiu',
   'Cluj-Napoca': 'Cluj',
   Codlea: 'Brasov',
   Comisani: 'Dambovita',
-  Constanta: 'Constanta',
   Corabia: 'Olt',
   'Costache Negri': 'Galati',
   Craiova: 'Dolj',
@@ -141,7 +136,7 @@ export const LOCALITY_TO_COUNTY = {
   Moreni: 'Dambovita',
   'Movila Miresii': 'Braila',
   Murighiol: 'Tulcea',
-  'Negresti': 'Vaslui',
+  Negresti: 'Vaslui',
   'Negru Voda': 'Constanta',
   Nehoiu: 'Buzau',
   Nucet: 'Bihor',
@@ -186,7 +181,7 @@ export const LOCALITY_TO_COUNTY = {
   Sulina: 'Tulcea',
   Tamaseni: 'Neamt',
   Tandarei: 'Ialomita',
-  'Targoviste': 'Dambovita',
+  Targoviste: 'Dambovita',
   'Targu Bujor': 'Galati',
   'Targu Carbunesti': 'Gorj',
   'Targu-Jiu': 'Gorj',
@@ -195,7 +190,7 @@ export const LOCALITY_TO_COUNTY = {
   Tecuci: 'Galati',
   Techirghiol: 'Constanta',
   Telciu: 'Bistrita-Nasaud',
-  'Ticleni': 'Gorj',
+  Ticleni: 'Gorj',
   'Ticvaniu Mare': 'Caras-Severin',
   Timisoara: 'Timis',
   Tismana: 'Gorj',
@@ -215,9 +210,8 @@ export const LOCALITY_TO_COUNTY = {
 // Patterns that signal a national / central-government institution. We map
 // these to "Bucuresti" because that's where the HQ sits and where users would
 // look in the catalog. Order matters: the first match wins.
-export const NATIONAL_PATTERNS = [
+const NATIONAL_PATTERNS: RegExp[] = [
   /^Ministerul\b/i,
-  /^Ministerul\s/i,
   /^Agentia\s+Nationala\b/i,
   /^Autoritatea\s+Nationala\b/i,
   /^Autoritatea\s+(Aeronautica|Feroviara|Navala|Rutiera)\b/i,
@@ -241,7 +235,7 @@ export const NATIONAL_PATTERNS = [
   /^Ordinul\s+(Arhitectilor|Asistentilor|Tehnicienilor)/i,
   /^Uniunea\s+Nationala\b/i,
   /^Asociatia\s+Nationala\b/i,
-  /Romania\s*[-–]?\s*(SA|S\.A\.)?\s*$/i, // tail-like "SC X SA Romania" — careful
+  /Romania\s*[-–]?\s*(SA|S\.A\.)?\s*$/i,
   /^Arhivele\s+(Nationale|Militare)\b/i,
   /^Registrul\s+(Auto|Urbanistilor)\b/i,
   /^Serviciul\s+Roman\b/i,
@@ -257,12 +251,9 @@ export const NATIONAL_PATTERNS = [
   /^Camera\s+Consultantilor\b/i,
 ]
 
-// Sector institutions → Bucuresti.
-export const SECTOR_PATTERN = /\bSector(?:ul|ului)?\s*\d\b|\bSector\s+\d\b/i
+const SECTOR_PATTERN = /\bSector(?:ul|ului)?\s*\d\b|\bSector\s+\d\b/i
 
-// Specific organization → county overrides for cases the generic logic gets
-// wrong or that don't fit any pattern (universities with city baked in, etc.).
-export const ORG_OVERRIDES = {
+const ORG_OVERRIDES: Record<string, RomanianCounty> = {
   'S.C. APA PROD S.A. Deva': 'Hunedoara',
   'Aquatim S.A.': 'Timis',
   'CPL Concordia Filiala Cluj România SRL': 'Cluj',
@@ -350,53 +341,84 @@ export const ORG_OVERRIDES = {
   'Ministerul Apararii Nationale - Spitalul Militar de Urgenta Dr. Ion Jianu  Pitesti': 'Arges',
 }
 
-function diacriticless(s) {
+function diacriticless(s: string): string {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 }
 
-const LOCALITY_KEYS = Object.keys(LOCALITY_TO_COUNTY)
-  .sort((a, b) => b.length - a.length)
-  .map((key) => ({ key, needle: diacriticless(key) }))
-
-const ORG_OVERRIDE_NORMALIZED = new Map(
-  Object.entries(ORG_OVERRIDES).map(([k, v]) => [diacriticless(k), v]),
-)
-
-function escapeRegex(s) {
+function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-export function deriveCountyFromOrg(institution, providedCity) {
-  if (!institution) return undefined
+// Sort longest-first so multi-word localities ("Cluj-Napoca", "Alba Iulia")
+// are tried before any single-word locality that would partially match. Each
+// entry pre-compiles its word-boundary regex once at module load.
+const LOCALITY_MATCHERS: Array<{ key: string; needle: string; re: RegExp }> = Object.keys(
+  LOCALITY_TO_COUNTY,
+)
+  .sort((a, b) => b.length - a.length)
+  .map((key) => {
+    const needle = diacriticless(key)
+    return { key, needle, re: new RegExp(`\\b${escapeRegex(needle)}\\b`) }
+  })
 
-  // 1. Explicit override wins (diacritic-insensitive).
-  const normInst = diacriticless(institution)
-  if (ORG_OVERRIDE_NORMALIZED.has(normInst)) return ORG_OVERRIDE_NORMALIZED.get(normInst)
+const ORG_OVERRIDE_NORMALIZED: Map<string, RomanianCounty> = new Map(
+  Object.entries(ORG_OVERRIDES).map(([k, v]) => [diacriticless(k), v]),
+)
 
-  // 2. Bucharest sectors are easy.
-  if (SECTOR_PATTERN.test(institution)) return 'Bucuresti'
+export interface DeriveCountyOptions {
+  // Skip the NATIONAL_PATTERNS branch that routes "Ministerul X", "Agentia
+  // Nationala Y", etc. to Bucuresti. Consumers that prefer national-scope
+  // institutions to stay in their own "Național" bucket (the /proceduri
+  // page) pass true; the admin/template surface keeps the default false
+  // because it folds national bodies into Bucuresti for proximity to their
+  // HQ city.
+  skipNationalPatterns?: boolean
+}
 
-  // 3. Use the providedCity from index.json when we have a mapping for it.
+// Detect institutions that are national in scope by matching the curated
+// NATIONAL_PATTERNS. Lets consumers (e.g. procedureCounty) elevate ministries,
+// agencies, professional colleges, etc. to the Național bucket before
+// falling back to address-based text derivation that would otherwise pull
+// them into Bucuresti (because the eDirect scrape writes the HQ city into
+// institutiaResponsabila).
+export function isNationalInstitution(
+  organization: string | null | undefined,
+): boolean {
+  if (!organization) return false
+  return NATIONAL_PATTERNS.some((re) => re.test(organization))
+}
+
+export function deriveCountyFromOrg(
+  organization: string | null | undefined,
+  providedCity?: string | null,
+  options: DeriveCountyOptions = {},
+): RomanianCounty | undefined {
+  if (!organization) return undefined
+
+  const normInst = diacriticless(organization)
+
+  const override = ORG_OVERRIDE_NORMALIZED.get(normInst)
+  if (override) return override
+
+  if (SECTOR_PATTERN.test(organization)) return 'Bucuresti'
+
   if (providedCity) {
     const direct = LOCALITY_TO_COUNTY[providedCity]
     if (direct) return direct
-    // try diacriticless lookup
     const cityDia = diacriticless(providedCity)
-    for (const { key, needle } of LOCALITY_KEYS) {
+    for (const { key, needle } of LOCALITY_MATCHERS) {
       if (needle === cityDia) return LOCALITY_TO_COUNTY[key]
     }
   }
 
-  // 4. National-institution patterns → Bucuresti.
-  for (const re of NATIONAL_PATTERNS) {
-    if (re.test(institution)) return 'Bucuresti'
+  if (!options.skipNationalPatterns) {
+    for (const re of NATIONAL_PATTERNS) {
+      if (re.test(organization)) return 'Bucuresti'
+    }
   }
 
-  // 5. Look for any locality token in the institution name.
-  const hay = diacriticless(institution)
-  for (const { key, needle } of LOCALITY_KEYS) {
-    const re = new RegExp(`\\b${escapeRegex(needle)}\\b`)
-    if (re.test(hay)) return LOCALITY_TO_COUNTY[key]
+  for (const { key, re } of LOCALITY_MATCHERS) {
+    if (re.test(normInst)) return LOCALITY_TO_COUNTY[key]
   }
 
   return undefined

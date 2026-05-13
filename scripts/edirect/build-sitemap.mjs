@@ -20,9 +20,12 @@ import { writeFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { gunzipSync } from 'node:zlib'
+import { config as loadDotenv } from 'dotenv'
 import admin from 'firebase-admin'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+loadDotenv({ path: resolve(__dirname, '../../.env.local') })
+loadDotenv({ path: resolve(__dirname, '../../.env') })
 const SITEMAP_OUT = resolve(__dirname, '../../public/sitemap.xml')
 
 const args = process.argv.slice(2)

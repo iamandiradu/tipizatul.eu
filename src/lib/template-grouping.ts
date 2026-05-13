@@ -1,4 +1,5 @@
 import { ROMANIAN_COUNTIES, canonicalizeCounty, deriveCountyFromText } from '@/lib/counties'
+import { deriveCountyFromOrg } from '@/lib/locality'
 
 export const NO_COUNTY = 'Național / Necunoscut'
 export const NO_ORG = 'Altele'
@@ -14,17 +15,27 @@ export interface GroupableTemplate {
 
 export function templateCounty(t: GroupableTemplate): string {
   if (t.county) {
+    const raw = t.county.trim()
+    // Explicit "Național" tag means a deliberate, non-county-based institution
+    // (e.g. a national professional college). Keep it in the National bucket
+    // even if its org name would otherwise pattern-match to Bucharest.
+    if (diacriticless(raw) === 'national') return NO_COUNTY
     // Normalize "București" / "BUCURESTI" / "Bucuresti" all to the same bucket;
     // fall back to text-derivation when the value has extra wording like
     // "Municipiul București"; finally keep the raw value so unknown counties
     // still group together with themselves.
-    return (
-      canonicalizeCounty(t.county) ||
-      deriveCountyFromText(t.county) ||
-      t.county
-    )
+    return canonicalizeCounty(raw) || deriveCountyFromText(raw) || raw
   }
-  return deriveCountyFromText(`${t.organization ?? ''} ${t.name}`) || NO_COUNTY
+  // Without a county, the organization name itself usually carries enough
+  // signal: a primărie names its locality ("Primaria Onesti"), a ministry
+  // matches a national pattern, etc. Falling back only to county-name text
+  // matching leaves every primărie from a non-county-named town in the
+  // National bucket — the locality lookup pulls them back to the right county.
+  return (
+    deriveCountyFromOrg(t.organization, undefined) ||
+    deriveCountyFromText(`${t.organization ?? ''} ${t.name}`) ||
+    NO_COUNTY
+  )
 }
 
 export function diacriticless(s: string): string {

@@ -1,5 +1,7 @@
 import type { Procedure } from '@/types/template'
 import { canonicalizeCounty, deriveCountyFromText } from '@/lib/counties'
+import { deriveCountyFromOrg, isNationalInstitution } from '@/lib/locality'
+import { diacriticless } from '@/lib/template-grouping'
 
 export interface ProceduresPayload {
   builtAt: string
@@ -51,14 +53,26 @@ export const NATIONAL_COUNTY = 'Național'
 // tree. Falls back to text-derivation, then the raw value, then "Național".
 export function procedureCounty(p: Procedure): string {
   if (p.county) {
-    return (
-      canonicalizeCounty(p.county) ||
-      deriveCountyFromText(p.county) ||
-      p.county
-    )
+    const raw = p.county.trim()
+    // Honor explicit "Național" tagging (mirrors templateCounty) so a
+    // deliberately non-county-based institution stays in this bucket.
+    if (diacriticless(raw) === 'national') return NATIONAL_COUNTY
+    return canonicalizeCounty(raw) || deriveCountyFromText(raw) || raw
   }
-  // Some entries miss an index.json join — try to recover from the
-  // institutiaResponsabila string (often suffixed with "Județ X").
+  // Without a county, the institution name carries most of the signal.
+  // The locality lookup pulls primării from non-county-named towns ("Onești",
+  // "Lugoj", …) back to their actual county. We skip the national-pattern
+  // branch here so the national check below stays authoritative.
+  const fromOrg = deriveCountyFromOrg(p.institution, p.city, {
+    skipNationalPatterns: true,
+  })
+  if (fromOrg) return fromOrg
+  // National-scope institutions (Ministerul X, Agentia Nationala Y, …) belong
+  // in *Național* regardless of where they're headquartered. Check before the
+  // institutiaResponsabila text fallback, otherwise the scrape's
+  // "Județ BUCURESTI" address suffix would pull them all into Bucuresti.
+  if (isNationalInstitution(p.institution)) return NATIONAL_COUNTY
+  // Last resort: scan institutiaResponsabila (often suffixed with "Județ X").
   const fromInst = deriveCountyFromText(p.fields?.institutiaResponsabila)
   return fromInst || NATIONAL_COUNTY
 }
@@ -89,9 +103,10 @@ export function groupByCountyAndInstitution(payload: ProceduresPayload): CountyG
       return { county, institutions, total }
     })
     .sort((a, b) => {
-      // Pin Național to the bottom; otherwise alphabetical.
-      if (a.county === NATIONAL_COUNTY) return 1
-      if (b.county === NATIONAL_COUNTY) return -1
+      // Pin Național to the top — its national-scope institutions are the
+      // most universally relevant section and benefit from being seen first.
+      if (a.county === NATIONAL_COUNTY) return -1
+      if (b.county === NATIONAL_COUNTY) return 1
       return a.county.localeCompare(b.county, 'ro')
     })
 }
