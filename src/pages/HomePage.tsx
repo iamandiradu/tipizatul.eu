@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, FileText, Stamp, Printer, Clock, Wifi } from 'lucide-react'
 import { fetchCatalog } from '@/lib/firestore'
@@ -36,16 +36,13 @@ function PaperSheet({
   )
 }
 
-// Counts a number up from 0 to `target` over `durationMs`. Hooks into
-// `prefers-reduced-motion` and renders the final number directly when set.
+// Counts a number up from 0 to `target` over `durationMs`. Re-animates whenever
+// `target` changes (e.g. the catalog count arrives after an empty first read);
+// honors `prefers-reduced-motion` and renders the final number directly when set.
 function CountUp({ target, durationMs = 1500 }: { target: number; durationMs?: number }) {
   const [n, setN] = useState(0)
-  const startedRef = useRef(false)
 
   useEffect(() => {
-    if (startedRef.current) return
-    startedRef.current = true
-
     const reduce =
       typeof window !== 'undefined' &&
       window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
