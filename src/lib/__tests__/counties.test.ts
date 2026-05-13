@@ -49,4 +49,58 @@ describe('templateCounty', () => {
   it('falls back to NO_COUNTY when nothing matches', () => {
     expect(templateCounty({ id: '1', name: 'no hints' })).toBe(NO_COUNTY)
   })
+
+  it('routes primării to their county via the locality lookup', () => {
+    expect(
+      templateCounty({ id: '1', name: 'cerere', organization: 'Primaria Municipiului Lugoj' }),
+    ).toBe('Timis')
+    expect(
+      templateCounty({ id: '2', name: 'cerere', organization: 'Primaria Onesti' }),
+    ).toBe('Bacau')
+    expect(
+      templateCounty({ id: '3', name: 'cerere', organization: 'Primaria Pitesti' }),
+    ).toBe('Arges')
+  })
+
+  it('routes ministries and other national bodies to Bucuresti', () => {
+    expect(
+      templateCounty({
+        id: '1',
+        name: 'cerere',
+        organization: 'Ministerul Agriculturii si Dezvoltării Rurale',
+      }),
+    ).toBe('Bucuresti')
+    expect(
+      templateCounty({
+        id: '2',
+        name: 'cerere',
+        organization: 'Agentia Nationala de Administrare Fiscala',
+      }),
+    ).toBe('Bucuresti')
+  })
+
+  it('routes Bucharest sector institutions to Bucuresti', () => {
+    expect(
+      templateCounty({ id: '1', name: 'cerere', organization: 'Primaria Sectorului 3' }),
+    ).toBe('Bucuresti')
+  })
+
+  it('treats county="Național" as the National bucket even when the org would otherwise route to Bucuresti', () => {
+    expect(
+      templateCounty({
+        id: '1',
+        name: 'cerere',
+        organization: 'Colegiul Farmaciștilor din România',
+        county: 'Național',
+      }),
+    ).toBe(NO_COUNTY)
+    expect(
+      templateCounty({
+        id: '2',
+        name: 'cerere',
+        organization: 'Colegiul Farmaciștilor din România',
+        county: 'National',
+      }),
+    ).toBe(NO_COUNTY)
+  })
 })
