@@ -23,9 +23,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import json
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -94,27 +96,64 @@ def reset_progress() -> int:
 
 def run_one(
     pdf_path: Path, output_dir: Path, *,
-    provider: str, model: str | None, timeout: float, log_path: Path,
+    provider: str, model: str | None,
+    vision_model: str | None,
+    timeout: float, log_path: Path,
 ) -> dict:
-    """Run extract_digital.py on one PDF; return a result dict."""
-    t0 = time.monotonic()
-    args = [
-        sys.executable, str(SCRIPT_DIR / 'extract_digital.py'),
-        str(pdf_path),
-        '--out', str(output_dir),
-        '--log', str(log_path),
-        '--provider', provider,
-        '--timeout', str(timeout),
-    ]
-    if model:
-        args.extend(['--model', model])
+    """Classify the PDF and run the appropriate path.
 
-    proc = subprocess.run(args, capture_output=True, text=True)
+    Born-digital → extract_digital.py (text LLM, fast).
+    Scan         → scan_pdf.py (vision LLM, slow).
+    Mixed        → extract_digital.py first; if it found < 3 shapes
+                   (likely classifier overconfident on a near-scan),
+                   fall back to scan_pdf.py.
+    """
+    from lib.classify import classify
+    t0 = time.monotonic()
+    cls = classify(str(pdf_path))
+
+    def call(script_name: str, model_override: str | None, extra_args: list[str] | None = None) -> subprocess.CompletedProcess:
+        args = [
+            sys.executable, str(SCRIPT_DIR / script_name),
+            str(pdf_path),
+            '--out', str(output_dir),
+            '--log', str(log_path),
+            '--provider', provider,
+            '--timeout', str(timeout),
+        ]
+        if model_override:
+            args.extend(['--model', model_override])
+        if extra_args:
+            args.extend(extra_args)
+        return subprocess.run(args, capture_output=True, text=True)
+
+    if cls.category == 'scan':
+        path_used = 'scan'
+        proc = call('scan_pdf.py', vision_model)
+    else:
+        path_used = 'digital'
+        proc = call('extract_digital.py', model)
+        # Fallback for mixed PDFs that produced few/no fields via the digital path.
+        if proc.returncode == 0 and cls.category == 'mixed':
+            stem = pdf_path.stem
+            fjp = output_dir / f'{stem}.fields.json'
+            n_fields = 0
+            if fjp.exists():
+                try:
+                    n_fields = len(json.loads(fjp.read_text(encoding='utf-8')).get('fields') or [])
+                except Exception:
+                    pass
+            if n_fields < 3:
+                path_used = 'scan-fallback'
+                proc = call('scan_pdf.py', vision_model)
+
     elapsed = time.monotonic() - t0
     if proc.returncode != 0:
         return {
             'status': 'failed',
             'elapsed_s': round(elapsed, 1),
+            'path': path_used,
+            'category': cls.category,
             'error': (proc.stderr or proc.stdout)[-2000:],
         }
 
@@ -136,6 +175,8 @@ def run_one(
     return {
         'status': 'done',
         'elapsed_s': round(elapsed, 1),
+        'path': path_used,
+        'category': cls.category,
         'fields': fields_count,
         'avg_confidence': avg_conf,
         'needs_review': needs_review,
@@ -149,13 +190,21 @@ def main() -> int:
     parser.add_argument('--out', default=str(DEFAULT_OUT), help='Output dir')
     parser.add_argument('--log', default=str(DEFAULT_LOG), help='Per-file log path')
     parser.add_argument('--provider', choices=['ollama', 'anthropic'], default='ollama')
-    parser.add_argument('--model', default=None, help='Override provider default model')
+    parser.add_argument('--model', default=None, help='Override text-LLM model (born-digital path)')
+    parser.add_argument('--vision-model', default=None,
+                        help='Override vision-LLM model (scan path); default: provider vision default')
     parser.add_argument('--timeout', type=float, default=600,
                         help='Per-PDF HTTP timeout in seconds (default 600)')
     parser.add_argument('--status', action='store_true', help='Print status and exit')
     parser.add_argument('--reset', action='store_true', help='Erase progress and exit')
     parser.add_argument('--save-every', type=int, default=1,
                         help='Save progress every N PDFs (default 1)')
+    parser.add_argument('--concurrency', type=int, default=1,
+                        help='Number of worker threads issuing Ollama '
+                             'requests in parallel (default 1). Each thread '
+                             'consumes ~1 GB of Ollama KV cache; needs Ollama '
+                             'started with OLLAMA_NUM_PARALLEL set to at least '
+                             'this value to actually run concurrently.')
     args = parser.parse_args()
 
     if args.status:
@@ -184,43 +233,62 @@ def main() -> int:
 
     new_done = new_failed = 0
     t_run_start = time.monotonic()
-    try:
-        for i, item in enumerate(pending, 1):
-            pdf_path = Path(item['path'])
-            if not pdf_path.is_file():
-                completed[item['path']] = {
-                    'status': 'skipped',
-                    'elapsed_s': 0.0,
-                    'error': 'source file missing',
-                }
-                continue
+    lock = threading.Lock()
+    completed_count = 0   # combined done+failed, for save-cadence + display
 
+    def process_item(item):
+        nonlocal new_done, new_failed, completed_count
+        pdf_path = Path(item['path'])
+        if not pdf_path.is_file():
+            res = {'status': 'skipped', 'elapsed_s': 0.0,
+                   'error': 'source file missing'}
+        else:
             res = run_one(
                 pdf_path, output_dir,
                 provider=args.provider, model=args.model,
+                vision_model=args.vision_model,
                 timeout=args.timeout, log_path=log_path,
             )
+
+        with lock:
             completed[item['path']] = res
             if res['status'] == 'done':
                 new_done += 1
-            else:
+            elif res['status'] == 'failed':
                 new_failed += 1
-
-            elapsed_run = time.monotonic() - t_run_start
-            rate = (new_done + new_failed) / elapsed_run if elapsed_run > 0 else 0
-            tag = '✓' if res['status'] == 'done' else '✗'
+            completed_count += 1
+            i = completed_count
+            tag = '✓' if res['status'] == 'done' else ('-' if res['status'] == 'skipped' else '✗')
             extras = ''
+            if res.get('path'):
+                extras += f" via {res['path']}"
             if res.get('fields') is not None:
-                extras = f" f={res['fields']} conf={res.get('avg_confidence')}"
-            print(f'[{i}/{len(pending)}] {tag} {pdf_path.name[:70]} '
-                  f'({res["elapsed_s"]}s{extras})')
-
-            if i % max(args.save_every, 1) == 0:
+                extras += f" f={res['fields']} conf={res.get('avg_confidence')}"
+            print(f'[{i}/{len(pending)}] {tag} {pdf_path.name[:60]} '
+                  f'({res["elapsed_s"]}s{extras})', flush=True)
+            if completed_count % max(args.save_every, 1) == 0:
                 save_progress(progress)
+
+    concurrency = max(1, int(args.concurrency))
+    print(f'Concurrency: {concurrency} worker thread(s)')
+    print()
+    try:
+        if concurrency == 1:
+            for item in pending:
+                process_item(item)
+        else:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as pool:
+                # Submit all and wait — exceptions surface via the futures.
+                futures = [pool.submit(process_item, item) for item in pending]
+                for fut in concurrent.futures.as_completed(futures):
+                    exc = fut.exception()
+                    if exc is not None:
+                        print(f'  worker error: {exc}', file=sys.stderr, flush=True)
     except KeyboardInterrupt:
-        print('\nInterrupted — saving progress.')
+        print('\nInterrupted — saving progress.', flush=True)
     finally:
-        save_progress(progress)
+        with lock:
+            save_progress(progress)
 
     print()
     print(f'This run: {new_done} done, {new_failed} failed')
