@@ -63,3 +63,7 @@ graphify-out/
 scripts/edirect/llm/output-opus/
 scripts/edirect/llm/output-chat/
 scripts/edirect/llm/chat-work/
+scripts/edirect/llm/output-corpus/
+scripts/edirect/llm/corpus-batch.queue.json
+scripts/edirect/llm/corpus-batch.progress.json
+scripts/edirect/llm/corpus-batch.log
