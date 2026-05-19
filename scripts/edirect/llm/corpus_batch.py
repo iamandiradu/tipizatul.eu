@@ -68,13 +68,17 @@ def print_status() -> int:
     n_queued = len(queue['queue'])
     n_done = sum(1 for v in completed.values() if v['status'] == 'done')
     n_failed = sum(1 for v in completed.values() if v['status'] == 'failed')
+    n_deferred_scan = sum(1 for v in completed.values() if v['status'] == 'deferred_scan')
+    n_skipped = sum(1 for v in completed.values() if v['status'] == 'skipped')
     n_pending = n_queued - len(completed)
-    print(f'Queue size:    {n_queued}')
+    print(f'Queue size:        {n_queued}')
     deferred = queue.get('deferred_over_cap', queue.get('deferred_over_2mb', 0))
-    print(f'Deferred>cap:  {deferred}')
-    print(f'Completed:     {n_done}')
-    print(f'Failed:        {n_failed}')
-    print(f'Pending:       {n_pending}')
+    print(f'Deferred>cap:      {deferred}')
+    print(f'Completed:         {n_done}')
+    print(f'Failed:            {n_failed}')
+    print(f'Deferred scans:    {n_deferred_scan}')
+    print(f'Skipped (missing): {n_skipped}')
+    print(f'Pending:           {n_pending}')
     if n_done:
         elapsed = sum(v.get('elapsed_s', 0) for v in completed.values())
         avg = elapsed / n_done
@@ -99,6 +103,7 @@ def run_one(
     provider: str, model: str | None,
     vision_model: str | None,
     timeout: float, log_path: Path,
+    skip_scans: bool = False,
 ) -> dict:
     """Classify the PDF and run the appropriate path.
 
@@ -111,6 +116,17 @@ def run_one(
     from lib.classify import classify
     t0 = time.monotonic()
     cls = classify(str(pdf_path))
+
+    # Cheap escape hatch: when scans are being deferred for later, don't
+    # waste GPU time on them. Returns a `deferred_scan` status that the
+    # progress file can filter on later when we want to (re-)run them.
+    if skip_scans and cls.category == 'scan':
+        return {
+            'status': 'deferred_scan',
+            'elapsed_s': round(time.monotonic() - t0, 1),
+            'path': 'skipped',
+            'category': cls.category,
+        }
 
     def call(script_name: str, model_override: str | None, extra_args: list[str] | None = None) -> subprocess.CompletedProcess:
         args = [
@@ -133,8 +149,10 @@ def run_one(
     else:
         path_used = 'digital'
         proc = call('extract_digital.py', model)
-        # Fallback for mixed PDFs that produced few/no fields via the digital path.
-        if proc.returncode == 0 and cls.category == 'mixed':
+        # Fallback for mixed PDFs that produced few/no fields via the digital
+        # path. Disabled when scans are being deferred (no point falling back
+        # to a path we're skipping).
+        if proc.returncode == 0 and cls.category == 'mixed' and not skip_scans:
             stem = pdf_path.stem
             fjp = output_dir / f'{stem}.fields.json'
             n_fields = 0
@@ -205,6 +223,13 @@ def main() -> int:
                              'consumes ~1 GB of Ollama KV cache; needs Ollama '
                              'started with OLLAMA_NUM_PARALLEL set to at least '
                              'this value to actually run concurrently.')
+    parser.add_argument('--skip-scans', action='store_true',
+                        help='Defer pure-scan PDFs (vision LLM path). Useful '
+                             'when running at high concurrency — the vision '
+                             'model does not parallelise well on a single GPU. '
+                             'Skipped PDFs land in the progress file with '
+                             'status=deferred_scan so a later run can pick '
+                             'them up.')
     args = parser.parse_args()
 
     if args.status:
@@ -248,6 +273,7 @@ def main() -> int:
                 provider=args.provider, model=args.model,
                 vision_model=args.vision_model,
                 timeout=args.timeout, log_path=log_path,
+                skip_scans=args.skip_scans,
             )
 
         with lock:
@@ -258,7 +284,8 @@ def main() -> int:
                 new_failed += 1
             completed_count += 1
             i = completed_count
-            tag = '✓' if res['status'] == 'done' else ('-' if res['status'] == 'skipped' else '✗')
+            status_tags = {'done': '✓', 'skipped': '−', 'deferred_scan': '⏸', 'failed': '✗'}
+            tag = status_tags.get(res['status'], '?')
             extras = ''
             if res.get('path'):
                 extras += f" via {res['path']}"
