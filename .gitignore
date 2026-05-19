@@ -61,3 +61,5 @@ scripts/edirect/pdf-from-doc/
 scripts/edirect/*.log
 graphify-out/
 scripts/edirect/llm/output-opus/
+scripts/edirect/llm/output-chat/
+scripts/edirect/llm/chat-work/
