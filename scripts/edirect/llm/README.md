@@ -1,65 +1,68 @@
-# LLM field detector (local + cloud)
+# LLM field detector
 
-Two LLM-driven pipelines for detecting fillable fields in PDFs, sharing
-output schema with [`paddle/detect_fields.py`](../paddle/detect_fields.py)
-so the admin upload page accepts results from any path. Each pipeline
-can run against either **Ollama** (local, free) or the **Anthropic API**
-(cloud, paid, more accurate on hard pages). A hybrid mode runs local
-first and only consults the cloud for shapes the local model wasn't
-confident about.
+LLM-driven pipelines for detecting fillable fields in Romanian admin
+PDFs. Output schema matches
+[`paddle/detect_fields.py`](../paddle/detect_fields.py) so the admin
+upload page accepts results from any path.
 
-| Path                          | When to use                              | Default model            | Speed (M1)      |
-|-------------------------------|------------------------------------------|--------------------------|-----------------|
-| `extract_digital.py`          | Born-digital PDFs                        | `qwen2.5:7b` (text)      | ~120–240 s/page |
-| `scan_pdf.py`                 | Scans (no extractable text)              | `qwen2.5vl:3b` (vision)  | ~20 s/page Metal / 3–5 min CPU |
-| `detect.py` (dispatcher)      | The thing you actually run on the corpus | both                     | classifier-routed |
+Two extraction routes, three ways to drive the LLM:
 
-## Why two paths
+| Extractor              | When to use                              | Default driver           |
+|------------------------|------------------------------------------|--------------------------|
+| `extract_digital.py`   | Born-digital PDFs (has extractable text) | local Ollama (free)      |
+| `scan_pdf.py`          | Scans (no extractable text)              | local Ollama vision      |
+| `detect.py`            | Dispatcher — classify then route         | both                     |
 
-For a born-digital PDF, PyMuPDF can give us every word's bounding box
-and every vector line/rectangle for free. Sending that as a compact JSON
-to a text-only LLM is 10× cheaper than rasterising the page and asking a
+| Driver                 | What it is                               | Speed (M1)                                 |
+|------------------------|------------------------------------------|--------------------------------------------|
+| **Local** (`--provider ollama`)        | Ollama on this machine. Free, private.   | text: ~120–240 s/page · vision: ~20 s/page |
+| **Chat** (`dump_struct.py` + `chat_apply.py`) | You paste the page structure into a chat window with a strong model (Claude in chat, ChatGPT, etc.), it produces a labels.json file, you apply. Best quality, no API key required. | bounded by chat — ~minutes/page interactively |
+| **API** (`--provider anthropic`)       | Direct Anthropic API call. Needs `ANTHROPIC_API_KEY`. Same quality as chat but automated. | ~5–15 s/page |
+
+The local and API drivers can run in **hybrid** mode: local first,
+then cloud fills the gaps where local confidence was below threshold.
+That keeps the bulk of the corpus free and spends cloud budget only on
+hard pages.
+
+## Why two extractors
+
+For a born-digital PDF, PyMuPDF gives us every word's bounding box and
+every vector line/rectangle for free. Sending that as compact JSON to a
+text-only LLM is much cheaper than rasterising the page and asking a
 vision LLM to OCR it back — and more accurate, because the model isn't
 guessing at pixels.
 
-For a scan, there is no extractable text. We have to rasterise and use a
-vision model.
+For a scan, there is no extractable text. We have to rasterise and use
+a vision model.
 
 `detect.py` classifies the input and routes accordingly.
 
-## Local vs cloud — choosing a provider
+## Which driver to use
 
-Both pipelines accept `--provider {ollama,anthropic}` and a matching
-`--model`. The same prompt + JSON parser is used regardless of transport.
+- **Just trying this out / small batch** → chat driver. No API costs,
+  no Ollama setup beyond what you already have. You're the loop.
+- **Large batch (~1k+ PDFs), price-sensitive** → local driver
+  (qwen2.5:7b). Accept lower label quality on dense forms — the
+  needsReview flag catches them.
+- **Large batch, quality-sensitive, have API key** → hybrid
+  (`--provider ollama --escalate-below 0.85`). Local does the easy
+  fields free; cloud (sonnet-4-6) does the rest.
+- **Always-cloud** (`--provider anthropic`) is the fastest but most
+  expensive — ~$0.10–$0.45 per page depending on model.
 
-- `ollama` — runs entirely on this machine. Free, private, slow. Quality
-  on dense Romanian forms is mixed: qwen2.5:7b gets ~85 % of obvious
-  labels but makes systematic positional errors on dense address rows
-  (off-by-one on bl/sc/ap-style fields) and verbose-quote errors on
-  signature/data fields.
-- `anthropic` — runs via `api.anthropic.com`. Paid per-token, much
-  faster (no model load, ~5–15 s/page), more accurate. Needs
-  `ANTHROPIC_API_KEY` (get one at https://console.anthropic.com).
-- **Hybrid** (recommended) — `--provider ollama --escalate-below 0.85`
-  runs local first, then re-asks the cloud only for shapes with
-  combined confidence below the threshold. Keeps most pages free,
-  spends cloud budget only on the hard ones.
+### Cost guidance for the API driver
 
-### Cost guidance (current Anthropic pricing, mid-2026)
+Per-page cost for the structured-input prompt (~16k input, ~3k output):
 
-Approximate per-page cost for a structured-input prompt (~16k input
-tokens, ~3k output tokens):
-
-| Model              | Per page | Per 1k pages |
-|--------------------|---------:|-------------:|
-| `claude-haiku-4-5` | ~$0.03   | ~$30         |
-| `claude-sonnet-4-6`| ~$0.10   | ~$100        |
-| `claude-opus-4-7`  | ~$0.45   | ~$450        |
+| Model               | Per page | Per 1k pages |
+|---------------------|---------:|-------------:|
+| `claude-haiku-4-5`  | ~$0.03   | ~$30         |
+| `claude-sonnet-4-6` | ~$0.10   | ~$100        |
+| `claude-opus-4-7`   | ~$0.45   | ~$450        |
 
 Hybrid runs typically escalate 20–30 % of pages on a born-digital
 corpus, so the effective cost is roughly a third of the always-cloud
-number. Sonnet is the recommended escalation default — large quality
-jump over qwen2.5:7b without Opus pricing.
+number.
 
 ## Prerequisites (M1/M2/M3 Mac)
 
@@ -107,7 +110,46 @@ cd ../llm
 
 ## Usage
 
-### Dispatcher (run this on the corpus)
+### Chat-driven workflow (no API key required)
+
+This is the path to use when you want Claude/ChatGPT/etc. quality
+without an API subscription. The model lives in your chat tab; this
+pipeline just relays files in and out.
+
+```bash
+# 1. Dump page structure for one PDF or a whole directory.
+#    Writes <stem>.struct.json (read by the LLM) and an empty
+#    <stem>.labels.json template (filled by the LLM) into ./chat-work/.
+python dump_struct.py "../paddle/eval-set/Cerere tip abonament parcare cod PPF_4932313.pdf"
+python dump_struct.py --batch ../paddle/eval-set
+
+# 2. Open <stem>.struct.json in your chat session. Ask the model:
+#    "Read this and fill in <stem>.labels.json with one entry per shape:
+#     {shape_id, type, label, confidence}". Paste the JSON it returns
+#    into the labels.json file on disk.
+
+# 3. Apply.
+python chat_apply.py --batch ./chat-work --pdf-dir ../paddle/eval-set --out ./output-chat
+# Or single-file mode:
+python chat_apply.py file.pdf labels.json output.pdf
+```
+
+The labels.json schema is:
+
+```json
+{
+  "fields": [
+    {"shape_id": 0, "type": "text",     "label": "CNP",                "confidence": 0.97},
+    {"shape_id": 1, "type": "checkbox", "label": "Sunt de acord",       "confidence": 0.92}
+  ]
+}
+```
+
+A shape not present in `labels.json` is still emitted as an unlabelled
+fillable blank — partial labels are fine, you don't have to do every
+shape in one chat session.
+
+### Dispatcher (corpus run)
 
 ```bash
 python detect.py path/to/file.pdf
@@ -118,20 +160,22 @@ python detect.py file.pdf --force-scan
 python detect.py file.pdf -- --dry-run --verbose
 ```
 
-### Born-digital path
+### Born-digital path (local Ollama)
 
 ```bash
-# Local-only (default)
 python extract_digital.py "../paddle/eval-set/Cerere tip abonament parcare cod PPF_4932313.pdf" --verbose
 python extract_digital.py --batch ../paddle/eval-set --dry-run
+```
 
-# Cloud-only (fast, paid)
+### Born-digital path (Anthropic API — only if you have a key)
+
+```bash
 export ANTHROPIC_API_KEY=<your-key>
 python extract_digital.py file.pdf --provider anthropic
 python extract_digital.py file.pdf --provider anthropic --model claude-haiku-4-5   # cheaper
 python extract_digital.py file.pdf --provider anthropic --model claude-opus-4-7    # strongest
 
-# Hybrid: local first, cloud fills in low-confidence shapes (recommended for batches)
+# Hybrid: local first, cloud fills in low-confidence shapes
 python extract_digital.py --batch ../paddle/eval-set \
   --escalate-below 0.85 --escalate-provider anthropic --escalate-model claude-sonnet-4-6
 ```
@@ -140,8 +184,8 @@ python extract_digital.py --batch ../paddle/eval-set \
 
 ```bash
 python scan_pdf.py path/to/scan.pdf --verbose
-python scan_pdf.py file.pdf --provider anthropic    # uses sonnet-4-6 by default
-python scan_pdf.py file.pdf --dpi 200       # bump for small fonts
+python scan_pdf.py file.pdf --dpi 200                  # bump for small fonts
+python scan_pdf.py file.pdf --provider anthropic       # if you have a key
 ```
 
 ## Common CLI flags
@@ -149,11 +193,11 @@ python scan_pdf.py file.pdf --dpi 200       # bump for small fonts
 | Flag                  | Default                  | Used by      |
 |-----------------------|--------------------------|--------------|
 | `<file>`              | —                        | all          |
-| `--batch <dir>`       | —                        | `extract_*`, `scan_*`, `detect` |
-| `--out <dir>`         | `./output`               | `extract_*`, `scan_*` |
+| `--batch <dir>`       | —                        | `dump_struct`, `chat_apply`, `extract_*`, `scan_*`, `detect` |
+| `--out <dir>`         | `./output`               | `extract_*`, `scan_*`, `chat_apply`, `dump_struct` |
 | `--log <path>`        | `./detections.log`       | `extract_*`, `scan_*` |
 | `--provider`          | `ollama`                 | `extract_*`, `scan_*` |
-| `--model <tag>`       | provider default         | `extract_*`, `scan_*` |
+| `--model <tag>`       | provider default         | `extract_*`, `scan_*`, `chat_apply` |
 | `--ollama-host`       | `http://localhost:11434` | `extract_*`, `scan_*` |
 | `--api-key-env`       | `ANTHROPIC_API_KEY`      | `extract_*`, `scan_*` |
 | `--timeout <s>`       | 300 (digital), 600 (scan)| `extract_*`, `scan_*` |
@@ -161,6 +205,7 @@ python scan_pdf.py file.pdf --dpi 200       # bump for small fonts
 | `--escalate-provider` | `anthropic`              | `extract_*` only |
 | `--escalate-model`    | provider default         | `extract_*` only |
 | `--escalate-timeout`  | 300                      | `extract_*` only |
+| `--pdf-dir <dir>`     | —                        | `chat_apply --batch` only |
 | `--dpi <n>`           | 150                      | `scan_*` only |
 | `--dry-run`           | off                      | `extract_*`, `scan_*` |
 | `--verbose`           | off                      | `extract_*`, `scan_*` |
@@ -184,9 +229,10 @@ Both extractors write the same shape:
     hybrid run.
   - `cloudUsage` (when cloud was called) — `{provider, inputTokens,
     outputTokens}`. Use to track spend per file.
-- Per-field `context` records which provider produced the label:
-  `llm_digital` (primary pass), `escalated_anthropic` (cloud fallback
-  in hybrid mode), `shape_only` (no label, just detected geometry).
+- Per-field `context` records which driver produced the label:
+  `llm_digital` (local primary pass), `escalated_anthropic` (cloud
+  fallback in hybrid mode), `chat` (chat-driven label via chat_apply.py),
+  `shape_only` (no label, just detected geometry).
 - `detections.log` — append-only, same line format as paddle's log so a
   single tail covers everything.
 
