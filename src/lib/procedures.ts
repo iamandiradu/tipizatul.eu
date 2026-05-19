@@ -1,4 +1,4 @@
-import type { Procedure } from '@/types/template'
+import type { Procedure, SlimTemplate } from '@/types/template'
 import { canonicalizeCounty, deriveCountyFromText } from '@/lib/counties'
 import { deriveCountyFromOrg, isNationalInstitution } from '@/lib/locality'
 import { diacriticless } from '@/lib/template-grouping'
@@ -111,8 +111,42 @@ export function groupByCountyAndInstitution(payload: ProceduresPayload): CountyG
     })
 }
 
-// Counts only procedures whose primary input forms include a fillable PDF —
-// i.e. something the user can actually open and complete via Tipizatul.
-export function countFillablePdfs(p: Procedure): number {
-  return p.documents.filter((d) => d.downloadUrl && /\.pdf($|\?)/i.test(d.downloadUrl)).length
+// Indexes the templates catalog by the two keys we use to pair a procedure
+// document with an editable Template — eDirectDocId (per-document linkage)
+// and procedureId (procedure-level fallback for orphans). Archived templates
+// are dropped here so callers don't have to re-check.
+export interface TemplateIndex {
+  byDocId: Map<string, SlimTemplate>
+  byProcedureId: Map<string, SlimTemplate[]>
+}
+
+export function buildTemplateIndex(catalog: SlimTemplate[]): TemplateIndex {
+  const byDocId = new Map<string, SlimTemplate>()
+  const byProcedureId = new Map<string, SlimTemplate[]>()
+  for (const t of catalog) {
+    if (t.archived) continue
+    if (t.eDirectDocId) byDocId.set(t.eDirectDocId, t)
+    if (t.procedureId) {
+      const bucket = byProcedureId.get(t.procedureId)
+      if (bucket) bucket.push(t)
+      else byProcedureId.set(t.procedureId, [t])
+    }
+  }
+  return { byDocId, byProcedureId }
+}
+
+// Number of editable templates a user can actually open from this procedure's
+// detail page — the union of per-document matches (eDirectDocId) and
+// procedure-level orphans (procedureId). Mirrors the forms[] computation in
+// ProcedureDetailPage so the index count never lies about reachability.
+export function countEditableDocuments(p: Procedure, idx: TemplateIndex): number {
+  const seen = new Set<string>()
+  for (const d of p.documents) {
+    if (!d.eDirectDocId) continue
+    const t = idx.byDocId.get(d.eDirectDocId)
+    if (t) seen.add(t.id)
+  }
+  const orphans = idx.byProcedureId.get(p.procedureId)
+  if (orphans) for (const t of orphans) seen.add(t.id)
+  return seen.size
 }
