@@ -1,23 +1,28 @@
 #!/usr/bin/env python3
 """Born-digital path: extract words + candidate shapes from a PDF, ask a
-local text-only LLM which shapes are fillable fields, write the AcroForm.
+text LLM which shapes are fillable fields, write the AcroForm.
 
-Far faster than the vision path (~2–4 s/page on M1 with qwen2.5:3b) and
-much more accurate on born-digital PDFs because it grounds the model in
-the page's actual geometry instead of asking it to read pixels.
+Far faster than the vision path because it grounds the model in the
+page's actual geometry instead of asking it to read pixels. Works with
+either a local LLM via Ollama (free, slow) or the Anthropic API
+(paid, fast, more accurate). Supports a hybrid mode where local runs
+first and the cloud only fills in shapes the local model wasn't
+confident about.
 
 Output schema is identical to scan_pdf.py / paddle's detect_fields.py.
 
 Usage:
   python extract_digital.py <input.pdf>
   python extract_digital.py --batch <dir>
-  python extract_digital.py file.pdf --model qwen2.5:7b --verbose
+  python extract_digital.py file.pdf --provider anthropic --model claude-sonnet-4-6
+  python extract_digital.py file.pdf --provider ollama --escalate-below 0.85 --escalate-provider anthropic
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -25,9 +30,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from lib.classify import classify
-from lib.ollama_client import OllamaError, ensure_model_available, generate_json
 from lib.page_render import extract_text_tokens
 from lib.pdf_structure import PageStructure, Shape, extract, page_to_prompt_dict
+from lib.provider import (
+    DEFAULT_TEXT_MODELS, ProviderError, ProviderResult,
+    ensure_ready, generate_json,
+)
 from lib.shape_prompt import LabelledShape, build_prompt, parse_response
 
 
@@ -36,7 +44,6 @@ DEFAULT_OUTPUT = SCRIPT_DIR / 'output'
 DEFAULT_LOG = SCRIPT_DIR / 'detections.log'
 NODE_WRITER = SCRIPT_DIR.parent / 'apply-fields.mjs'
 
-DEFAULT_MODEL = 'qwen2.5:7b'
 DEFAULT_HOST = 'http://localhost:11434'
 
 REVIEW_CONFIDENCE_THRESHOLD = 0.95
@@ -46,9 +53,15 @@ def process_file(
     pdf_path: Path,
     output_dir: Path,
     *,
+    provider: str,
     model: str,
     host: str,
+    api_key_env: str,
     timeout: float,
+    escalate_below: float | None,
+    escalate_provider: str | None,
+    escalate_model: str | None,
+    escalate_timeout: float,
     verbose: bool,
     dry_run: bool,
 ) -> dict:
@@ -59,19 +72,58 @@ def process_file(
 
     all_fields_json: list[dict] = []
     page_errors: list[str] = []
+    cost_input_tokens = 0
+    cost_output_tokens = 0
+    cost_provider = None
 
     for page in pages:
         if not page.shapes:
             # No vector shapes → nothing to label. Skip silently; the
             # scan path would handle pages like this.
             continue
+
+        labelled, primary_result = [], None
         try:
-            labelled = _infer_page(page, model=model, host=host, timeout=timeout)
-        except (OllamaError, Exception) as exc:
-            page_errors.append(f'page {page.page_index}: {exc}')
-            labelled = []   # fall through and emit unlabelled shapes
-        for f in _zip_to_fields(labelled, page, page_tokens):
-            all_fields_json.append(f)
+            labelled, primary_result = _infer_page(
+                page, provider=provider, model=model, host=host,
+                api_key_env=api_key_env, timeout=timeout,
+            )
+        except Exception as exc:
+            page_errors.append(f'page {page.page_index} ({provider}): {exc}')
+
+        page_fields = _zip_to_fields(labelled, page, page_tokens)
+
+        # Escalate gap shapes (low confidence / missing labels) to a
+        # stronger provider when enabled. Sends the FULL page so the
+        # escalator has context — overrides labels only for the gap.
+        if (escalate_below is not None and escalate_provider
+                and _has_gap(page_fields, escalate_below)):
+            try:
+                replaced, esc_result = _escalate_page(
+                    page, page_fields, page_tokens,
+                    provider=escalate_provider,
+                    model=escalate_model or DEFAULT_TEXT_MODELS[escalate_provider],
+                    host=host,
+                    api_key_env=api_key_env,
+                    timeout=escalate_timeout,
+                    threshold=escalate_below,
+                )
+                page_fields = replaced
+                if esc_result and esc_result.provider == 'anthropic':
+                    cost_input_tokens += esc_result.input_tokens
+                    cost_output_tokens += esc_result.output_tokens
+                    cost_provider = 'anthropic'
+            except Exception as exc:
+                page_errors.append(
+                    f'page {page.page_index} escalate ({escalate_provider}): {exc}'
+                )
+
+        if primary_result and primary_result.provider == 'anthropic':
+            cost_input_tokens += primary_result.input_tokens
+            cost_output_tokens += primary_result.output_tokens
+            cost_provider = 'anthropic'
+
+        all_fields_json.extend(page_fields)
 
     avg_conf = (
         sum(f['confidence'] for f in all_fields_json) / len(all_fields_json)
@@ -85,6 +137,10 @@ def process_file(
         or avg_conf < REVIEW_CONFIDENCE_THRESHOLD
     )
 
+    extractor_tag = f'llm_digital_{provider}'
+    if escalate_below is not None and escalate_provider:
+        extractor_tag += f'+{escalate_provider}'
+
     summary = {
         'source': str(pdf_path),
         'pages': len(pages),
@@ -96,8 +152,12 @@ def process_file(
         'is_scan': cls.is_scan,
         'category': cls.category,
         'needs_review': needs_review,
-        'extractor': 'llm_digital',
+        'extractor': extractor_tag,
         'model': model,
+        'escalate_model': escalate_model,
+        'cloud_input_tokens': cost_input_tokens,
+        'cloud_output_tokens': cost_output_tokens,
+        'cloud_provider': cost_provider,
         'page_errors': page_errors,
     }
 
@@ -112,15 +172,27 @@ def process_file(
     json_path = output_dir / f'{stem}.fields.json'
     out_pdf = output_dir / f'{stem}.pdf'
 
-    json_path.write_text(json.dumps({
+    json_payload = {
         'source': str(pdf_path),
         'avgConfidence': avg_conf,
         'isScan': cls.is_scan,
         'needsReview': needs_review,
-        'extractor': 'llm_digital',
+        'extractor': extractor_tag,
         'model': model,
         'fields': all_fields_json,
-    }, ensure_ascii=False, indent=2), encoding='utf-8')
+    }
+    if escalate_model:
+        json_payload['escalateModel'] = escalate_model
+    if cost_input_tokens or cost_output_tokens:
+        json_payload['cloudUsage'] = {
+            'provider': cost_provider,
+            'inputTokens': cost_input_tokens,
+            'outputTokens': cost_output_tokens,
+        }
+    json_path.write_text(
+        json.dumps(json_payload, ensure_ascii=False, indent=2),
+        encoding='utf-8',
+    )
 
     _invoke_node_writer(pdf_path, json_path, out_pdf)
     summary['output_pdf'] = str(out_pdf)
@@ -130,11 +202,65 @@ def process_file(
 # ── Per-page inference ──────────────────────────────────────────────────────
 
 def _infer_page(
-    page: PageStructure, *, model: str, host: str, timeout: float,
-) -> list[LabelledShape]:
+    page: PageStructure, *,
+    provider: str, model: str, host: str, api_key_env: str, timeout: float,
+) -> tuple[list[LabelledShape], ProviderResult]:
     prompt = build_prompt(page_to_prompt_dict(page))
-    resp = generate_json(prompt, model=model, host=host, timeout=timeout)
-    return parse_response(resp.text)
+    resp = generate_json(
+        prompt,
+        provider=provider, model=model, host=host,
+        api_key_env=api_key_env, timeout=timeout,
+    )
+    return parse_response(resp.text), resp
+
+
+def _has_gap(page_fields: list[dict], threshold: float) -> bool:
+    """Any field whose combined confidence falls below `threshold` is a gap."""
+    return any(f['confidence'] < threshold for f in page_fields)
+
+
+def _escalate_page(
+    page: PageStructure,
+    page_fields: list[dict],
+    page_tokens: set[str],
+    *,
+    provider: str, model: str, host: str, api_key_env: str,
+    timeout: float, threshold: float,
+) -> tuple[list[dict], ProviderResult | None]:
+    """Re-label the page with `provider`, replacing only fields whose
+    primary-pass confidence was below `threshold`.
+
+    Sends the full page context (escalator sees everything) but applies
+    its labels selectively. Cheaper than always-cloud + safer than
+    cloud-only-for-uncertain-shapes (which loses context). When the
+    escalator's own confidence on a gap shape is *worse* than the
+    primary's, we keep the primary's label.
+    """
+    prompt = build_prompt(page_to_prompt_dict(page))
+    resp = generate_json(
+        prompt,
+        provider=provider, model=model, host=host,
+        api_key_env=api_key_env, timeout=timeout,
+    )
+    esc_labels = parse_response(resp.text)
+    esc_zipped = _zip_to_fields(esc_labels, page, page_tokens)
+    by_xy = {(f['x'], f['y'], f['width']): f for f in esc_zipped}
+
+    merged: list[dict] = []
+    for primary in page_fields:
+        if primary['confidence'] >= threshold:
+            merged.append(primary)
+            continue
+        key = (primary['x'], primary['y'], primary['width'])
+        esc = by_xy.get(key)
+        if esc is None or esc['confidence'] <= primary['confidence']:
+            merged.append(primary)
+            continue
+        # Mark which pass produced this field so review tools can sort by it.
+        esc = dict(esc)
+        esc['context'] = f"escalated_{provider}"
+        merged.append(esc)
+    return merged, resp
 
 
 def _zip_to_fields(
@@ -364,18 +490,39 @@ def find_pdfs(root: Path) -> list[Path]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description='Detect form fields in born-digital PDFs via a local text-only LLM.'
+        description='Detect form fields in born-digital PDFs via a text LLM.',
+        epilog='Hybrid example: '
+               '--provider ollama --escalate-below 0.85 --escalate-provider anthropic '
+               '(local first, cloud only on low-confidence shapes)',
     )
     parser.add_argument('input', nargs='?', help='Input PDF file')
     parser.add_argument('--batch', help='Process every PDF under this directory (recursive)')
     parser.add_argument('--out', default=str(DEFAULT_OUTPUT), help='Output directory')
     parser.add_argument('--log', default=str(DEFAULT_LOG), help='Append-only log path')
-    parser.add_argument('--model', default=DEFAULT_MODEL,
-                        help=f'Ollama text model (default {DEFAULT_MODEL})')
+
+    parser.add_argument('--provider', choices=['ollama', 'anthropic'], default='ollama',
+                        help='Which LLM transport to use for the primary pass (default ollama)')
+    parser.add_argument('--model', default=None,
+                        help='Model tag (default depends on --provider: '
+                             f'{DEFAULT_TEXT_MODELS["ollama"]} for ollama, '
+                             f'{DEFAULT_TEXT_MODELS["anthropic"]} for anthropic)')
     parser.add_argument('--ollama-host', default=DEFAULT_HOST, help='Ollama HTTP endpoint')
+    parser.add_argument('--api-key-env', default='ANTHROPIC_API_KEY',
+                        help='Env var holding the Anthropic API key (default ANTHROPIC_API_KEY)')
     parser.add_argument('--timeout', type=float, default=300,
-                        help='Per-page HTTP timeout in seconds (default 300; '
-                             'lower with the 3B model, raise on multi-page docs)')
+                        help='Per-page HTTP timeout in seconds (default 300)')
+
+    parser.add_argument('--escalate-below', type=float, default=None,
+                        help='If set, after the primary pass any shape with confidence below '
+                             'this threshold is re-labelled by --escalate-provider. '
+                             'Typical: 0.85.')
+    parser.add_argument('--escalate-provider', choices=['ollama', 'anthropic'], default='anthropic',
+                        help='Provider used for the gap-filling pass (default anthropic)')
+    parser.add_argument('--escalate-model', default=None,
+                        help='Model for the escalation pass (default: provider default)')
+    parser.add_argument('--escalate-timeout', type=float, default=300,
+                        help='HTTP timeout for the escalation request (default 300)')
+
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--verbose', action='store_true')
     args = parser.parse_args()
@@ -383,14 +530,27 @@ def main() -> int:
     if not args.input and not args.batch:
         parser.error('Provide an input PDF or --batch <dir>')
 
+    # Resolve model defaults per provider.
+    model = args.model or DEFAULT_TEXT_MODELS[args.provider]
+
     output_dir = Path(args.out).resolve()
     log_path = Path(args.log).resolve()
 
     try:
-        ensure_model_available(args.model, host=args.ollama_host)
-    except OllamaError as exc:
+        ensure_ready(args.provider, model,
+                     host=args.ollama_host, api_key_env=args.api_key_env)
+    except ProviderError as exc:
         print(str(exc), file=sys.stderr)
         return 1
+
+    if args.escalate_below is not None:
+        try:
+            ensure_ready(args.escalate_provider,
+                         args.escalate_model or DEFAULT_TEXT_MODELS[args.escalate_provider],
+                         host=args.ollama_host, api_key_env=args.api_key_env)
+        except ProviderError as exc:
+            print(f'Escalation provider not ready: {exc}', file=sys.stderr)
+            return 1
 
     if args.batch:
         root = Path(args.batch).resolve()
@@ -407,16 +567,25 @@ def main() -> int:
         targets = [single]
 
     processed = review = empty = scans = failed = 0
+    total_in_tokens = total_out_tokens = 0
     for i, pdf in enumerate(targets, 1):
         try:
             summary = process_file(
                 pdf, output_dir,
-                model=args.model,
+                provider=args.provider,
+                model=model,
                 host=args.ollama_host,
+                api_key_env=args.api_key_env,
                 timeout=args.timeout,
+                escalate_below=args.escalate_below,
+                escalate_provider=args.escalate_provider if args.escalate_below is not None else None,
+                escalate_model=args.escalate_model,
+                escalate_timeout=args.escalate_timeout,
                 verbose=args.verbose,
                 dry_run=args.dry_run,
             )
+            total_in_tokens += summary.get('cloud_input_tokens', 0)
+            total_out_tokens += summary.get('cloud_output_tokens', 0)
             if not args.dry_run:
                 append_log(log_path, summary)
             if summary['is_scan']:
@@ -447,6 +616,8 @@ def main() -> int:
         f'Done: {processed} processed, {review} needs-review, '
         f'{empty} no-fields, {scans} scans, {failed} failed'
     )
+    if total_in_tokens or total_out_tokens:
+        print(f'Cloud usage: {total_in_tokens} input + {total_out_tokens} output tokens')
     print(f'Log: {log_path}')
     return 0 if failed == 0 else 2
 

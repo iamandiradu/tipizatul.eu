@@ -60,3 +60,4 @@ scripts/edirect/convert-docs-failed.json
 scripts/edirect/pdf-from-doc/
 scripts/edirect/*.log
 graphify-out/
+scripts/edirect/llm/output-opus/

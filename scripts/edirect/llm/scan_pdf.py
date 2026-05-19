@@ -24,13 +24,12 @@ from pathlib import Path
 
 from lib.classify import PdfClassification, classify
 from lib.field_prompt import PROMPT, ParsedField, parse_response
-from lib.ollama_client import (
-    OllamaError,
-    ensure_model_available,
-    generate_json,
-    png_to_b64,
-)
+from lib.ollama_client import png_to_b64
 from lib.page_render import RenderedPage, extract_text_tokens, render_pages
+from lib.provider import (
+    DEFAULT_VISION_MODELS, ProviderError,
+    ensure_ready, generate_json,
+)
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -38,7 +37,6 @@ DEFAULT_OUTPUT = SCRIPT_DIR / 'output'
 DEFAULT_LOG = SCRIPT_DIR / 'detections.log'
 NODE_WRITER = SCRIPT_DIR.parent / 'apply-fields.mjs'
 
-DEFAULT_MODEL = 'qwen2.5vl:3b'
 DEFAULT_HOST = 'http://localhost:11434'
 DEFAULT_DPI = 150
 
@@ -52,8 +50,10 @@ def process_file(
     pdf_path: Path,
     output_dir: Path,
     *,
+    provider: str,
     model: str,
     host: str,
+    api_key_env: str,
     dpi: int,
     timeout: float,
     verbose: bool,
@@ -66,13 +66,21 @@ def process_file(
 
     all_fields_json: list[dict] = []
     page_errors: list[str] = []
+    cost_in_tokens = cost_out_tokens = 0
 
     for page in pages:
         try:
-            parsed = _infer_page(page, model=model, host=host, timeout=timeout)
-        except OllamaError as exc:
-            page_errors.append(f'page {page.page_index}: {exc}')
+            parsed, result = _infer_page(
+                page, provider=provider, model=model, host=host,
+                api_key_env=api_key_env, timeout=timeout,
+            )
+        except Exception as exc:
+            page_errors.append(f'page {page.page_index} ({provider}): {exc}')
             continue
+
+        if result.provider == 'anthropic':
+            cost_in_tokens += result.input_tokens
+            cost_out_tokens += result.output_tokens
 
         for f in parsed:
             field_json = _to_field_json(f, page, page_tokens)
@@ -101,7 +109,10 @@ def process_file(
         'is_scan': cls.is_scan,
         'category': cls.category,
         'needs_review': needs_review,
+        'provider': provider,
         'model': model,
+        'cloud_input_tokens': cost_in_tokens,
+        'cloud_output_tokens': cost_out_tokens,
         'page_errors': page_errors,
     }
 
@@ -116,14 +127,24 @@ def process_file(
     json_path = output_dir / f'{stem}.fields.json'
     out_pdf = output_dir / f'{stem}.pdf'
 
-    json_path.write_text(json.dumps({
+    payload = {
         'source': str(pdf_path),
         'avgConfidence': avg_conf,
         'isScan': cls.is_scan,
         'needsReview': needs_review,
+        'provider': provider,
         'model': model,
         'fields': all_fields_json,
-    }, ensure_ascii=False, indent=2), encoding='utf-8')
+    }
+    if cost_in_tokens or cost_out_tokens:
+        payload['cloudUsage'] = {
+            'provider': provider,
+            'inputTokens': cost_in_tokens,
+            'outputTokens': cost_out_tokens,
+        }
+    json_path.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8',
+    )
 
     _invoke_node_writer(pdf_path, json_path, out_pdf)
     summary['output_pdf'] = str(out_pdf)
@@ -132,10 +153,17 @@ def process_file(
 
 # ── Per-page inference ──────────────────────────────────────────────────────
 
-def _infer_page(page: RenderedPage, *, model: str, host: str, timeout: float) -> list[ParsedField]:
+def _infer_page(
+    page: RenderedPage, *,
+    provider: str, model: str, host: str, api_key_env: str, timeout: float,
+):
     image_b64 = png_to_b64(page.png_bytes)
-    resp = generate_json(PROMPT, image_b64, model=model, host=host, timeout=timeout)
-    return parse_response(resp.text)
+    resp = generate_json(
+        PROMPT, image_b64,
+        provider=provider, model=model, host=host,
+        api_key_env=api_key_env, timeout=timeout,
+    )
+    return parse_response(resp.text), resp
 
 
 def _to_field_json(f: ParsedField, page: RenderedPage, page_tokens: set[str]) -> dict:
@@ -246,7 +274,7 @@ def append_log(log_path: Path, summary: dict) -> None:
     lines.append(f'[{ts}] {summary["source"]}')
     lines.append(
         f'  Pages: {summary["pages"]} | Fields: {summary["fields_detected"]} | '
-        f'Extractor: llm ({summary["model"]}) | '
+        f'Extractor: llm_scan_{summary.get("provider", "ollama")} ({summary["model"]}) | '
         f'Avg confidence: {summary["avg_confidence"]:.3f} | '
         f'Category: {summary["category"]} | '
         f'Status: {status} | Elapsed: {summary["elapsed_seconds"]:.1f}s'
@@ -277,17 +305,23 @@ def find_pdfs(root: Path) -> list[Path]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Detect form fields in PDFs via a local vision LLM.')
+    parser = argparse.ArgumentParser(description='Detect form fields in scanned PDFs via a vision LLM.')
     parser.add_argument('input', nargs='?', help='Input PDF file')
     parser.add_argument('--batch', help='Process every PDF under this directory (recursive)')
     parser.add_argument('--out', default=str(DEFAULT_OUTPUT), help='Output directory')
     parser.add_argument('--log', default=str(DEFAULT_LOG), help='Append-only log path')
-    parser.add_argument('--model', default=DEFAULT_MODEL, help=f'Ollama model tag (default {DEFAULT_MODEL})')
+    parser.add_argument('--provider', choices=['ollama', 'anthropic'], default='ollama',
+                        help='Which vision LLM transport to use (default ollama)')
+    parser.add_argument('--model', default=None,
+                        help='Model tag (default depends on --provider: '
+                             f'{DEFAULT_VISION_MODELS["ollama"]} for ollama, '
+                             f'{DEFAULT_VISION_MODELS["anthropic"]} for anthropic)')
     parser.add_argument('--ollama-host', default=DEFAULT_HOST, help='Ollama HTTP endpoint')
+    parser.add_argument('--api-key-env', default='ANTHROPIC_API_KEY',
+                        help='Env var holding the Anthropic API key (default ANTHROPIC_API_KEY)')
     parser.add_argument('--dpi', type=int, default=DEFAULT_DPI, help=f'Render DPI (default {DEFAULT_DPI})')
     parser.add_argument('--timeout', type=float, default=600,
-                        help='Per-page HTTP timeout in seconds (default 600). '
-                             'Bump if you are on CPU-only Ollama and seeing TimeoutError.')
+                        help='Per-page HTTP timeout in seconds (default 600)')
     parser.add_argument('--dry-run', action='store_true', help="Detect but don't write the AcroForm PDF")
     parser.add_argument('--verbose', action='store_true')
     args = parser.parse_args()
@@ -295,12 +329,15 @@ def main() -> int:
     if not args.input and not args.batch:
         parser.error('Provide an input PDF or --batch <dir>')
 
+    model = args.model or DEFAULT_VISION_MODELS[args.provider]
+
     output_dir = Path(args.out).resolve()
     log_path = Path(args.log).resolve()
 
     try:
-        ensure_model_available(args.model, host=args.ollama_host)
-    except OllamaError as exc:
+        ensure_ready(args.provider, model,
+                     host=args.ollama_host, api_key_env=args.api_key_env)
+    except ProviderError as exc:
         print(str(exc), file=sys.stderr)
         return 1
 
@@ -320,17 +357,22 @@ def main() -> int:
         targets = [single]
 
     processed = review = empty = scans = failed = 0
+    total_in_tokens = total_out_tokens = 0
     for i, pdf in enumerate(targets, 1):
         try:
             summary = process_file(
                 pdf, output_dir,
-                model=args.model,
+                provider=args.provider,
+                model=model,
                 host=args.ollama_host,
+                api_key_env=args.api_key_env,
                 dpi=args.dpi,
                 timeout=args.timeout,
                 verbose=args.verbose,
                 dry_run=args.dry_run,
             )
+            total_in_tokens += summary.get('cloud_input_tokens', 0)
+            total_out_tokens += summary.get('cloud_output_tokens', 0)
             if not args.dry_run:
                 append_log(log_path, summary)
             if summary['is_scan']:
@@ -361,6 +403,8 @@ def main() -> int:
         f'Done: {processed} processed, {review} needs-review, '
         f'{empty} no-fields, {scans} scans, {failed} failed'
     )
+    if total_in_tokens or total_out_tokens:
+        print(f'Cloud usage: {total_in_tokens} input + {total_out_tokens} output tokens')
     print(f'Log: {log_path}')
     return 0 if failed == 0 else 2
 
