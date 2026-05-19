@@ -12,20 +12,27 @@ import {
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
 import {
-  countFillablePdfs,
+  buildTemplateIndex,
+  countEditableDocuments,
   groupByCountyAndInstitution,
   loadProcedures,
   NATIONAL_COUNTY,
   procedureCounty,
 } from '@/lib/procedures'
 import type { CountyGroup, InstitutionGroup, ProceduresPayload } from '@/lib/procedures'
+import { fetchCatalog } from '@/lib/firestore'
 import { diacriticless } from '@/lib/template-grouping'
-import type { Procedure } from '@/types/template'
+import type { Procedure, SlimTemplate } from '@/types/template'
 
 const ALL_COUNTIES = '__all__'
 
-function ProcedureRow({ procedure: p }: { procedure: Procedure }) {
-  const fillable = countFillablePdfs(p)
+function ProcedureRow({
+  procedure: p,
+  editableCount,
+}: {
+  procedure: Procedure
+  editableCount: number | null
+}) {
   return (
     <li>
       <Link
@@ -39,9 +46,9 @@ function ProcedureRow({ procedure: p }: { procedure: Procedure }) {
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
             <span>{p.documents.length} documente</span>
-            {fillable > 0 && (
+            {editableCount !== null && editableCount > 0 && (
               <span className="text-blue-600 dark:text-blue-400">
-                · {fillable} PDF completabil{fillable === 1 ? '' : 'e'}
+                · {editableCount} formular{editableCount === 1 ? '' : 'e'} completabil{editableCount === 1 ? '' : 'e'} online
               </span>
             )}
             {p.informational && (
@@ -59,10 +66,12 @@ function InstitutionSection({
   institution,
   procedures,
   defaultOpen,
+  editableByProcedureId,
 }: {
   institution: string
   procedures: Procedure[]
   defaultOpen: boolean
+  editableByProcedureId: Map<string, number> | null
 }) {
   const [open, setOpen] = useState(defaultOpen)
   const panelId = useId()
@@ -93,7 +102,11 @@ function InstitutionSection({
       {open && (
         <ul id={panelId} className="px-3 pb-3 pt-1 space-y-2">
           {procedures.map((p) => (
-            <ProcedureRow key={p.procedureId} procedure={p} />
+            <ProcedureRow
+              key={p.procedureId}
+              procedure={p}
+              editableCount={editableByProcedureId ? editableByProcedureId.get(p.procedureId) ?? 0 : null}
+            />
           ))}
         </ul>
       )}
@@ -107,12 +120,14 @@ function CountySection({
   total,
   defaultOpen,
   defaultInstOpen,
+  editableByProcedureId,
 }: {
   county: string
   institutions: InstitutionGroup[]
   total: number
   defaultOpen: boolean
   defaultInstOpen: boolean
+  editableByProcedureId: Map<string, number> | null
 }) {
   const [open, setOpen] = useState(defaultOpen)
   const panelId = useId()
@@ -154,6 +169,7 @@ function CountySection({
               institution={g.institution}
               procedures={g.procedures}
               defaultOpen={defaultInstOpen}
+              editableByProcedureId={editableByProcedureId}
             />
           ))}
         </div>
@@ -172,12 +188,15 @@ export default function ProceduresIndexPage() {
 
   const { dev } = useDevMode()
   const [payload, setPayload] = useState<ProceduresPayload | null>(null)
+  const [catalog, setCatalog] = useState<SlimTemplate[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [county, setCounty] = useState<string>(ALL_COUNTIES)
+  const [onlyEditable, setOnlyEditable] = useState(false)
   const searchId = useId()
   const countyId = useId()
+  const editableId = useId()
 
   useEffect(() => {
     const trimmed = search.trim()
@@ -202,6 +221,36 @@ export default function ProceduresIndexPage() {
       cancelled = true
     }
   }, [])
+
+  // Pair each procedure with its real editable-template count. The catalog
+  // is cached via stale-while-revalidate (firestore.ts), so this is usually
+  // an instant localStorage read. On failure we degrade gracefully — the
+  // page still lists procedures, only the "completabil online" hint is
+  // hidden until the catalog arrives.
+  useEffect(() => {
+    let cancelled = false
+    fetchCatalog()
+      .then((c) => {
+        if (!cancelled) setCatalog(c)
+      })
+      .catch(() => {
+        if (!cancelled) setCatalog([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const editableByProcedureId = useMemo<Map<string, number> | null>(() => {
+    if (!payload || !catalog) return null
+    const idx = buildTemplateIndex(catalog)
+    const m = new Map<string, number>()
+    for (const p of Object.values(payload.procedures)) {
+      const n = countEditableDocuments(p, idx)
+      if (n > 0) m.set(p.procedureId, n)
+    }
+    return m
+  }, [payload, catalog])
 
   // Build a haystack per procedure once. Search is diacritic-insensitive and
   // matches across title, institution, county. Procedures with zero documents
@@ -237,10 +286,13 @@ export default function ProceduresIndexPage() {
     for (const e of indexed) {
       if (county !== ALL_COUNTIES && e.county !== county) continue
       if (needle && !e.haystack.includes(needle)) continue
+      // The "only editable" toggle is suppressed until the catalog has
+      // loaded — otherwise we'd hide everything for a beat on first paint.
+      if (onlyEditable && editableByProcedureId && !editableByProcedureId.has(e.procedure.procedureId)) continue
       out.push(e.procedure)
     }
     return out
-  }, [indexed, debouncedSearch, county])
+  }, [indexed, debouncedSearch, county, onlyEditable, editableByProcedureId])
 
   const grouped = useMemo<CountyGroup[]>(() => {
     if (!payload) return []
@@ -357,6 +409,30 @@ export default function ProceduresIndexPage() {
         </select>
       </div>
 
+      <label
+        htmlFor={editableId}
+        className={`mb-6 inline-flex items-center gap-2 text-sm select-none ${
+          editableByProcedureId
+            ? 'text-gray-700 dark:text-gray-200 cursor-pointer'
+            : 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
+        }`}
+      >
+        <input
+          id={editableId}
+          type="checkbox"
+          checked={onlyEditable}
+          onChange={(e) => setOnlyEditable(e.target.checked)}
+          disabled={!editableByProcedureId}
+          className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 disabled:opacity-50"
+        />
+        Doar proceduri cu formulare completabile online
+        {editableByProcedureId && (
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            ({editableByProcedureId.size})
+          </span>
+        )}
+      </label>
+
       {tooManyToAutoExpand && (
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
           Prea multe rezultate pentru a deschide automat — rafinează căutarea sau extinde manual județele de mai jos.
@@ -376,6 +452,7 @@ export default function ProceduresIndexPage() {
             total={g.total}
             defaultOpen={autoOpenCounty}
             defaultInstOpen={autoOpenInst}
+            editableByProcedureId={editableByProcedureId}
           />
         ))
       )}
