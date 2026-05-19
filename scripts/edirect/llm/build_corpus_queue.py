@@ -46,6 +46,10 @@ def main() -> int:
                         help=f'Queue JSON path (default {DEFAULT_OUT})')
     parser.add_argument('--size-cap-mb', type=float, default=2.0,
                         help='Defer PDFs larger than this many MB (default 2.0)')
+    parser.add_argument('--size-floor-mb', type=float, default=0.0,
+                        help='Defer PDFs smaller than this many MB (default 0.0). '
+                             'Useful for skipping trivial 1-page templates that '
+                             'don\'t need LLM attention.')
     parser.add_argument('--exclude-subdir', default='processed',
                         help='Subdir name under bundles/ to exclude (default "processed")')
     args = parser.parse_args()
@@ -55,6 +59,7 @@ def main() -> int:
         print(f'bundles dir not found: {bundles_dir}')
         return 1
     size_cap = int(args.size_cap_mb * 1024 * 1024)
+    size_floor = int(args.size_floor_mb * 1024 * 1024)
 
     files: list[dict] = []
     counter: Counter = Counter()
@@ -69,8 +74,9 @@ def main() -> int:
         counter[norm] += 1
         files.append({'path': str(p.resolve()), 'size': size, 'norm': norm})
 
-    kept = [f for f in files if f['size'] <= size_cap]
-    deferred = [f for f in files if f['size'] > size_cap]
+    kept = [f for f in files if size_floor <= f['size'] <= size_cap]
+    too_big = [f for f in files if f['size'] > size_cap]
+    too_small = [f for f in files if f['size'] < size_floor]
 
     for f in kept:
         f['replication'] = counter[f['norm']]
@@ -81,24 +87,29 @@ def main() -> int:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         'bundles_dir': str(bundles_dir),
+        'size_floor_bytes': size_floor,
         'size_cap_bytes': size_cap,
         'total_in_corpus': len(files),
         'kept': len(kept),
-        'deferred_over_cap': len(deferred),
+        'deferred_over_cap': len(too_big),
+        'deferred_under_floor': len(too_small),
         'distinct_normalised_names': len(counter),
         'top_doc_types': [
             {'name': n, 'count': c} for n, c in counter.most_common(30)
         ],
         'queue': [{'path': f['path'], 'size': f['size'],
                    'replication': f['replication']} for f in kept],
-        'deferred': [{'path': f['path'], 'size': f['size']} for f in deferred],
+        'deferred': [{'path': f['path'], 'size': f['size'],
+                      'reason': 'too_big' if f in too_big else 'too_small'}
+                     for f in (too_big + too_small)],
     }
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2),
                         encoding='utf-8')
     print(f'Wrote {out_path}')
     print(f'  Total: {len(files)} PDFs')
-    print(f'  Kept (≤ {args.size_cap_mb} MB): {len(kept)}')
-    print(f'  Deferred (> {args.size_cap_mb} MB): {len(deferred)}')
+    print(f'  Kept ({args.size_floor_mb}–{args.size_cap_mb} MB): {len(kept)}')
+    print(f'  Deferred (> {args.size_cap_mb} MB): {len(too_big)}')
+    print(f'  Deferred (< {args.size_floor_mb} MB): {len(too_small)}')
     print(f'  Distinct doc types: {len(counter)}')
     print()
     print('Top 10 most-replicated doc types:')
