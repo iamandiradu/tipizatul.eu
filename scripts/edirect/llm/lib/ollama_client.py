@@ -46,7 +46,7 @@ def generate_json(
     host: str = 'http://localhost:11434',
     temperature: float = 0.1,
     timeout: float = _DEFAULT_TIMEOUT_S,
-    num_ctx: int = 16384,
+    num_ctx: int = 32768,
 ) -> OllamaResponse:
     """Call Ollama /api/generate with optional vision input + JSON output mode.
 

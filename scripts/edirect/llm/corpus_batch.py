@@ -24,7 +24,9 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import hashlib
 import json
+import re
 import subprocess
 import sys
 import threading
@@ -69,16 +71,20 @@ def print_status() -> int:
     n_done = sum(1 for v in completed.values() if v['status'] == 'done')
     n_failed = sum(1 for v in completed.values() if v['status'] == 'failed')
     n_deferred_scan = sum(1 for v in completed.values() if v['status'] == 'deferred_scan')
+    n_deferred_dense = sum(1 for v in completed.values() if v['status'] == 'deferred_dense')
+    n_dup = sum(1 for v in completed.values() if v['status'] == 'duplicate_skipped')
     n_skipped = sum(1 for v in completed.values() if v['status'] == 'skipped')
     n_pending = n_queued - len(completed)
-    print(f'Queue size:        {n_queued}')
+    print(f'Queue size:           {n_queued}')
     deferred = queue.get('deferred_over_cap', queue.get('deferred_over_2mb', 0))
-    print(f'Deferred>cap:      {deferred}')
-    print(f'Completed:         {n_done}')
-    print(f'Failed:            {n_failed}')
-    print(f'Deferred scans:    {n_deferred_scan}')
-    print(f'Skipped (missing): {n_skipped}')
-    print(f'Pending:           {n_pending}')
+    print(f'Deferred (>size cap): {deferred}')
+    print(f'Completed:            {n_done}')
+    print(f'Failed:               {n_failed}')
+    print(f'Deferred scans:       {n_deferred_scan}')
+    print(f'Deferred dense:       {n_deferred_dense}')
+    print(f'Duplicates skipped:   {n_dup}')
+    print(f'Skipped (missing):    {n_skipped}')
+    print(f'Pending:              {n_pending}')
     if n_done:
         elapsed = sum(v.get('elapsed_s', 0) for v in completed.values())
         avg = elapsed / n_done
@@ -98,12 +104,43 @@ def reset_progress() -> int:
     return 0
 
 
+# --- Content fingerprint ---------------------------------------------------
+# Cheap signature over a PDF's structure. Two municipalities can reuse the
+# same filename ("Cerere tip") for completely different forms, so a name-only
+# dedup over-merges. We hash: normalised stem + page count + shape count +
+# first FIRST_WORDS readable words concatenated. Same template across
+# municipalities → same hash → skip the duplicate. Different content (which
+# necessarily contains different leading words like the municipality name)
+# → different hash → process both.
+_ID_TAIL_RE = re.compile(r'_\d{4,}$')
+FIRST_WORDS = 40
+
+def _norm_stem(stem: str) -> str:
+    return re.sub(r'\s+', ' ', _ID_TAIL_RE.sub('', stem).strip().lower())
+
+def fingerprint_for(struct, pdf_stem: str) -> str:
+    """Stable SHA-1 over a PDF's normalised name + structure signature.
+
+    `struct` is the list[PageStructure] returned by pdf_structure.extract().
+    """
+    parts: list[str] = [_norm_stem(pdf_stem)]
+    parts.append(f'pages={len(struct)}')
+    parts.append(f'shapes={sum(len(p.shapes) for p in struct)}')
+    # First N readable words from page 1 — captures the doc's actual content.
+    words = [w.text for w in struct[0].words[:FIRST_WORDS]] if struct else []
+    parts.append('|'.join(words))
+    return hashlib.sha1('||'.join(parts).encode('utf-8')).hexdigest()[:16]
+
+
 def run_one(
     pdf_path: Path, output_dir: Path, *,
     provider: str, model: str | None,
     vision_model: str | None,
     timeout: float, log_path: Path,
     skip_scans: bool = False,
+    max_shapes: int | None = None,
+    seen_fingerprints: dict | None = None,
+    fp_lock: threading.Lock | None = None,
 ) -> dict:
     """Classify the PDF and run the appropriate path.
 
@@ -114,6 +151,7 @@ def run_one(
                    fall back to scan_pdf.py.
     """
     from lib.classify import classify
+    from lib.pdf_structure import extract as extract_struct
     t0 = time.monotonic()
     cls = classify(str(pdf_path))
 
@@ -127,6 +165,45 @@ def run_one(
             'path': 'skipped',
             'category': cls.category,
         }
+
+    # Content-aware dedup + density cap. We do the (cheap) pymupdf
+    # extraction here so we can check both before paying the LLM cost.
+    fingerprint = None
+    struct = None
+    if cls.category != 'scan':
+        try:
+            struct = extract_struct(str(pdf_path))
+        except Exception as exc:
+            return {
+                'status': 'failed',
+                'elapsed_s': round(time.monotonic() - t0, 1),
+                'path': 'pre-extract',
+                'category': cls.category,
+                'error': f'pdf_structure.extract failed: {exc}'[:500],
+            }
+        total_shapes = sum(len(p.shapes) for p in struct)
+        if max_shapes is not None and total_shapes > max_shapes:
+            return {
+                'status': 'deferred_dense',
+                'elapsed_s': round(time.monotonic() - t0, 1),
+                'path': 'skipped',
+                'category': cls.category,
+                'shapes': total_shapes,
+            }
+        fingerprint = fingerprint_for(struct, pdf_path.stem)
+        if seen_fingerprints is not None and fp_lock is not None:
+            with fp_lock:
+                if fingerprint in seen_fingerprints:
+                    return {
+                        'status': 'duplicate_skipped',
+                        'elapsed_s': round(time.monotonic() - t0, 1),
+                        'path': 'dedup',
+                        'category': cls.category,
+                        'shapes': total_shapes,
+                        'fingerprint': fingerprint,
+                        'duplicate_of': seen_fingerprints[fingerprint],
+                    }
+                seen_fingerprints[fingerprint] = str(pdf_path)
 
     def call(script_name: str, model_override: str | None, extra_args: list[str] | None = None) -> subprocess.CompletedProcess:
         args = [
@@ -198,6 +275,7 @@ def run_one(
         'fields': fields_count,
         'avg_confidence': avg_conf,
         'needs_review': needs_review,
+        'fingerprint': fingerprint,
     }
 
 
@@ -230,6 +308,19 @@ def main() -> int:
                              'Skipped PDFs land in the progress file with '
                              'status=deferred_scan so a later run can pick '
                              'them up.')
+    parser.add_argument('--max-shapes', type=int, default=150,
+                        help='Defer PDFs whose total shape count exceeds this '
+                             '(default 150). The truly dense table-heavy '
+                             'forms take hours of LLM time for marginal label '
+                             'quality; skip them and let a human review later. '
+                             'Set to 0 to disable the cap.')
+    parser.add_argument('--dedup', action='store_true',
+                        help='Skip PDFs whose content fingerprint (normalised '
+                             'name + page/shape count + first 40 words) '
+                             'matches one already processed. Same template '
+                             'reused across municipalities → process once. '
+                             'Different content sharing a filename → process '
+                             'both (fingerprint includes content).')
     args = parser.parse_args()
 
     if args.status:
@@ -261,6 +352,16 @@ def main() -> int:
     lock = threading.Lock()
     completed_count = 0   # combined done+failed, for save-cadence + display
 
+    # Seed fingerprint cache from any prior run that recorded fingerprints.
+    seen_fingerprints: dict[str, str] = {}
+    if args.dedup:
+        for path, entry in completed.items():
+            fp = entry.get('fingerprint')
+            if fp:
+                seen_fingerprints.setdefault(fp, path)
+        print(f'Dedup: enabled, {len(seen_fingerprints)} fingerprints seeded from progress')
+    fp_lock = threading.Lock()
+
     def process_item(item):
         nonlocal new_done, new_failed, completed_count
         pdf_path = Path(item['path'])
@@ -274,6 +375,9 @@ def main() -> int:
                 vision_model=args.vision_model,
                 timeout=args.timeout, log_path=log_path,
                 skip_scans=args.skip_scans,
+                max_shapes=(None if args.max_shapes == 0 else args.max_shapes),
+                seen_fingerprints=(seen_fingerprints if args.dedup else None),
+                fp_lock=fp_lock if args.dedup else None,
             )
 
         with lock:
@@ -284,7 +388,11 @@ def main() -> int:
                 new_failed += 1
             completed_count += 1
             i = completed_count
-            status_tags = {'done': '✓', 'skipped': '−', 'deferred_scan': '⏸', 'failed': '✗'}
+            status_tags = {
+                'done': '✓', 'skipped': '−',
+                'deferred_scan': '⏸', 'deferred_dense': '⏸',
+                'duplicate_skipped': '↺', 'failed': '✗',
+            }
             tag = status_tags.get(res['status'], '?')
             extras = ''
             if res.get('path'):
