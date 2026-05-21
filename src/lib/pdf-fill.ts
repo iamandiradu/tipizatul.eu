@@ -17,10 +17,20 @@ import { isSignatureField, isSignatureValue, decodeSignatureValue } from '@/lib/
 // this constant is the fallback when none is supplied.
 const SIGNATURE_DEFAULT_HEIGHT_MULTIPLIER = 3
 
+export interface FillPdfOptions {
+  // When true, skip the signature drawing pass entirely (and don't remove
+  // the underlying text widgets). The live preview uses this so the
+  // baked-in signature doesn't fight a draggable overlay rendered above
+  // the PDF canvas. The final download leaves this unset, so signatures
+  // are baked into the saved bytes.
+  skipSignatures?: boolean
+}
+
 export async function fillPdf(
   template: Template,
   pdfBytes: ArrayBuffer,
   values: FormValues,
+  opts: FillPdfOptions = {},
 ): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.load(pdfBytes)
   pdfDoc.registerFontkit(fontkit)
@@ -53,7 +63,11 @@ export async function fillPdf(
       // Signature route — handled before the type switch so it works
       // regardless of the underlying widget type (we treat any text-shaped
       // widget that carries a `Semnătura`-style label as a sig slot).
+      // skipSignatures = preview mode; let the drag overlay show the image
+      // instead of baking it into the PDF (otherwise the overlay sits over
+      // a duplicate that doesn't move with it).
       if (isSignatureField(fieldDef) && isSignatureValue(rawValue)) {
+        if (opts.skipSignatures) continue
         const prepared = await prepareSignature(
           pdfDoc, form, fieldDef.pdfFieldName, rawValue, pageByWidgetDict,
         )

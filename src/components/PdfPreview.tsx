@@ -5,18 +5,48 @@ import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc
 
+export interface PdfPageWidgetRect {
+  pdfFieldName: string
+  // PDF user-space (origin bottom-left). Same coordinate system pdf-lib uses
+  // so consumers can hand these straight back to fillPdf.
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+export interface PdfPageInfo {
+  pageIndex: number                 // 0-based
+  // The wrapper element that owns the canvas — overlay portals mount here.
+  // `position: relative` is set so absolutely-positioned children align
+  // with the canvas rather than the scroll container.
+  wrapper: HTMLElement
+  canvas: HTMLCanvasElement
+  // CSS pixels per PDF unit. Same for x and y (uniform scale).
+  scale: number
+  // PDF user-space dimensions of the page.
+  pdfWidth: number
+  pdfHeight: number
+  widgets: PdfPageWidgetRect[]
+}
+
 interface PdfPreviewProps {
   pdfBytes: ArrayBuffer | Uint8Array
+  onPagesReady?: (pages: PdfPageInfo[]) => void
 }
 
 // Renders the PDF imperatively to <canvas> nodes that we mutate in place.
 // This way the wrapper DOM never collapses while a new render is in flight,
 // so the browser preserves scrollTop across live-preview updates.
-export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
+export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [mobileUrl, setMobileUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // Keep the latest callback in a ref so we don't have to add it as an
+  // effect dep (which would re-render the PDF on every parent render).
+  const onPagesReadyRef = useRef(onPagesReady)
+  useEffect(() => { onPagesReadyRef.current = onPagesReady }, [onPagesReady])
 
   // Mobile fallback: hand off to the OS PDF viewer in a new tab.
   useEffect(() => {
@@ -53,19 +83,28 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
         const pageWidth = Math.max(200, containerWidth - 32)
         const dpr = window.devicePixelRatio || 1
 
-        // Reconcile canvas count — keep existing nodes (preserves scroll
-        // position relative to them), append/remove only at the tail.
+        // Each page lives in a `position: relative` wrapper so overlay
+        // children align with the canvas; the wrapper holds both the
+        // canvas and any portal-mounted children. Reconcile by index to
+        // preserve scroll position when re-rendering.
         while (wrapper.children.length < pdf.numPages) {
+          const pageWrap = document.createElement('div')
+          pageWrap.style.position = 'relative'
+          pageWrap.style.marginBottom = '8px'
+          pageWrap.style.maxWidth = '100%'
+          pageWrap.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
+          pageWrap.style.lineHeight = '0' // collapse the canvas's baseline gap
           const c = document.createElement('canvas')
           c.style.display = 'block'
-          c.style.marginBottom = '8px'
           c.style.maxWidth = '100%'
-          c.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)'
-          wrapper.appendChild(c)
+          pageWrap.appendChild(c)
+          wrapper.appendChild(pageWrap)
         }
         while (wrapper.children.length > pdf.numPages) {
           wrapper.removeChild(wrapper.lastChild!)
         }
+
+        const pageInfos: PdfPageInfo[] = []
 
         for (let i = 1; i <= pdf.numPages; i++) {
           if (cancelled) {
@@ -77,7 +116,8 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
           const scale = pageWidth / baseViewport.width
           const viewport = page.getViewport({ scale })
 
-          const canvas = wrapper.children[i - 1] as HTMLCanvasElement
+          const pageWrap = wrapper.children[i - 1] as HTMLElement
+          const canvas = pageWrap.firstElementChild as HTMLCanvasElement
           const newW = Math.round(viewport.width * dpr)
           const newH = Math.round(viewport.height * dpr)
 
@@ -104,12 +144,53 @@ export default function PdfPreview({ pdfBytes }: PdfPreviewProps) {
             canvas.style.width = `${viewport.width}px`
             canvas.style.height = `${viewport.height}px`
           }
+          // Match the wrapper to the canvas so absolutely-positioned children
+          // can be sized in CSS px relative to it.
+          pageWrap.style.width = `${viewport.width}px`
+          pageWrap.style.height = `${viewport.height}px`
+
           const ctx = canvas.getContext('2d')
           if (ctx) ctx.drawImage(offscreen, 0, 0)
+
+          // Harvest widget rects for any consumer that wants to overlay
+          // signatures, watermarks, etc. PDF user-space (bottom-left
+          // origin) — same coordinates pdf-lib uses, so they round-trip
+          // straight back into fillPdf without conversion.
+          const widgets: PdfPageWidgetRect[] = []
+          try {
+            const annots = await page.getAnnotations()
+            for (const a of annots) {
+              if (a.subtype !== 'Widget') continue
+              if (!a.fieldName || !a.rect) continue
+              const [x1, y1, x2, y2] = a.rect as [number, number, number, number]
+              widgets.push({
+                pdfFieldName: a.fieldName,
+                x: Math.min(x1, x2),
+                y: Math.min(y1, y2),
+                width: Math.abs(x2 - x1),
+                height: Math.abs(y2 - y1),
+              })
+            }
+          } catch (err) {
+            console.warn('[PdfPreview] getAnnotations failed', err)
+          }
+
+          pageInfos.push({
+            pageIndex: i - 1,
+            wrapper: pageWrap,
+            canvas,
+            scale,
+            pdfWidth: baseViewport.width,
+            pdfHeight: baseViewport.height,
+            widgets,
+          })
         }
 
         pdf.destroy()
-        if (!cancelled) setError(null)
+        if (!cancelled) {
+          setError(null)
+          onPagesReadyRef.current?.(pageInfos)
+        }
       })
       .catch((err) => {
         if (cancelled) return

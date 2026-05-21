@@ -11,7 +11,8 @@ import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
 import { NO_ORG, templateCounty } from '@/lib/template-grouping'
 import { useSessionStore } from '@/stores/sessionStore'
-import PdfPreview from '@/components/PdfPreview'
+import PdfPreview, { type PdfPageInfo } from '@/components/PdfPreview'
+import SignatureOverlay from '@/components/SignatureOverlay'
 import FormField from '@/components/FormField'
 import VoteWidget from '@/components/VoteWidget'
 import type { Template, FormValues } from '@/types/template'
@@ -28,6 +29,7 @@ export default function FillPage() {
   const [previewBytes, setPreviewBytes] = useState<Uint8Array | null>(null)
   const [previewing, setPreviewing] = useState(false)
   const [pdfOnly, setPdfOnly] = useState(false)
+  const [pdfPages, setPdfPages] = useState<PdfPageInfo[]>([])
   const [iframeUrl, setIframeUrl] = useState<string | null>(null)
 
   const { formDraft, setFormDraft } = useSessionStore()
@@ -146,7 +148,10 @@ export default function FillPage() {
       try {
         do {
           pending = false
-          const bytes = await fillPdf(template, pdfBytes, getValues())
+          // Signatures are rendered by the overlay component, not baked
+          // into the preview bytes — otherwise the user would see two
+          // copies during drag (the baked one + the overlay).
+          const bytes = await fillPdf(template, pdfBytes, getValues(), { skipSignatures: true })
           if (cancelled) return
           setPreviewBytes(bytes)
         } while (pending && !cancelled)
@@ -475,11 +480,29 @@ export default function FillPage() {
                 />
               )}
               <div className="lg:hidden">
-                <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
+                <PdfPreview pdfBytes={previewBytes ?? pdfBytes} onPagesReady={setPdfPages} />
+                <SignatureOverlay
+                  pages={pdfPages}
+                  fields={template.fields}
+                  values={watch() as Record<string, unknown>}
+                  onPlacementChange={(name, next) =>
+                    setValue(name, next, { shouldDirty: true, shouldValidate: false })
+                  }
+                />
               </div>
             </>
           ) : (
-            <PdfPreview pdfBytes={previewBytes ?? pdfBytes} />
+            <>
+              <PdfPreview pdfBytes={previewBytes ?? pdfBytes} onPagesReady={setPdfPages} />
+              <SignatureOverlay
+                pages={pdfPages}
+                fields={template.fields}
+                values={watch() as Record<string, unknown>}
+                onPlacementChange={(name, next) =>
+                  setValue(name, next, { shouldDirty: true, shouldValidate: false })
+                }
+              />
+            </>
           )}
         </div>
       </div>
