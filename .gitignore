@@ -36,6 +36,13 @@ scripts/edirect/paddle/lib/__pycache__/
 scripts/edirect/paddle/output/
 scripts/edirect/paddle/detections.log
 
+# LLM detector — batch artifacts (reuses paddle/.venv, no own venv)
+scripts/edirect/llm/__pycache__/
+scripts/edirect/llm/lib/__pycache__/
+scripts/edirect/llm/tests/__pycache__/
+scripts/edirect/llm/output/
+scripts/edirect/llm/detections.log
+
 # Claude Code
 .claude/
 
@@ -53,3 +60,12 @@ scripts/edirect/convert-docs-failed.json
 scripts/edirect/pdf-from-doc/
 scripts/edirect/*.log
 graphify-out/
+scripts/edirect/llm/output-opus/
+scripts/edirect/llm/output-chat/
+scripts/edirect/llm/chat-work/
+scripts/edirect/llm/output-corpus/
+scripts/edirect/llm/corpus-batch.queue.json
+scripts/edirect/llm/corpus-batch.progress.json
+scripts/edirect/llm/corpus-batch.progress.json.bak
+scripts/edirect/llm/corpus-batch.log
+scripts/edirect/llm/corpus-batch.run.out
