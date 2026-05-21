@@ -1,4 +1,4 @@
-import { PDFDocument, type PDFPage } from 'pdf-lib'
+import { PDFDocument, PDFDict, type PDFPage } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import type { Template, FormValues } from '@/types/template'
 import { getNotoSansBytes } from '@/lib/drive'
@@ -21,9 +21,10 @@ export async function fillPdf(
   const visibleFields = template.fields.filter((f) => !f.hidden)
 
   // Signature drawings need the page that owns the widget, and PDFAcroField
-  // doesn't expose that directly. Build a one-time index from widget-ref →
-  // page so per-field lookups stay O(1).
-  const pageByWidgetRef = buildWidgetPageIndex(pdfDoc)
+  // doesn't expose that directly. Build a one-time index from annotation
+  // dict → page so per-field lookups stay O(1). Keyed by PDFDict identity
+  // because pdf-lib caches lookups (same ref → same dict instance).
+  const pageByWidgetDict = buildWidgetPageIndex(pdfDoc)
 
   for (const fieldDef of visibleFields) {
     const rawValue = values[fieldDef.pdfFieldName]
@@ -34,7 +35,7 @@ export async function fillPdf(
       // regardless of the underlying widget type (we treat any text-shaped
       // widget that carries a `Semnătura`-style label as a sig slot).
       if (isSignatureField(fieldDef) && isSignatureValue(rawValue)) {
-        await drawSignatureOnto(pdfDoc, form, fieldDef.pdfFieldName, rawValue, pageByWidgetRef)
+        await drawSignatureOnto(pdfDoc, form, fieldDef.pdfFieldName, rawValue, pageByWidgetDict)
         continue
       }
 
@@ -72,18 +73,21 @@ export async function fillPdf(
   return pdfDoc.save()
 }
 
-// Walk every page's /Annots once and remember which page each widget ref
-// lives on. The page → widget direction is the cheap one in pdf-lib; the
-// reverse takes work. We rebuild this per fill (PDFs are small enough that
-// this is cheap, and avoids stale state across reloads of the same doc).
-function buildWidgetPageIndex(pdfDoc: PDFDocument): Map<string, PDFPage> {
-  const map = new Map<string, PDFPage>()
+// Walk every page's /Annots once and remember which page each annotation
+// dict belongs to. The page → widget direction is the cheap one in
+// pdf-lib; the reverse takes work. We rebuild this per fill (PDFs are
+// small enough that it's cheap, and it avoids stale state across reloads
+// of the same doc). Keyed by PDFDict because pdf-lib caches lookups —
+// the same ref always resolves to the same dict instance, so
+// `pageByWidgetDict.get(widget.dict)` is a valid identity probe.
+function buildWidgetPageIndex(pdfDoc: PDFDocument): Map<PDFDict, PDFPage> {
+  const map = new Map<PDFDict, PDFPage>()
   for (const page of pdfDoc.getPages()) {
     const annots = page.node.Annots()
     if (!annots) continue
-    const arr = annots.asArray()
-    for (const ref of arr) {
-      map.set(ref.toString(), page)
+    for (const ref of annots.asArray()) {
+      const dict = pdfDoc.context.lookup(ref, PDFDict)
+      if (dict) map.set(dict, page)
     }
   }
   return map
@@ -98,7 +102,7 @@ async function drawSignatureOnto(
   form: ReturnType<PDFDocument['getForm']>,
   fieldName: string,
   dataUrl: string,
-  pageByWidgetRef: Map<string, PDFPage>,
+  pageByWidgetDict: Map<PDFDict, PDFPage>,
 ): Promise<void> {
   const decoded = decodeSignatureValue(dataUrl)
   if (!decoded) return
@@ -124,7 +128,7 @@ async function drawSignatureOnto(
 
   for (const widget of widgets) {
     const rect = widget.getRectangle()
-    const page = findPageForWidget(widget, pageByWidgetRef, pdfDoc)
+    const page = pageByWidgetDict.get(widget.dict) ?? pdfDoc.getPages()[0]
     if (!page) continue
 
     // Aspect-fit. Tight slots stay readable; wide-but-short slots don't
@@ -141,28 +145,6 @@ async function drawSignatureOnto(
   }
 }
 
-function findPageForWidget(
-  widget: ReturnType<ReturnType<ReturnType<PDFDocument['getForm']>['getTextField']>['acroField']['getWidgets']>[number],
-  pageByWidgetRef: Map<string, PDFPage>,
-  pdfDoc: PDFDocument,
-): PDFPage | null {
-  const ref = widget.ref
-  if (ref) {
-    const hit = pageByWidgetRef.get(ref.toString())
-    if (hit) return hit
-  }
-  // Last resort: scan pages for an /Annots entry that resolves to this
-  // widget's dict. Slow path; only fires on PDFs with malformed/missing
-  // page-back-references.
-  for (const page of pdfDoc.getPages()) {
-    const annots = page.node.Annots()
-    if (!annots) continue
-    for (const a of annots.asArray()) {
-      if (a === ref) return page
-    }
-  }
-  return null
-}
 
 export async function fillAndDownload(
   template: Template,
