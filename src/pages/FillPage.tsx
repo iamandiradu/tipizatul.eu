@@ -516,6 +516,7 @@ export default function FillPage() {
               <PdfPreview pdfBytes={previewBytes ?? pdfBytes} onPagesReady={setPdfPages} />
               <SignatureOverlay
                 pages={pdfPages}
+                widgetRects={widgetRects}
                 fields={template.fields}
                 values={watch() as Record<string, unknown>}
                 onPlacementChange={(name, next) =>
