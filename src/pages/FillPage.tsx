@@ -106,6 +106,7 @@ export default function FillPage() {
     register,
     handleSubmit,
     watch,
+    setValue,
     getValues,
     formState: { errors },
   } = useForm<FormValues>({
@@ -363,6 +364,8 @@ export default function FillPage() {
                       field={f}
                       register={register as Parameters<typeof FormField>[0]['register']}
                       errors={errors as Parameters<typeof FormField>[0]['errors']}
+                      setValue={setValue as Parameters<typeof FormField>[0]['setValue']}
+                      watch={watch as Parameters<typeof FormField>[0]['watch']}
                     />
                   ))}
                 </div>

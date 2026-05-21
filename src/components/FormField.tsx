@@ -1,22 +1,43 @@
 import { useId } from 'react'
 import type { TemplateField } from '@/types/template'
-import type { UseFormRegister, FieldErrors } from 'react-hook-form'
+import type { UseFormRegister, FieldErrors, UseFormSetValue, UseFormWatch } from 'react-hook-form'
+import { isSignatureField } from '@/lib/signature'
+import SignatureField from './SignatureField'
 
 interface FormFieldProps {
   field: TemplateField
   register: UseFormRegister<Record<string, unknown>>
   errors: FieldErrors<Record<string, unknown>>
+  // Only consumed by signature fields. Optional so non-signature callers
+  // (e.g. the admin preview) don't have to pass them.
+  setValue?: UseFormSetValue<Record<string, unknown>>
+  watch?: UseFormWatch<Record<string, unknown>>
 }
 
 const inputClass = 'block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm text-base focus:border-blue-500 focus:outline-none px-3 py-2 placeholder:text-gray-400 dark:placeholder:text-gray-500'
 
-export default function FormField({ field, register, errors }: FormFieldProps) {
+export default function FormField({ field, register, errors, setValue, watch }: FormFieldProps) {
   const error = errors[field.pdfFieldName]
   const id = `field-${field.pdfFieldName}`
   const reactId = useId()
   const errorId = `${reactId}-error`
   const hintId = `${reactId}-hint`
   const describedBy = error ? errorId : field.hint ? hintId : undefined
+
+  if (isSignatureField(field) && setValue && watch) {
+    const current = watch(field.pdfFieldName)
+    const stringValue = typeof current === 'string' ? current : ''
+    return (
+      <SignatureField
+        field={field}
+        value={stringValue}
+        onChange={(next) =>
+          setValue(field.pdfFieldName, next, { shouldDirty: true, shouldValidate: false })
+        }
+        errorMessage={error ? String(error.message) : undefined}
+      />
+    )
+  }
 
   const labelEl = (
     <label htmlFor={id} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
