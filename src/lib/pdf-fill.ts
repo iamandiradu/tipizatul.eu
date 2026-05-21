@@ -93,10 +93,12 @@ function buildWidgetPageIndex(pdfDoc: PDFDocument): Map<PDFDict, PDFPage> {
   return map
 }
 
-// Draw the signature image on top of the named field's widget(s), clear
-// the underlying text value so it doesn't render alongside the image after
-// flatten(), and scale the image to fit within the widget rect preserving
-// aspect ratio.
+// Draw the signature image at the field's widget rect(s) and then remove
+// the form field. Removal matters: pdf-lib's `flatten()` bakes each widget's
+// appearance stream into the page content AFTER any drawing we did, so a
+// surviving (now-empty) text field would render an opaque white box on top
+// of the signature. Removing the field strips both the field record and
+// the page-level annotation, so flatten has nothing to overlay.
 async function drawSignatureOnto(
   pdfDoc: PDFDocument,
   form: ReturnType<PDFDocument['getForm']>,
@@ -105,7 +107,10 @@ async function drawSignatureOnto(
   pageByWidgetDict: Map<PDFDict, PDFPage>,
 ): Promise<void> {
   const decoded = decodeSignatureValue(dataUrl)
-  if (!decoded) return
+  if (!decoded) {
+    console.warn(`[pdf-fill] signature: could not decode data URL for "${fieldName}"`)
+    return
+  }
   const image =
     decoded.kind === 'png'
       ? await pdfDoc.embedPng(decoded.bytes)
@@ -114,17 +119,15 @@ async function drawSignatureOnto(
   let textField: ReturnType<typeof form.getTextField> | null = null
   try {
     textField = form.getTextField(fieldName)
-  } catch {
-    // Widget might not be a TextField (rare in our corpus). Skip rather
-    // than throw — the image draw below still works off raw widgets if
-    // the field is otherwise addressable.
+  } catch (err) {
+    console.warn(`[pdf-fill] signature: getTextField failed for "${fieldName}"`, err)
+    return
   }
-  const widgets = textField?.acroField.getWidgets() ?? []
-  if (widgets.length === 0) return
-
-  // Wipe the underlying text so flatten() doesn't render a stray "[object
-  // Object]" / data-URL string under the image.
-  try { textField?.setText('') } catch { /* non-fatal */ }
+  const widgets = textField.acroField.getWidgets()
+  if (widgets.length === 0) {
+    console.warn(`[pdf-fill] signature: no widgets attached to "${fieldName}"`)
+    return
+  }
 
   for (const widget of widgets) {
     const rect = widget.getRectangle()
@@ -142,6 +145,13 @@ async function drawSignatureOnto(
     const y = rect.y + (rect.height - drawH) / 2
 
     page.drawImage(image, { x, y, width: drawW, height: drawH })
+  }
+
+  // Strip the now-redundant text widget so flatten() doesn't overlay it.
+  try {
+    form.removeField(textField)
+  } catch (err) {
+    console.warn(`[pdf-fill] signature: removeField failed for "${fieldName}"`, err)
   }
 }
 
