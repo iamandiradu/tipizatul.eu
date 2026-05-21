@@ -70,6 +70,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const OUTPUT_ROOT = resolve(__dirname, 'paddle/output')
 const INDEX_PATH = resolve(__dirname, 'index.json')
 const PROGRESS_PATH = resolve(__dirname, 'upload-templates-progress.json')
+const ACROFORM_SCAN_PATH = resolve(__dirname, 'llm', 'acroform-scan.json')
 
 const DRIVE_ROOT_NAME = 'Tipizatul.eu'
 const DRIVE_PDFS_NAME = 'PDFs'
@@ -491,6 +492,27 @@ function organizationFromSource(source) {
   return parts[parts.length - 2]
 }
 
+// Read acroform-scan.json (produced by llm/scan_acroform.py) and turn it
+// into a {eDirectDocId → 'original'} map. Only the original set is kept —
+// anything not in the map is treated as 'generated' by callers. Returns
+// an empty map (with a warning) if the scan file hasn't been produced
+// yet, so uploads can still proceed without the field.
+function buildAcroFormOriginMap() {
+  if (!existsSync(ACROFORM_SCAN_PATH)) {
+    logErr(`${C.yellow}acroform-scan.json not found at ${ACROFORM_SCAN_PATH} — uploads will not carry acroFormOrigin${C.reset}`)
+    return new Map()
+  }
+  const scan = JSON.parse(readFileSync(ACROFORM_SCAN_PATH, 'utf-8'))
+  const map = new Map()
+  for (const p of scan.original_paths || []) {
+    const base = p.split('/').pop() || ''
+    const stem = base.endsWith('.pdf') ? base.slice(0, -4) : base
+    const m = /_(\d+)$/.exec(stem)
+    if (m) map.set(m[1], 'original')
+  }
+  return map
+}
+
 // ── Progress ─────────────────────────────────────────────────────────────────
 
 function loadProgress() {
@@ -506,7 +528,7 @@ function saveProgress(p) {
 
 // ── Main per-pair pipeline ───────────────────────────────────────────────────
 
-async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap, docIdToProcedure }) {
+async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap, docIdToProcedure, acroFormOriginMap }) {
   const pdfBytes = readFileSync(pdfPath)
   const detector = JSON.parse(readFileSync(jsonPath, 'utf-8'))
 
@@ -534,6 +556,19 @@ async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap, docI
   const eDirectDocId = eDirectDocIdFromStem(stem)
   const procRef = eDirectDocId ? docIdToProcedure?.get(eDirectDocId) : undefined
 
+  // Source PDF already had an AcroForm? Then trust the institution's
+  // labels as-is. Anything else (plain source we labelled, or a
+  // pipeline-generated AcroForm we reprocessed) is 'generated' until
+  // manually reviewed. If the scan file wasn't produced (empty map),
+  // leave the field undefined so the downstream filter can stay
+  // conservative.
+  const acroFormOrigin =
+    acroFormOriginMap && eDirectDocId && acroFormOriginMap.get(eDirectDocId) === 'original'
+      ? 'original'
+      : acroFormOriginMap && acroFormOriginMap.size > 0
+        ? 'generated'
+        : undefined
+
   const name = deriveTemplateName(stem)
   const id = randomUUID()
 
@@ -551,6 +586,7 @@ async function processPair({ bundleDir, stem, pdfPath, jsonPath, countyMap, docI
     archived: false,
     needsReview: needsReview || undefined,
     detectorConfidence: avgConfidence,
+    acroFormOrigin,
     driveFileId: '', // filled after upload
   }
 
@@ -613,6 +649,11 @@ async function main() {
   const { countyMap, docIdToProcedure } = buildIndexMaps()
   log(`${C.dim}county map: ${countyMap.size} institutions · procedure map: ${docIdToProcedure.size} doc-ids${C.reset}`)
 
+  const acroFormOriginMap = buildAcroFormOriginMap()
+  if (acroFormOriginMap.size > 0) {
+    log(`${C.dim}acroform origin map: ${acroFormOriginMap.size} doc-ids tagged as 'original'${C.reset}`)
+  }
+
   const progress = loadProgress()
   const alreadyDone = new Set(Object.keys(progress.uploaded))
   log(`${C.dim}progress: ${alreadyDone.size} already uploaded${C.reset}`)
@@ -647,7 +688,7 @@ async function main() {
       counter++
       const i = counter
       try {
-        const res = await processPair({ ...item, countyMap, docIdToProcedure })
+        const res = await processPair({ ...item, countyMap, docIdToProcedure, acroFormOriginMap })
         okCount++
         if (res.needsReview) reviewCount++
 
