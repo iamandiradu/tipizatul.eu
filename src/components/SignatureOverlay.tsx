@@ -120,24 +120,45 @@ function SignatureDraggable({
   // Local drag state so we don't write to react-hook-form on every pointer
   // move (which would re-render the world). Only commit on pointerup.
   const [drag, setDrag] = useState<{ dx: number; dy: number } | null>(null)
-  const startRef = useRef<{ pointerX: number; pointerY: number } | null>(null)
+  const [resize, setResize] = useState<{ dx: number; dy: number } | null>(null)
+  const dragStartRef = useRef<{ pointerX: number; pointerY: number } | null>(null)
+  const resizeStartRef = useRef<{ pointerX: number; pointerY: number } | null>(null)
+
+  // Aspect-locked resize: signatures look wrong when squished, so the SE
+  // corner handle scales the box uniformly. Pick the dominant axis (the
+  // one that grew most relative to the original) so the user gets the
+  // expected feel whether they drag mostly horizontally or vertically.
+  const resizeScale = (() => {
+    if (!resize) return 1
+    const dxPdf = resize.dx / page.scale
+    const dyPdf = resize.dy / page.scale
+    const sxRatio = (placement.width + dxPdf) / placement.width
+    const syRatio = (placement.height + dyPdf) / placement.height
+    return Math.max(0.1, Math.max(sxRatio, syRatio))
+  })()
 
   // Convert PDF user-space (origin bottom-left) → CSS px on the canvas
   // (origin top-left). Flip Y, multiply by the page's CSS-per-PDF scale.
+  // The transient drag and resize deltas adjust the displayed rectangle
+  // so the user sees their action in real time before the form value
+  // catches up on pointerup.
+  const cssWidth = placement.width * page.scale * resizeScale
+  const cssHeight = placement.height * page.scale * resizeScale
+  // Anchor the SE-corner resize at the top-left so it grows down+right
+  // (the visual model of Paint-style corner drag).
   const cssLeft = placement.x * page.scale + (drag?.dx ?? 0)
   const cssTop =
     (page.pdfHeight - placement.y - placement.height) * page.scale + (drag?.dy ?? 0)
-  const cssWidth = placement.width * page.scale
-  const cssHeight = placement.height * page.scale
 
-  function onPointerDown(ev: React.PointerEvent<HTMLDivElement>) {
+  // ── Body drag (move) ───────────────────────────────────────────────────
+  function onDragPointerDown(ev: React.PointerEvent<HTMLDivElement>) {
     ev.currentTarget.setPointerCapture(ev.pointerId)
-    startRef.current = { pointerX: ev.clientX, pointerY: ev.clientY }
+    dragStartRef.current = { pointerX: ev.clientX, pointerY: ev.clientY }
     setDrag({ dx: 0, dy: 0 })
   }
 
-  function onPointerMove(ev: React.PointerEvent<HTMLDivElement>) {
-    const start = startRef.current
+  function onDragPointerMove(ev: React.PointerEvent<HTMLDivElement>) {
+    const start = dragStartRef.current
     if (!start) return
     setDrag({
       dx: ev.clientX - start.pointerX,
@@ -145,15 +166,12 @@ function SignatureDraggable({
     })
   }
 
-  function onPointerUp() {
-    const start = startRef.current
+  function onDragPointerUp() {
+    const start = dragStartRef.current
     if (!start) return
-    startRef.current = null
+    dragStartRef.current = null
     if (!drag) { setDrag(null); return }
 
-    // Commit only if the user actually moved. Clamps the new position so
-    // the image stays inside the page bounds (overflow into off-page
-    // whitespace would just get clipped at render time anyway).
     const pdfDx = drag.dx / page.scale
     const pdfDy = -drag.dy / page.scale
     const nextX = clamp(placement.x + pdfDx, 0, page.pdfWidth - placement.width)
@@ -162,27 +180,86 @@ function SignatureDraggable({
     setDrag(null)
     if (Math.abs(pdfDx) < 0.5 && Math.abs(pdfDy) < 0.5) return
 
-    const nextValue = encodeSignatureValue(value, {
-      heightMultiplier: decoded.heightMultiplier,
-      placement: {
-        pageIndex: placement.pageIndex,
-        x: nextX,
-        y: nextY,
-        width: placement.width,
-        height: placement.height,
-      },
+    commitPlacement({
+      pageIndex: placement.pageIndex,
+      x: nextX,
+      y: nextY,
+      width: placement.width,
+      height: placement.height,
     })
-    onChange(fieldName, nextValue)
+  }
+
+  // ── Corner resize ──────────────────────────────────────────────────────
+  // The handle stops pointer propagation so dragging it doesn't trigger
+  // the body's move handlers. Setting pointer capture is essential or the
+  // pointer events go to whatever's underneath as soon as the cursor
+  // leaves the small handle area.
+  function onResizePointerDown(ev: React.PointerEvent<HTMLDivElement>) {
+    ev.stopPropagation()
+    ev.currentTarget.setPointerCapture(ev.pointerId)
+    resizeStartRef.current = { pointerX: ev.clientX, pointerY: ev.clientY }
+    setResize({ dx: 0, dy: 0 })
+  }
+
+  function onResizePointerMove(ev: React.PointerEvent<HTMLDivElement>) {
+    const start = resizeStartRef.current
+    if (!start) return
+    ev.stopPropagation()
+    setResize({
+      dx: ev.clientX - start.pointerX,
+      dy: ev.clientY - start.pointerY,
+    })
+  }
+
+  function onResizePointerUp(ev: React.PointerEvent<HTMLDivElement>) {
+    ev.stopPropagation()
+    const start = resizeStartRef.current
+    if (!start) return
+    resizeStartRef.current = null
+    if (!resize) { setResize(null); return }
+
+    // SE-corner drag keeps the top-left fixed and grows the box down+right.
+    // Aspect-locked: the dominant axis sets the scale, the other follows.
+    // Min size guards against accidental zero/negative dimensions (e.g.
+    // dragging far up-and-left would otherwise invert the rect).
+    const MIN_PDF = 8 // PDF user-space units; ~1/9 inch
+    const targetW = Math.max(MIN_PDF, placement.width * resizeScale)
+    const targetH = Math.max(MIN_PDF, placement.height * resizeScale)
+    // Keep the top anchored: y' + height' = old_y + old_height
+    const oldTop = placement.y + placement.height
+    const newY = clamp(oldTop - targetH, 0, page.pdfHeight - targetH)
+    const newW = clamp(targetW, MIN_PDF, page.pdfWidth - placement.x)
+
+    setResize(null)
+    if (Math.abs(newW - placement.width) < 0.5 && Math.abs(targetH - placement.height) < 0.5) return
+
+    commitPlacement({
+      pageIndex: placement.pageIndex,
+      x: placement.x,
+      y: newY,
+      width: newW,
+      height: targetH,
+    })
+  }
+
+  function commitPlacement(p: SignaturePlacement) {
+    onChange(
+      fieldName,
+      encodeSignatureValue(value, {
+        heightMultiplier: decoded.heightMultiplier,
+        placement: p,
+      }),
+    )
   }
 
   return createPortal(
     <div
       role="img"
-      aria-label={`Semnătură pentru ${fieldName} — trage pentru a repoziționa`}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerCancel={onPointerUp}
+      aria-label={`Semnătură pentru ${fieldName} — trage pentru a repoziționa, colț pentru a redimensiona`}
+      onPointerDown={onDragPointerDown}
+      onPointerMove={onDragPointerMove}
+      onPointerUp={onDragPointerUp}
+      onPointerCancel={onDragPointerUp}
       style={{
         position: 'absolute',
         left: cssLeft,
@@ -191,15 +268,37 @@ function SignatureDraggable({
         height: cssHeight,
         cursor: drag ? 'grabbing' : 'grab',
         touchAction: 'none',
-        // Subtle border on hover hints draggability; reset on grab so it
-        // doesn't compete with the signature's outline.
-        outline: drag ? '2px dashed rgba(37, 99, 235, 0.7)' : '1px dashed rgba(107, 114, 128, 0.4)',
+        outline:
+          drag || resize
+            ? '2px dashed rgba(37, 99, 235, 0.7)'
+            : '1px dashed rgba(107, 114, 128, 0.4)',
         outlineOffset: '2px',
         backgroundImage: `url("${value.replace(/#.*$/, '')}")`,
         backgroundRepeat: 'no-repeat',
         backgroundSize: '100% 100%',
       }}
-    />,
+    >
+      <div
+        aria-label="Redimensionează semnătura"
+        onPointerDown={onResizePointerDown}
+        onPointerMove={onResizePointerMove}
+        onPointerUp={onResizePointerUp}
+        onPointerCancel={onResizePointerUp}
+        style={{
+          position: 'absolute',
+          right: -6,
+          bottom: -6,
+          width: 14,
+          height: 14,
+          cursor: 'nwse-resize',
+          touchAction: 'none',
+          backgroundColor: 'rgba(37, 99, 235, 0.95)',
+          border: '1.5px solid white',
+          borderRadius: 2,
+          boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
+        }}
+      />
+    </div>,
     page.wrapper,
   )
 }
