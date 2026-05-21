@@ -69,3 +69,4 @@ scripts/edirect/llm/corpus-batch.progress.json
 scripts/edirect/llm/corpus-batch.progress.json.bak
 scripts/edirect/llm/corpus-batch.log
 scripts/edirect/llm/corpus-batch.run.out
+scripts/edirect/llm/acroform-scan.json
