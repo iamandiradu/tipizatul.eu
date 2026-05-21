@@ -23,6 +23,18 @@ export interface TemplateField {
   hidden?: boolean
 }
 
+// Where the AcroForm in `driveFileId` came from.
+//   'original'  — the source institution's PDF already contained an
+//                 AcroForm. Field labels can be trusted as-is.
+//   'generated' — our detection pipeline (paddle or llm) produced the
+//                 AcroForm from a non-fillable source. Labels are
+//                 statistically reliable but need review before they
+//                 become a public "completabil online" promise.
+// Missing (undefined) on legacy templates uploaded before this field
+// existed. Filters that surface only trustworthy forms must treat
+// undefined as not-original.
+export type AcroFormOrigin = 'original' | 'generated'
+
 export interface Template {
   id: string
   name: string
@@ -48,6 +60,7 @@ export interface Template {
   // Drive file id of the truly-untouched bundle PDF (no AcroForm fields,
   // straight from eDirect). Optional during the backfill rollout.
   originalDriveFileId?: string
+  acroFormOrigin?: AcroFormOrigin
   // Denormalized vote counters; the source of truth is the
   // `templates/{id}/votes/{deviceId}` sub-collection. Both fields default to
   // 0 when missing (templates that have never been voted on).
@@ -90,6 +103,7 @@ export interface SlimTemplate {
   archived?: boolean
   driveFileId: string
   originalDriveFileId?: string
+  acroFormOrigin?: AcroFormOrigin
 }
 
 // One eDirect procedure — the layer between an institution and its

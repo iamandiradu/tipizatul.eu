@@ -241,12 +241,16 @@ export default function ProceduresIndexPage() {
     }
   }, [])
 
+  // Filter counts only templates whose AcroForm came from the source
+  // (acroFormOrigin === 'original'). Pipeline-generated templates exist in
+  // the catalog but are not surfaced via this toggle until a human review
+  // step marks them safe.
   const editableByProcedureId = useMemo<Map<string, number> | null>(() => {
     if (!payload || !catalog) return null
     const idx = buildTemplateIndex(catalog)
     const m = new Map<string, number>()
     for (const p of Object.values(payload.procedures)) {
-      const n = countEditableDocuments(p, idx)
+      const n = countEditableDocuments(p, idx, { originalOnly: true })
       if (n > 0) m.set(p.procedureId, n)
     }
     return m
@@ -425,7 +429,7 @@ export default function ProceduresIndexPage() {
           disabled={!editableByProcedureId}
           className="w-4 h-4 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 focus:ring-offset-0 disabled:opacity-50"
         />
-        Doar proceduri cu formulare completabile online
+        Doar proceduri cu formulare oficiale completabile online
         {editableByProcedureId && (
           <span className="text-xs text-gray-500 dark:text-gray-400">
             ({editableByProcedureId.size})

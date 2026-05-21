@@ -90,6 +90,7 @@ function slim(t) {
   if (t.procedure) out.procedure = t.procedure
   if (t.eDirectDocId) out.eDirectDocId = t.eDirectDocId
   if (t.originalDriveFileId) out.originalDriveFileId = t.originalDriveFileId
+  if (t.acroFormOrigin) out.acroFormOrigin = t.acroFormOrigin
   return out
 }
 

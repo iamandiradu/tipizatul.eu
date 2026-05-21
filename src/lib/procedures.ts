@@ -139,14 +139,26 @@ export function buildTemplateIndex(catalog: SlimTemplate[]): TemplateIndex {
 // detail page — the union of per-document matches (eDirectDocId) and
 // procedure-level orphans (procedureId). Mirrors the forms[] computation in
 // ProcedureDetailPage so the index count never lies about reachability.
-export function countEditableDocuments(p: Procedure, idx: TemplateIndex): number {
+//
+// `originalOnly` restricts to templates whose AcroForm came from the source
+// institution (acroFormOrigin === 'original'). Pipeline-generated AcroForms
+// — and legacy templates predating the field — are statistically reliable
+// but not vetted, so they're excluded from the "Doar formulare originale"
+// view until manual review marks them safe to surface.
+export function countEditableDocuments(
+  p: Procedure,
+  idx: TemplateIndex,
+  options: { originalOnly?: boolean } = {},
+): number {
+  const allow = (t: SlimTemplate) =>
+    !options.originalOnly || t.acroFormOrigin === 'original'
   const seen = new Set<string>()
   for (const d of p.documents) {
     if (!d.eDirectDocId) continue
     const t = idx.byDocId.get(d.eDirectDocId)
-    if (t) seen.add(t.id)
+    if (t && allow(t)) seen.add(t.id)
   }
   const orphans = idx.byProcedureId.get(p.procedureId)
-  if (orphans) for (const t of orphans) seen.add(t.id)
+  if (orphans) for (const t of orphans) if (allow(t)) seen.add(t.id)
   return seen.size
 }
