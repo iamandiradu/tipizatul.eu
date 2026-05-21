@@ -82,7 +82,8 @@ export async function fillPdf(
         }
         case 'checkbox': {
           const cb = form.getCheckBox(fieldDef.pdfFieldName)
-          rawValue === true || rawValue === 'true' ? cb.check() : cb.uncheck()
+          if (rawValue === true || rawValue === 'true') cb.check()
+          else cb.uncheck()
           break
         }
         case 'dropdown': {
@@ -204,7 +205,7 @@ async function prepareSignature(
     }
   }
 
-  if (widgets.length === 0) {
+  if (!textField || widgets.length === 0) {
     console.warn(`[pdf-fill] signature: no widgets attached to "${fieldName}"`)
     return []
   }
