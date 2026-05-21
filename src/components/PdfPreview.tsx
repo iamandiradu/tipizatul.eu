@@ -5,16 +5,6 @@ import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc
 
-export interface PdfPageWidgetRect {
-  pdfFieldName: string
-  // PDF user-space (origin bottom-left). Same coordinate system pdf-lib uses
-  // so consumers can hand these straight back to fillPdf.
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
 export interface PdfPageInfo {
   pageIndex: number                 // 0-based
   // The wrapper element that owns the canvas — overlay portals mount here.
@@ -27,7 +17,6 @@ export interface PdfPageInfo {
   // PDF user-space dimensions of the page.
   pdfWidth: number
   pdfHeight: number
-  widgets: PdfPageWidgetRect[]
 }
 
 interface PdfPreviewProps {
@@ -152,29 +141,11 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
           const ctx = canvas.getContext('2d')
           if (ctx) ctx.drawImage(offscreen, 0, 0)
 
-          // Harvest widget rects for any consumer that wants to overlay
-          // signatures, watermarks, etc. PDF user-space (bottom-left
-          // origin) — same coordinates pdf-lib uses, so they round-trip
-          // straight back into fillPdf without conversion.
-          const widgets: PdfPageWidgetRect[] = []
-          try {
-            const annots = await page.getAnnotations()
-            for (const a of annots) {
-              if (a.subtype !== 'Widget') continue
-              if (!a.fieldName || !a.rect) continue
-              const [x1, y1, x2, y2] = a.rect as [number, number, number, number]
-              widgets.push({
-                pdfFieldName: a.fieldName,
-                x: Math.min(x1, x2),
-                y: Math.min(y1, y2),
-                width: Math.abs(x2 - x1),
-                height: Math.abs(y2 - y1),
-              })
-            }
-          } catch (err) {
-            console.warn('[PdfPreview] getAnnotations failed', err)
-          }
-
+          // Widget rects are NOT harvested here — fillPdf flattens the form
+          // before producing preview bytes, so by the time pdf.js loads
+          // them the widgets are gone. The original-document harvest
+          // lives in lib/pdf-widget-rects.ts and is fed into the overlay
+          // separately.
           pageInfos.push({
             pageIndex: i - 1,
             wrapper: pageWrap,
@@ -182,7 +153,6 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
             scale,
             pdfWidth: baseViewport.width,
             pdfHeight: baseViewport.height,
-            widgets,
           })
         }
 

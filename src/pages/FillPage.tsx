@@ -13,6 +13,7 @@ import { NO_ORG, templateCounty } from '@/lib/template-grouping'
 import { useSessionStore } from '@/stores/sessionStore'
 import PdfPreview, { type PdfPageInfo } from '@/components/PdfPreview'
 import SignatureOverlay from '@/components/SignatureOverlay'
+import { harvestWidgetRects, type WidgetRect } from '@/lib/pdf-widget-rects'
 import FormField from '@/components/FormField'
 import VoteWidget from '@/components/VoteWidget'
 import type { Template, FormValues } from '@/types/template'
@@ -30,6 +31,7 @@ export default function FillPage() {
   const [previewing, setPreviewing] = useState(false)
   const [pdfOnly, setPdfOnly] = useState(false)
   const [pdfPages, setPdfPages] = useState<PdfPageInfo[]>([])
+  const [widgetRects, setWidgetRects] = useState<WidgetRect[]>([])
   const [iframeUrl, setIframeUrl] = useState<string | null>(null)
 
   const { formDraft, setFormDraft } = useSessionStore()
@@ -129,6 +131,23 @@ export default function FillPage() {
   // Live PDF preview — debounce form changes by 1s, then re-fill the PDF and
   // swap the bytes shown in the iframe. Runs only on md+ where the iframe is
   // actually visible (mobile shows an "open in OS viewer" link instead).
+  // Harvest signature widget rects from the ORIGINAL pdfBytes once. fillPdf
+  // calls flatten() on every preview, which strips the form annotations
+  // out of the live preview bytes — without this, the overlay loses its
+  // anchor after the first re-render.
+  useEffect(() => {
+    if (!pdfBytes) return
+    let cancelled = false
+    harvestWidgetRects(pdfBytes)
+      .then((rects) => { if (!cancelled) setWidgetRects(rects) })
+      .catch((err) => {
+        if (cancelled) return
+        console.warn('[fill] harvestWidgetRects failed', err)
+        setWidgetRects([])
+      })
+    return () => { cancelled = true }
+  }, [pdfBytes])
+
   useEffect(() => {
     if (!template || !pdfBytes) return
     if (typeof window === 'undefined' || !window.matchMedia('(min-width: 768px)').matches) return
@@ -483,6 +502,7 @@ export default function FillPage() {
                 <PdfPreview pdfBytes={previewBytes ?? pdfBytes} onPagesReady={setPdfPages} />
                 <SignatureOverlay
                   pages={pdfPages}
+                  widgetRects={widgetRects}
                   fields={template.fields}
                   values={watch() as Record<string, unknown>}
                   onPlacementChange={(name, next) =>

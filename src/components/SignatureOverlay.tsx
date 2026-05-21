@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { TemplateField } from '@/types/template'
 import type { PdfPageInfo } from './PdfPreview'
+import type { WidgetRect } from '@/lib/pdf-widget-rects'
 import {
   decodeSignatureValue,
   encodeSignatureValue,
@@ -17,6 +18,10 @@ const DEFAULT_HEIGHT_MULTIPLIER = 3
 
 interface SignatureOverlayProps {
   pages: PdfPageInfo[]
+  // Widget rects harvested from the *original* pdfBytes — fillPdf's
+  // flatten() strips them out of the live preview, so we can't rely on
+  // PdfPreview's per-render harvest. Source: lib/pdf-widget-rects.ts.
+  widgetRects: WidgetRect[]
   fields: TemplateField[]
   values: Record<string, unknown>
   onPlacementChange: (pdfFieldName: string, next: string) => void
@@ -29,6 +34,7 @@ interface SignatureOverlayProps {
 // the final fillPdf draws there.
 export default function SignatureOverlay({
   pages,
+  widgetRects,
   fields,
   values,
   onPlacementChange,
@@ -36,21 +42,6 @@ export default function SignatureOverlay({
   const sigFieldNames = new Set(
     fields.filter(isSignatureField).map((f) => f.pdfFieldName),
   )
-  // Diagnostic — one-off log per render. The overlay silently returns null
-  // in several branches; this surfaces why so a missing-signature report
-  // ("I don't see anything") can be triaged from the browser console.
-  if (typeof window !== 'undefined') {
-    console.debug('[SignatureOverlay] render', {
-      pageCount: pages.length,
-      signatureFieldCount: sigFieldNames.size,
-      signatureFieldNames: [...sigFieldNames],
-      signedValuePresent: [...sigFieldNames].filter((n) => isSignatureValue(values[n])),
-      widgetsByPage: pages.map((p) => ({
-        page: p.pageIndex,
-        widgets: p.widgets.map((w) => w.pdfFieldName),
-      })),
-    })
-  }
   if (sigFieldNames.size === 0 || pages.length === 0) return null
 
   // Build the placements + page bindings once per render. Keys missing
@@ -63,19 +54,14 @@ export default function SignatureOverlay({
     if (!decoded) continue
 
     // Find the widget rect (only consulted when there's no placement
-    // override). Default to the first page's first widget — corner cases
-    // (unusual templates with no matching widget at all) end up centred on
-    // page 1, which is wrong but at least visible.
-    let defaultPageIndex = 0
-    let defaultRect: { x: number; y: number; width: number; height: number } | null = null
-    for (const p of pages) {
-      const w = p.widgets.find((w) => w.pdfFieldName === fieldName)
-      if (w) {
-        defaultPageIndex = p.pageIndex
-        defaultRect = { x: w.x, y: w.y, width: w.width, height: w.height }
-        break
-      }
-    }
+    // override). Sourced from the original-document harvest, so the
+    // lookup survives fillPdf's flatten() stripping the widgets out of
+    // the live preview bytes.
+    const widget = widgetRects.find((w) => w.pdfFieldName === fieldName)
+    const defaultPageIndex = widget?.pageIndex ?? 0
+    const defaultRect = widget
+      ? { x: widget.x, y: widget.y, width: widget.width, height: widget.height }
+      : null
 
     // Resolve final {pageIndex, x, y, width, height} in PDF user-space.
     let placement: SignaturePlacement
