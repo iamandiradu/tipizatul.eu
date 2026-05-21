@@ -66,4 +66,6 @@ scripts/edirect/llm/chat-work/
 scripts/edirect/llm/output-corpus/
 scripts/edirect/llm/corpus-batch.queue.json
 scripts/edirect/llm/corpus-batch.progress.json
+scripts/edirect/llm/corpus-batch.progress.json.bak
 scripts/edirect/llm/corpus-batch.log
+scripts/edirect/llm/corpus-batch.run.out
