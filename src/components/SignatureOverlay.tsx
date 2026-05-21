@@ -36,6 +36,21 @@ export default function SignatureOverlay({
   const sigFieldNames = new Set(
     fields.filter(isSignatureField).map((f) => f.pdfFieldName),
   )
+  // Diagnostic — one-off log per render. The overlay silently returns null
+  // in several branches; this surfaces why so a missing-signature report
+  // ("I don't see anything") can be triaged from the browser console.
+  if (typeof window !== 'undefined') {
+    console.debug('[SignatureOverlay] render', {
+      pageCount: pages.length,
+      signatureFieldCount: sigFieldNames.size,
+      signatureFieldNames: [...sigFieldNames],
+      signedValuePresent: [...sigFieldNames].filter((n) => isSignatureValue(values[n])),
+      widgetsByPage: pages.map((p) => ({
+        page: p.pageIndex,
+        widgets: p.widgets.map((w) => w.pdfFieldName),
+      })),
+    })
+  }
   if (sigFieldNames.size === 0 || pages.length === 0) return null
 
   // Build the placements + page bindings once per render. Keys missing
