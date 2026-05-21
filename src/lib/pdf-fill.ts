@@ -4,6 +4,16 @@ import type { Template, FormValues } from '@/types/template'
 import { getNotoSansBytes } from '@/lib/drive'
 import { isSignatureField, isSignatureValue, decodeSignatureValue } from '@/lib/signature'
 
+// How tall a rendered signature can be relative to its widget's bbox.
+// Romanian signature slots are typically a 10–14 pt underline, far too
+// small to host a readable signature aspect-fit-style. Allowing the image
+// to grow vertically above the widget — anchored at the widget's bottom
+// edge so it climbs into the whitespace where a paper signature would
+// have gone — is the cheap fix. Bump this up if signatures still look
+// cramped on a particular form; drop it if a tall image collides with
+// text above the slot.
+const SIGNATURE_MAX_HEIGHT_MULTIPLIER = 3
+
 export async function fillPdf(
   template: Template,
   pdfBytes: ArrayBuffer,
@@ -134,15 +144,19 @@ async function drawSignatureOnto(
     const page = pageByWidgetDict.get(widget.dict) ?? pdfDoc.getPages()[0]
     if (!page) continue
 
-    // Aspect-fit. Tight slots stay readable; wide-but-short slots don't
-    // distort the signature.
-    const sx = rect.width / image.width
-    const sy = rect.height / image.height
-    const scale = Math.min(sx, sy)
+    // Width is bounded by the widget; height is bounded by N× the widget
+    // height (signature climbs above the slot, see the constant's comment).
+    // Aspect ratio preserved by picking the tighter of the two scale factors.
+    const widthScale = rect.width / image.width
+    const heightCap = rect.height * SIGNATURE_MAX_HEIGHT_MULTIPLIER
+    const heightScale = heightCap / image.height
+    const scale = Math.min(widthScale, heightScale)
     const drawW = image.width * scale
     const drawH = image.height * scale
+    // Centre horizontally within the slot; anchor at the slot's bottom
+    // edge so growth happens upward into the whitespace above.
     const x = rect.x + (rect.width - drawW) / 2
-    const y = rect.y + (rect.height - drawH) / 2
+    const y = rect.y
 
     page.drawImage(image, { x, y, width: drawW, height: drawH })
   }
