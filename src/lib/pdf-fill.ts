@@ -9,15 +9,13 @@ import type { Template, FormValues } from '@/types/template'
 import { getNotoSansBytes } from '@/lib/drive'
 import { isSignatureField, isSignatureValue, decodeSignatureValue } from '@/lib/signature'
 
-// How tall a rendered signature can be relative to its widget's bbox.
-// Romanian signature slots are typically a 10–14 pt underline, far too
-// small to host a readable signature aspect-fit-style. Allowing the image
-// to grow vertically above the widget — anchored at the widget's bottom
-// edge so it climbs into the whitespace where a paper signature would
-// have gone — is the cheap fix. Bump this up if signatures still look
-// cramped on a particular form; drop it if a tall image collides with
-// text above the slot.
-const SIGNATURE_MAX_HEIGHT_MULTIPLIER = 3
+// Default cap on rendered signature height relative to its widget's bbox.
+// Romanian signature slots are typically a 10–14 pt underline; allowing
+// the image to grow vertically above the widget gives the signature room
+// to be readable. Per-signature overrides ride along on the value's
+// `#h=N` fragment (see encodeSignatureValue / decodeSignatureValue);
+// this constant is the fallback when none is supplied.
+const SIGNATURE_DEFAULT_HEIGHT_MULTIPLIER = 3
 
 export async function fillPdf(
   template: Template,
@@ -160,6 +158,7 @@ async function prepareSignature(
     decoded.kind === 'png'
       ? await pdfDoc.embedPng(decoded.bytes)
       : await pdfDoc.embedJpg(decoded.bytes)
+  const heightMultiplier = decoded.heightMultiplier ?? SIGNATURE_DEFAULT_HEIGHT_MULTIPLIER
 
   let textField: ReturnType<typeof form.getTextField> | null = null
   try {
@@ -184,7 +183,7 @@ async function prepareSignature(
     // height (signature climbs above the slot, see the constant's comment).
     // Aspect ratio preserved by picking the tighter of the two scale factors.
     const widthScale = rect.width / image.width
-    const heightCap = rect.height * SIGNATURE_MAX_HEIGHT_MULTIPLIER
+    const heightCap = rect.height * heightMultiplier
     const heightScale = heightCap / image.height
     const scale = Math.min(widthScale, heightScale)
     const drawW = image.width * scale

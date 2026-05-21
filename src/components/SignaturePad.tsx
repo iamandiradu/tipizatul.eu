@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Pencil, Upload, Trash2, Check } from 'lucide-react'
+import { encodeSignatureValue, decodeSignatureValue } from '@/lib/signature'
 
 interface SignaturePadProps {
   value: string                                    // current PNG/JPEG data URL, '' when empty
@@ -8,6 +9,29 @@ interface SignaturePadProps {
 }
 
 type Mode = 'draw' | 'upload'
+
+// Three render-size presets the user can pick between. The number is the
+// height-multiplier baked into the saved value's `#h=N` fragment; pdf-fill
+// reads it when sizing the rendered signature relative to the widget rect.
+// "M" matches the previous default.
+const SIZE_PRESETS = [
+  { id: 'S', label: 'S', multiplier: 2 },
+  { id: 'M', label: 'M', multiplier: 3 },
+  { id: 'L', label: 'L', multiplier: 5 },
+] as const
+type SizeId = (typeof SIZE_PRESETS)[number]['id']
+const DEFAULT_SIZE: SizeId = 'M'
+
+function sizeIdForMultiplier(multiplier: number | undefined): SizeId {
+  if (multiplier === undefined) return DEFAULT_SIZE
+  let best: SizeId = DEFAULT_SIZE
+  let bestDelta = Infinity
+  for (const p of SIZE_PRESETS) {
+    const d = Math.abs(p.multiplier - multiplier)
+    if (d < bestDelta) { bestDelta = d; best = p.id }
+  }
+  return best
+}
 
 // HiDPI canvas. We render at devicePixelRatio so the exported PNG is sharp
 // on retina screens; the stored width/height stay in CSS pixels.
@@ -24,9 +48,28 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
   const [mode, setMode] = useState<Mode>('draw')
   const [hasInk, setHasInk] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  // Initialise from the value the user already saved, so reopening the pad
+  // preserves their last size choice rather than snapping back to M.
+  const [size, setSize] = useState<SizeId>(() =>
+    sizeIdForMultiplier(value ? decodeSignatureValue(value)?.heightMultiplier : undefined),
+  )
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const drawingRef = useRef(false)
   const lastPtRef = useRef<{ x: number; y: number } | null>(null)
+
+  const multiplier =
+    SIZE_PRESETS.find((p) => p.id === size)?.multiplier ?? 3
+
+  // When the user changes size while a signature is already saved, re-emit
+  // the same image with the new size baked in. That way the form value is
+  // immediately consistent with the UI without forcing a re-sign/re-upload.
+  function applySize(next: SizeId) {
+    setSize(next)
+    if (value) {
+      const m = SIZE_PRESETS.find((p) => p.id === next)?.multiplier
+      onChange(encodeSignatureValue(value, m))
+    }
+  }
 
   const setupCanvas = useCallback(() => {
     const canvas = canvasRef.current
@@ -115,7 +158,7 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
   function saveDrawing() {
     const canvas = canvasRef.current
     if (!canvas) return
-    onChange(canvas.toDataURL('image/png'))
+    onChange(encodeSignatureValue(canvas.toDataURL('image/png'), multiplier))
     onClose?.()
   }
 
@@ -137,7 +180,7 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
     reader.onload = () => {
       const result = typeof reader.result === 'string' ? reader.result : ''
       if (!result) return
-      onChange(result)
+      onChange(encodeSignatureValue(result, multiplier))
       onClose?.()
     }
     reader.readAsDataURL(file)
@@ -168,6 +211,27 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
         >
           <Upload className="w-4 h-4" /> Încarcă imagine
         </button>
+      </div>
+
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs text-gray-600 dark:text-gray-300">Mărime semnătură</span>
+        <div className="inline-flex rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden">
+          {SIZE_PRESETS.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              onClick={() => applySize(p.id)}
+              aria-pressed={size === p.id}
+              className={`px-3 py-1 text-xs font-medium ${
+                size === p.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
+              } ${i > 0 ? 'border-l border-gray-300 dark:border-gray-600' : ''}`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {mode === 'draw' && (
