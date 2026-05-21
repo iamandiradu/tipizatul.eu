@@ -67,7 +67,9 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
     setSize(next)
     if (value) {
       const m = SIZE_PRESETS.find((p) => p.id === next)?.multiplier
-      onChange(encodeSignatureValue(value, m))
+      // Preserve any existing placement override; only update the size.
+      const existing = decodeSignatureValue(value)
+      onChange(encodeSignatureValue(value, { heightMultiplier: m, placement: existing?.placement }))
     }
   }
 
@@ -158,7 +160,10 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
   function saveDrawing() {
     const canvas = canvasRef.current
     if (!canvas) return
-    onChange(encodeSignatureValue(canvas.toDataURL('image/png'), multiplier))
+    // New drawing replaces any prior signature — drop any stale placement
+    // override so the signature snaps back to the detected slot. The user
+    // can drag it from there if they want.
+    onChange(encodeSignatureValue(canvas.toDataURL('image/png'), { heightMultiplier: multiplier }))
     onClose?.()
   }
 
@@ -180,7 +185,7 @@ export default function SignaturePad({ value, onChange, onClose }: SignaturePadP
     reader.onload = () => {
       const result = typeof reader.result === 'string' ? reader.result : ''
       if (!result) return
-      onChange(encodeSignatureValue(result, multiplier))
+      onChange(encodeSignatureValue(result, { heightMultiplier: multiplier }))
       onClose?.()
     }
     reader.readAsDataURL(file)

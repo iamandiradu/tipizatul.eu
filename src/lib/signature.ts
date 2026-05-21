@@ -32,21 +32,60 @@ export function isSignatureValue(value: unknown): value is string {
   return typeof value === 'string' && SIGNATURE_VALUE_RE.test(value)
 }
 
-// Glue a height-multiplier onto an existing data URL. Replaces any prior
-// `#h=…` fragment so callers can re-emit without leaking old sizes.
-export function encodeSignatureValue(dataUrl: string, heightMultiplier?: number): string {
+// Explicit override of where the signature should land, in PDF user-space
+// (origin bottom-left). When present, pdf-fill uses these coordinates
+// directly and ignores the field's widget rect. When absent, the legacy
+// label-anchored flow takes over (widget rect + height multiplier).
+export interface SignaturePlacement {
+  pageIndex: number
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+// Glue size and/or placement onto an existing data URL. Replaces any prior
+// fragment so callers can re-emit without leaking stale state.
+export function encodeSignatureValue(
+  dataUrl: string,
+  opts: { heightMultiplier?: number; placement?: SignaturePlacement } = {},
+): string {
   const base = dataUrl.replace(/#.*$/, '')
-  if (heightMultiplier === undefined || !Number.isFinite(heightMultiplier)) return base
-  return `${base}#h=${heightMultiplier}`
+  const parts: string[] = []
+  if (opts.heightMultiplier !== undefined && Number.isFinite(opts.heightMultiplier)) {
+    parts.push(`h=${opts.heightMultiplier}`)
+  }
+  const p = opts.placement
+  if (p && Number.isFinite(p.pageIndex) && Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.width) && Number.isFinite(p.height)) {
+    parts.push(
+      `pi=${p.pageIndex}`,
+      `px=${trim(p.x)}`,
+      `py=${trim(p.y)}`,
+      `pw=${trim(p.width)}`,
+      `ph=${trim(p.height)}`,
+    )
+  }
+  return parts.length ? `${base}#${parts.join('&')}` : base
+}
+
+function trim(n: number): string {
+  // 2 decimals is enough for PDF user-space — sub-point precision is invisible
+  // and keeps fragment URLs short.
+  return Number.parseFloat(n.toFixed(2)).toString()
 }
 
 // Decode a data-URL into the raw bytes pdf-lib needs for embedJpg / embedPng
-// plus the optional per-signature height multiplier. Returns null on
-// malformed input rather than throwing — the fill loop should skip a
-// corrupted signature, not abort the whole PDF.
+// plus optional per-signature size + placement. Returns null on malformed
+// input rather than throwing — the fill loop should skip a corrupted
+// signature, not abort the whole PDF.
 export function decodeSignatureValue(
   value: string,
-): { kind: 'png' | 'jpg'; bytes: Uint8Array; heightMultiplier?: number } | null {
+): {
+  kind: 'png' | 'jpg'
+  bytes: Uint8Array
+  heightMultiplier?: number
+  placement?: SignaturePlacement
+} | null {
   // Split fragment off first so the regex below doesn't have to tolerate it.
   const hashIdx = value.indexOf('#')
   const head = hashIdx >= 0 ? value.slice(0, hashIdx) : value
@@ -54,19 +93,34 @@ export function decodeSignatureValue(
   const m = /^data:image\/(png|jpe?g);base64,(.+)$/.exec(head)
   if (!m) return null
   const kind = m[1].startsWith('jp') ? 'jpg' : 'png'
+
   let heightMultiplier: number | undefined
+  let placement: SignaturePlacement | undefined
   if (tail) {
-    const hm = /(?:^|&)h=([0-9]+(?:\.[0-9]+)?)/.exec(tail)
-    if (hm) {
-      const n = Number.parseFloat(hm[1])
-      if (Number.isFinite(n) && n > 0) heightMultiplier = n
+    const params = new Map<string, number>()
+    for (const part of tail.split('&')) {
+      const eq = part.indexOf('=')
+      if (eq < 0) continue
+      const n = Number.parseFloat(part.slice(eq + 1))
+      if (Number.isFinite(n)) params.set(part.slice(0, eq), n)
+    }
+    const h = params.get('h')
+    if (h !== undefined && h > 0) heightMultiplier = h
+    const pi = params.get('pi')
+    const px = params.get('px')
+    const py = params.get('py')
+    const pw = params.get('pw')
+    const ph = params.get('ph')
+    if (pi !== undefined && px !== undefined && py !== undefined && pw !== undefined && ph !== undefined && pw > 0 && ph > 0) {
+      placement = { pageIndex: Math.max(0, Math.round(pi)), x: px, y: py, width: pw, height: ph }
     }
   }
+
   try {
     const binary = atob(m[2])
     const bytes = new Uint8Array(binary.length)
     for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-    return { kind, bytes, heightMultiplier }
+    return { kind, bytes, heightMultiplier, placement }
   } catch {
     return null
   }

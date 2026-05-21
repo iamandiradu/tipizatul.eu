@@ -165,9 +165,31 @@ async function prepareSignature(
     textField = form.getTextField(fieldName)
   } catch (err) {
     console.warn(`[pdf-fill] signature: getTextField failed for "${fieldName}"`, err)
-    return []
+    // No widget to anchor to — only an explicit placement override can save
+    // this case. Fall through with widgets=[] so the override branch below
+    // still gets a chance.
   }
-  const widgets = textField.acroField.getWidgets()
+  const widgets = textField?.acroField.getWidgets() ?? []
+
+  // Explicit placement (user dragged the signature on the preview) takes
+  // precedence over the widget rect. Bypasses the widget bbox entirely so
+  // the signature lands exactly where the user dropped it.
+  if (decoded.placement) {
+    const p = decoded.placement
+    const page = pdfDoc.getPages()[p.pageIndex]
+    if (!page) {
+      console.warn(`[pdf-fill] signature: placement pageIndex ${p.pageIndex} out of range`)
+    } else {
+      // Removal still happens so the underlying empty text field doesn't
+      // remain after flatten() — but only if we actually have a field.
+      if (textField) {
+        try { form.removeField(textField) }
+        catch (err) { console.warn(`[pdf-fill] signature: removeField failed for "${fieldName}"`, err) }
+      }
+      return [{ page, image, x: p.x, y: p.y, width: p.width, height: p.height }]
+    }
+  }
+
   if (widgets.length === 0) {
     console.warn(`[pdf-fill] signature: no widgets attached to "${fieldName}"`)
     return []
