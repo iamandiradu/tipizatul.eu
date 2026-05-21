@@ -40,6 +40,17 @@ PROGRESS_PATH = SCRIPT_DIR / 'corpus-batch.progress.json'
 DEFAULT_OUT = SCRIPT_DIR / 'output-corpus'
 DEFAULT_LOG = SCRIPT_DIR / 'corpus-batch.log'
 DETECT_SCRIPT = SCRIPT_DIR / 'detect.py'
+ACROFORM_SCAN = SCRIPT_DIR / 'acroform-scan.json'
+
+
+def load_acroform_skip_set(scan_path: Path) -> set[str]:
+    """Both original AND pipeline-generated AcroForm PDFs are skipped — they
+    already have widget data, so the LLM has nothing to add. The two
+    populations have different downstream treatment (original = trust,
+    pipeline = manual review) but at the corpus-batch layer the decision is
+    the same: do not re-run the LLM on them."""
+    data = json.loads(scan_path.read_text(encoding='utf-8'))
+    return set(data.get('original_paths', [])) | set(data.get('pipeline_paths', []))
 
 
 def load_queue() -> dict:
@@ -72,6 +83,7 @@ def print_status() -> int:
     n_failed = sum(1 for v in completed.values() if v['status'] == 'failed')
     n_deferred_scan = sum(1 for v in completed.values() if v['status'] == 'deferred_scan')
     n_deferred_dense = sum(1 for v in completed.values() if v['status'] == 'deferred_dense')
+    n_acroform = sum(1 for v in completed.values() if v['status'] == 'acroform_skipped')
     n_dup = sum(1 for v in completed.values() if v['status'] == 'duplicate_skipped')
     n_skipped = sum(1 for v in completed.values() if v['status'] == 'skipped')
     n_pending = n_queued - len(completed)
@@ -82,6 +94,7 @@ def print_status() -> int:
     print(f'Failed:               {n_failed}')
     print(f'Deferred scans:       {n_deferred_scan}')
     print(f'Deferred dense:       {n_deferred_dense}')
+    print(f'AcroForm skipped:     {n_acroform}')
     print(f'Duplicates skipped:   {n_dup}')
     print(f'Skipped (missing):    {n_skipped}')
     print(f'Pending:              {n_pending}')
@@ -141,6 +154,7 @@ def run_one(
     max_shapes: int | None = None,
     seen_fingerprints: dict | None = None,
     fp_lock: threading.Lock | None = None,
+    acroform_skip: set[str] | None = None,
 ) -> dict:
     """Classify the PDF and run the appropriate path.
 
@@ -153,6 +167,18 @@ def run_one(
     from lib.classify import classify
     from lib.pdf_structure import extract as extract_struct
     t0 = time.monotonic()
+
+    # Already has AcroForm widgets — nothing for the LLM to add. Originals
+    # are usable as-is downstream; pipeline-generated ones need manual
+    # review (tracked outside corpus_batch).
+    if acroform_skip is not None and str(pdf_path) in acroform_skip:
+        return {
+            'status': 'acroform_skipped',
+            'elapsed_s': round(time.monotonic() - t0, 1),
+            'path': 'skipped',
+            'category': 'acroform',
+        }
+
     cls = classify(str(pdf_path))
 
     # Cheap escape hatch: when scans are being deferred for later, don't
@@ -321,6 +347,15 @@ def main() -> int:
                              'reused across municipalities → process once. '
                              'Different content sharing a filename → process '
                              'both (fingerprint includes content).')
+    parser.add_argument('--skip-acroform', action='store_true',
+                        help='Skip PDFs that already contain an AcroForm '
+                             '(widgets already detected, either originally '
+                             'or by a previous pipeline run). Reads the path '
+                             'list from --acroform-scan. Marks them '
+                             'status=acroform_skipped in the progress file.')
+    parser.add_argument('--acroform-scan', default=str(ACROFORM_SCAN),
+                        help='Path to acroform-scan.json produced by '
+                             'scan_acroform.py (default: %(default)s).')
     args = parser.parse_args()
 
     if args.status:
@@ -362,6 +397,12 @@ def main() -> int:
         print(f'Dedup: enabled, {len(seen_fingerprints)} fingerprints seeded from progress')
     fp_lock = threading.Lock()
 
+    acroform_skip: set[str] | None = None
+    if args.skip_acroform:
+        acroform_skip = load_acroform_skip_set(Path(args.acroform_scan))
+        print(f'AcroForm skip: enabled, {len(acroform_skip)} paths loaded '
+              f'from {args.acroform_scan}')
+
     def process_item(item):
         nonlocal new_done, new_failed, completed_count
         pdf_path = Path(item['path'])
@@ -378,6 +419,7 @@ def main() -> int:
                 max_shapes=(None if args.max_shapes == 0 else args.max_shapes),
                 seen_fingerprints=(seen_fingerprints if args.dedup else None),
                 fp_lock=fp_lock if args.dedup else None,
+                acroform_skip=acroform_skip,
             )
 
         with lock:
@@ -392,6 +434,7 @@ def main() -> int:
                 'done': '✓', 'skipped': '−',
                 'deferred_scan': '⏸', 'deferred_dense': '⏸',
                 'duplicate_skipped': '↺', 'failed': '✗',
+                'acroform_skipped': '⊠',
             }
             tag = status_tags.get(res['status'], '?')
             extras = ''
