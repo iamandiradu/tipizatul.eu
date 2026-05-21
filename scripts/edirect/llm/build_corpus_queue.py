@@ -52,6 +52,13 @@ def main() -> int:
                              'don\'t need LLM attention.')
     parser.add_argument('--exclude-subdir', default='processed',
                         help='Subdir name under bundles/ to exclude (default "processed")')
+    parser.add_argument('--order', choices=['replication', 'size'],
+                        default='replication',
+                        help='Queue ordering. "replication" (default) puts the '
+                             'most-reused doc types first so a single LLM run '
+                             'covers maximum municipalities. "size" puts the '
+                             'smallest PDFs first so throughput-per-hour is '
+                             'maximised early on.')
     args = parser.parse_args()
 
     bundles_dir = Path(args.bundles_dir).resolve()
@@ -80,8 +87,12 @@ def main() -> int:
 
     for f in kept:
         f['replication'] = counter[f['norm']]
-    # Highest replication first; within a group, smallest size first (cheaper).
-    kept.sort(key=lambda f: (-f['replication'], f['size']))
+    if args.order == 'size':
+        # Smallest first; tiebreak by higher replication so duplicates surface early.
+        kept.sort(key=lambda f: (f['size'], -f['replication']))
+    else:
+        # Highest replication first; within a group, smallest size first (cheaper).
+        kept.sort(key=lambda f: (-f['replication'], f['size']))
 
     out_path = Path(args.out).resolve()
     out_path.parent.mkdir(parents=True, exist_ok=True)
