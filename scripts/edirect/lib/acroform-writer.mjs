@@ -24,16 +24,21 @@ export async function addAcroFormFields(pdfBytes, fields) {
       switch (field.type) {
         case 'text': {
           const tf = form.createTextField(field.pdfFieldName)
+          // Respect explicit sub-12pt heights: on forms with tight line
+          // spacing a 12pt-minimum box overlaps the printed text above.
+          const height = Math.max(field.height, 6)
           tf.addToPage(page, {
             x: field.x,
             y: field.y,
             width: Math.max(field.width, 20),
-            height: Math.max(field.height, 12),
+            height,
             borderWidth: 0,
           })
           if (field.maxLength) tf.setMaxLength(field.maxLength)
           if (field.isMultiline) tf.enableMultiline()
-          const fs = Math.min(field.fontSize || 10, 14)
+          // Cap the font so glyphs fit short boxes instead of clipping at the BBox.
+          const maxFsForHeight = height >= 12 ? 14 : Math.max(5, height - 2.5)
+          const fs = Math.min(field.fontSize || 10, 14, maxFsForHeight)
           tf.setFontSize(fs > 0 ? fs : 10)
           break
         }
