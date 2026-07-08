@@ -2,3 +2,4 @@ text/
 stage/
 soffice-out/
 llm-batches/
+__pycache__/
