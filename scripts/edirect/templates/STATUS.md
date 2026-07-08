@@ -44,6 +44,7 @@ See `TOP-20-ARCHETYPES.md` for the ranked list + catalog/Google rationale.
 | 18 | `cerere-alocatie-copii` | legal-text | Anexa nr. 1 (Legea 61/1993); plată + anexe checkboxes |
 | 19 | `cerere-concediu-crestere` | legal-text | către angajator, OUG 111/2010 |
 | 20 | `cerere-cazier` | legal-text | MAI form fields (părinți, loc naștere, motiv) |
+| — | `igpf-aviz-frontiera` | national model | PF/PJ sections + ambarcațiuni; pairs with the two tabel-nominal annexes; 98× fan-out (added 2026-07-08) |
 
 All 10 pass `build.mjs` + `verify-fill.mjs` (fill → updateFieldAppearances →
 flatten). Several spot-checked by rasterizing with PyMuPDF — layout, diacritics

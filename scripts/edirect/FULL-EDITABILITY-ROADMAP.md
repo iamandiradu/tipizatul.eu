@@ -711,7 +711,7 @@ npm test                                # app suite (34 tests)
 | ITL 001–016 family (impunere, scutiri) | same | search corpus, TODO |
 | F.8/F.9 (autorizație construire) | Legea 50/1991 norme | structured; likely R5 |
 | Anexa nr. 1 alocație de stat | Legea 61/1993 norme | spec ✅ (simplified) |
-| IGPF aviz zonă frontieră + 2 tabele | PS-IGPF | tables ✅, cerere TODO (98×!) |
+| IGPF aviz zonă frontieră + 2 tabele | PS-IGPF / OUG 105/2001 | spec ✅ 2026-07-08 (`igpf-aviz-frontiera`, 98×) |
 | Cerere înscriere învățământ (SIIIR) | ME orders | structured; R5 or dedicated spec |
 | Formular 544/2001 | HG 123/2002 | spec ✅ |
 | Petiție model | OG 27/2002 | spec ✅ |

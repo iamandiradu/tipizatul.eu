@@ -120782,10 +120782,10 @@
    "textLen": 2594,
    "extractError": null,
    "classification": {
-    "route": "R3",
+    "route": "R2",
     "confidence": "high",
-    "reason": "known national-model candidate 'igpf-aviz-frontiera'",
-    "archetypeGuess": "igpf-aviz-frontiera"
+    "archetypeGuess": "igpf-aviz-frontiera",
+    "reason": "replica spec authored 2026-07-08 (was R3); 98x fan-out"
    }
   },
   {

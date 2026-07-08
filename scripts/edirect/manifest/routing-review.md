@@ -10,8 +10,8 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 | route | high | medium | low | unique | files |
 |---|---:|---:|---:|---:|---:|
 | R0 | 134 | 0 | 0 | 134 | 219 |
-| R2 | 173 | 1 | 0 | 174 | 1193 |
-| R3 | 108 | 8 | 0 | 116 | 476 |
+| R2 | 174 | 1 | 0 | 175 | 1291 |
+| R3 | 107 | 8 | 0 | 115 | 378 |
 | R4 | 121 | 1563 | 546 | 2230 | 3330 |
 | R5 | 67 | 5 | 255 | 327 | 544 |
 | R6 | 526 | 39 | 12 | 577 | 889 |
@@ -20,7 +20,6 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 
 ## R3 national-model candidates (Phase 3 authoring queue)
 
-- **igpf-aviz-frontiera** — 1 unique / 98 files · e.g. `Inspectoratul General al Politiei de Frontiera/Cerere tip_3092.doc`
 - **cerere-declaratie-drepturi-asistenta-sociala** — 14 unique / 47 files · e.g. `Directia de Asistenta Sociala Husi/CERERE TIP_7890545.pdf`
 - **cerere-inscriere-clasa-pregatitoare** — 3 unique / 35 files · e.g. `Inspectoratul Scolar al Municipiului Bucuresti/Cererea-tip de înscriere în clasa pregătito`
 - **cerere-declaratie-ajutor-social-416** — 1 unique / 34 files · e.g. `Agentia Judeteana pentru Plati si Inspectie Sociala Buzau/Ajutorul social, acordat în baza`
@@ -105,6 +104,7 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 - `tabel-nominal-auto` — 2 unique / 93 files
 - `tabel-nominal-persoane` — 2 unique / 88 files
 - `cerere-544` — 1 unique / 1 files
+- `igpf-aviz-frontiera` — 1 unique / 98 files
 - `imputernicire` — 1 unique / 1 files
 
 ## Low-confidence calls (skim these)
