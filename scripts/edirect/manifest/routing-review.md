@@ -10,10 +10,10 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 | route | high | medium | low | unique | files |
 |---|---:|---:|---:|---:|---:|
 | R0 | 134 | 0 | 0 | 134 | 219 |
-| R2 | 138 | 1 | 0 | 139 | 1066 |
-| R3 | 97 | 8 | 0 | 105 | 434 |
-| R4 | 121 | 1591 | 562 | 2274 | 3496 |
-| R5 | 67 | 5 | 257 | 329 | 547 |
+| R2 | 173 | 1 | 0 | 174 | 1193 |
+| R3 | 108 | 8 | 0 | 116 | 476 |
+| R4 | 121 | 1563 | 546 | 2230 | 3330 |
+| R5 | 67 | 5 | 255 | 327 | 544 |
 | R6 | 526 | 39 | 12 | 577 | 889 |
 | R7 | 326 | 20 | 1 | 347 | 1826 |
 | **total** | | | | **3905** | **8477** |
@@ -29,6 +29,9 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 - **cerere-declaratie-modificare-drepturi-asistenta-sociala** — 4 unique / 25 files · e.g. `Directia de Asistenta Sociala Husi/CERERE TIP_7890604.pdf`
 - **cerere-autorizatie-construire-f8** — 12 unique / 21 files · e.g. `Judetul Maramures - Consiliul Judetean Maramures/Cerere tip_6441536.doc`
 - **indicatori-economico-financiari-anexa7** — 1 unique / 19 files · e.g. `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Indi`
+- **dsp-model-7-colegiu** — 3 unique / 19 files · e.g. `Colegiul Farmacistilor Bucuresti/Cerere model 7_48797049.docx`
+- **dsp-model-4** — 1 unique / 16 files · e.g. `Ministerul Sanatatii - Compartimentul Autorizare si Monitorizare Unitati Farmaceutice/CERE`
+- **formular-544-solicitare** — 7 unique / 7 files · e.g. `Agentia Nationala de Administrare Fiscala/Cerere solicitare informatii publice de interes `
 - **fisa-standardizata-alimentatie-publica** — 1 unique / 5 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
 - **fisa-standardizata-cazare-categorii** — 1 unique / 5 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
 - **situatie-dotare-instalatii-utilaje** — 4 unique / 5 files · e.g. `Ministerul Agriculturii si Dezvoltării Rurale/Situația dotarii cu instalații și utilaje sp`
@@ -87,11 +90,11 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 
 ## R2 archetype matches
 
-- `cerere-dsp-model-3` — 20 unique / 242 files
+- `cerere-atestare-fiscala` — 45 unique / 69 files
+- `cerere-dsp-model-3` — 23 unique / 286 files
+- `cerere-dsp-model-2` — 21 unique / 279 files
 - `acord-prelucrare-date` — 18 unique / 88 files
-- `cerere-dsp-model-2` — 18 unique / 244 files
 - `cerere-recunoastere` — 17 unique / 40 files
-- `cerere-atestare-fiscala` — 16 unique / 21 files
 - `declaratie-consimtamant` — 11 unique / 158 files
 - `declaratie-proprie-raspundere` — 8 unique / 9 files
 - `cerere-alocatie-copii` — 7 unique / 8 files
@@ -106,7 +109,7 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 
 ## Low-confidence calls (skim these)
 
-### R4 — 562 low-confidence
+### R4 — 546 low-confidence
 
 - `Academia Nationala de Muzica Gheorghe Dima/Cerere de recunoaştere_5313239.doc` (1×) — form signals=4; length 1324 decides author-vs-detect
 - `Academia Nationala de Muzica Gheorghe Dima/Cerere de recunoaștere_5313883.doc` (1×) — form signals=4; length 1413 decides author-vs-detect
@@ -131,7 +134,6 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 - `Agentia Nationala Anti-Doping/Declaratie de consimtamant_4441680.docx` (1×) — form signals=4; length 2021 decides author-vs-detect
 - `Agentia Nationala de Administrare Fiscala/Adeverinta de venit_41696110.pdf` (1×) — form signals=3; length 1495 decides author-vs-detect
 - `Agentia Nationala de Administrare Fiscala/Adeverinta_41696111.pdf` (1×) — form signals=3; length 1228 decides author-vs-detect
-- `Agentia Nationala de Administrare Fiscala/Cerere solicitare informatii publice de interes general_39` (1×) — form signals=3; length 1509 decides author-vs-detect
 - `Agentia Nationala de Cadastru si Publicitate Imobiliara/Cerere pentru recunoasterea autorizarii_1017` (1×) — form signals=5; length 3961 decides author-vs-detect
 - `Agentia Nationala de Cadastru si Publicitate Imobiliara/Cerere pentru recunoasterea autorizarii_1027` (1×) — form signals=5; length 4209 decides author-vs-detect
 - `Agentia Nationala pentru Sport/Cererea de înregistrare în Registrul sportiv_5050866.doc` (1×) — form signals=3; length 2009 decides author-vs-detect
@@ -168,9 +170,10 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 - `Autoritatea Nationala de Reglementare in Domeniul Minier, Petrolier si al Stocarii Geologice a Dioxi` (1×) — form signals=3; length 2699 decides author-vs-detect
 - `Autoritatea Nationala de Reglementare in Domeniul Minier, Petrolier si al Stocarii Geologice a Dioxi` (1×) — form signals=3; length 1025 decides author-vs-detect
 - `Autoritatea Nationala pentru Cetatenie/Model solicitare de informaţii de interes public_12533096.doc` (1×) — form signals=3; length 2871 decides author-vs-detect
-- … and 502 more (manifest.json)
+- `Autoritatea Nationala pentru Protectia Consumatorilor/cerere_1036.docx` (2×) — form signals=4; length 3512 decides author-vs-detect
+- … and 486 more (manifest.json)
 
-### R5 — 257 low-confidence
+### R5 — 255 low-confidence
 
 - `Academia de Politie Alexandru Ioan Cuza/Metodologie privind recunoașterea diplomei de doctor și titl` (1×) — form signals=4; length 7408 decides author-vs-detect
 - `Administratia Rezervatiei Biosferei Delta Dunarii/Memoriu de prezentare_4218819.docx` (1×) — form signals=3; length 13323 decides author-vs-detect
@@ -232,7 +235,7 @@ Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spe
 - `Directia de Asistenta Sociala Dorohoi/Cerere si declaratie pe propria raspundere_30419974.pdf` (3×) — form signals=3; length 28155 decides author-vs-detect
 - `Directia de Asistenta Sociala Husi/SOLICITARE SUPLIMENTARĂ DE INFORMAȚII_7885803.doc` (1×) — form signals=3; length 9280 decides author-vs-detect
 - `Directia de Asistenta Sociala Macin/Cerere-declaratie pe propria raspundere pentru acordarea unor dr` (1×) — form signals=3; length 19600 decides author-vs-detect
-- … and 197 more (manifest.json)
+- … and 195 more (manifest.json)
 
 ### R6 — 12 low-confidence
 

@@ -1,0 +1,14 @@
+CERERE
+Către,
+Subsemnatul/a (nume și prenume):
+CNP:
+Telefon:
+Domiciliul (stradă, nr., bloc, ap.):
+Localitatea:
+Județul:
+E-mail:
+Tipul solicitării (aviz/autorizație/notificare):
+Unitatea / obiectivul vizat:
+Obiectul cererii
+Data:
+Semnătura:

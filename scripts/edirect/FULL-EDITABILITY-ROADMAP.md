@@ -300,7 +300,32 @@ Assign every unique doc a route R0–R7 + confidence.
 - **Gate:** 100% of unique docs have a route; sample 50 across routes, ≥90%
   agreement on manual re-check; Radu signs off on the R7 (exclusion) list.
 
-### Phase 2 — Archetype matching at scale (~1–2 sessions; ~1,200–1,800 docs)
+### Phase 2 — Archetype matching ✅ MATCHING DONE 2026-07-08 (materialization pending publish)
+
+Built `templates/specs/reference/` (canonical texts extracted from the built
+generic PDFs via `extract_references.py`) and `manifest/match_archetypes.py`
+(NOT .mjs — the manifest tooling is Python). Metric note: plain char-3-gram
+cosine scored generic admin boilerplate too high (0.6–0.75 band mostly false);
+switched to **IDF-weighted word uni+bigrams** over the candidate corpus, which
+produced a clean bimodal split. Thresholds applied empirically: ≥0.75 strong →
+R2; 0.35–0.75 eyeball queue (54 docs), adjudicated by content rules
+(`adjudicate_queue.py`): 35 true ITL 010 instances (header noise depressed
+scores) → R2, 11 → new R3 national models, 8 kept for Radu.
+**Matcher discoveries — new national models for Appendix C:** DSP Modelul
+nr. 4, DSP Modelul nr. 7 (Colegiul Farmaciștilor), Legea 544 formular-tip
+solicitare + reclamație administrativă, ITL atestare-fiscală PJ variant.
+Post-match totals: R2 174 unique / 1,193 files; R3 116 / 476.
+**Reality check vs the ~1,200–1,800 estimate:** honest text similarity says
+most of the old "cerere tip" mass is NOT the same form as an archetype — it
+is R4 one-offs sharing structure, not text. The files-covered path runs
+through Phase 3 replicas (R3 clustering), not through looser R2 thresholds.
+**Materialization** per §12 decision (1c): NO stamped instances — one generic
+template per archetype; every matched doc's eDirectDocIds join to it and
+procedure pages deep-link with `?institution=` (FillPage support shipped
+2026-07-08). The join map + editability gate run at publish time (Phase 5).
+Original spec follows:
+
+#### (original Phase 2 spec)
 For every R2 doc, decide generic-vs-stamped and materialize:
 1. Build `match-archetypes.mjs`: normalized-text similarity (token Jaccard or
    cosine on 3-grams; diacritics folded — WATCH the ş/ș cedilla-vs-comma problem,
@@ -628,17 +653,25 @@ user-facing number, where duplicates multiply wins):
 
 ## 12. Open decisions — ASK RADU BEFORE THE RELEVANT PHASE
 
-1. **Instance model** (§7.10 a/b/c) — blocks Phase 2 materialization. Recommend (c).
-2. **Exclusion policy** — is "download-only with reason" acceptable UX for R7, or
-   should exclusions be hidden entirely from the catalog?
-3. **Scan ambition** — OCR the 524 scans (weeks of tail work) or publish them
-   download-only and revisit? Recommend: top-50 by procedure traffic only.
+**Decided by Radu 2026-07-08 (in-session):**
+
+1. **Instance model** (§7.10) → **(c) hybrid**: one generic template per
+   archetype/replica + `?institution=` URL param pre-filling the addressee
+   client-side in FillPage. All matching eDirectDocIds join to the one template.
+2. **Exclusion policy** → **download-only with reason**; R7 docs stay in the
+   catalog, labeled why they are not fillable.
+3. **Scan ambition** → **ALL scans** (577 unique / 889 files) go through the
+   OCR-assisted detection route (R6), not just a top-traffic slice. Outputs
+   remain needs-review before any "completabil online" promise (§7.7 stands).
+6. **`archetype` field** → **add properly** to `src/types/template.ts`
+   (Template + SlimTemplate) before Phase 2 materialization.
+
+**Still open (ask before Phase 2 stamping / Phase 5):**
+
 4. **Logos** — the stamped-instance logo slot is unused (no logo assets scraped).
    Skip logos entirely, or source them (institution sites) as a nice-to-have?
+   (Less urgent now: decision 1 means few stamped instances.)
 5. **Publishing cadence** — waves per week? Who eyeballs the per-wave sample?
-6. **`archetype` field** — currently informal on Template JSON; add it to
-   `src/types/template.ts` properly (with an index for "same form at other
-   institutions" UX)?
 
 ---
 
@@ -682,6 +715,11 @@ npm test                                # app suite (34 tests)
 | Cerere înscriere învățământ (SIIIR) | ME orders | structured; R5 or dedicated spec |
 | Formular 544/2001 | HG 123/2002 | spec ✅ |
 | Petiție model | OG 27/2002 | spec ✅ |
+| 544 formular-tip solicitare (Anexa 1/4 norme) | HG 123/2002 (rev.) | found by matcher 2026-07-08; replica TODO |
+| 544 reclamație administrativă (Anexa 2a/2b) | HG 123/2002 | found by matcher; replica TODO |
+| DSP Modelul nr. 4 | Legea 266/2008 norme | found by matcher; replica TODO |
+| DSP Modelul nr. 7 (dovadă Colegiul Farmaciștilor) | Legea 266/2008 norme | found by matcher; replica TODO |
+| ITL atestare fiscală PJ (Anexa 11-adjacent) | OMFP/MDRAP 2016 | PJ variant of ITL 010; replica TODO |
 
 ## Appendix D — Reproducing the census **[measured 2026-07-02]**
 

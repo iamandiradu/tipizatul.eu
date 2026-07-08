@@ -219,8 +219,18 @@ Key facts discovered:
   is the top replica target; full ranked list in routing-review.md.
 - One DOC (`c06e0f2d…`) hangs LibreOffice — routed R6, do not retry blindly.
 
-Waiting on Radu: R7 exclusion-list sign-off (routing-review.md §R7) and the
-§12 roadmap decisions (instance model a/b/c blocks Phase 2 materialization).
-Next session: Phase 2 archetype matching (`match-archetypes.mjs`,
-`specs/reference/` texts) — does not need the §12 Q1 answer until
-materialization.
+§12 decisions made by Radu same day (recorded in roadmap §12): hybrid
+instance model (generic template + `?institution=` prefill — shipped in
+FillPage with the new `archetype` Template field, commit `f7ecf7d`),
+R7 download-only with reason, OCR ALL scans, archetype field formalized.
+
+Phase 2 matching also DONE same session: `specs/reference/` canonical texts
+(from built generic PDFs) + `manifest/match_archetypes.py` (IDF-weighted
+word-gram cosine after char-3-grams proved too boilerplate-happy) +
+`adjudicate_queue.py`. R2 now 174 unique / 1,193 files. Matcher surfaced
+new national models: DSP Model 4 & 7, 544 formular-tip + reclamație,
+ITL atestare PJ — added to roadmap Appendix C for Phase 3.
+
+Still waiting on Radu: item-by-item R7 sign-off (routing-review.md).
+Next session: Phase 3 replica authoring — igpf-aviz-frontiera first (98×),
+then cerere-declaratie asistență socială cluster, 544 formular-tip, DSP 4/7.

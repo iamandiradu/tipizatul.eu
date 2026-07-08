@@ -89208,9 +89208,15 @@
    "textLen": 1613,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 1509 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.429
+    }
    }
   },
   {
@@ -94281,7 +94287,11 @@
    "classification": {
     "route": "R4",
     "confidence": "low",
-    "reason": "form signals=3; length 2871 decides author-vs-detect"
+    "reason": "form signals=3; length 2871 decides author-vs-detect",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.375
+    }
    }
   },
   {
@@ -98521,9 +98531,15 @@
    "textLen": 2713,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "dsp-model-7-colegiu",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: DSP Modelul nr. 7 (dovadă transmitere Colegiul Farmaciștilor)",
+    "matchCandidate": {
+     "spec": "cerere-dsp-model-3",
+     "score": 0.385
+    }
    }
   },
   {
@@ -103878,9 +103894,15 @@
    "textLen": 1702,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 1596 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.366
+    }
    }
   },
   {
@@ -111934,10 +111956,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -112086,10 +112107,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -112360,10 +112380,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113133,10 +113152,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.785,
+    "reason": "match: cos=0.79 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113166,7 +113184,11 @@
     "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
     "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "nationalModelCandidate": true,
+    "matchCandidate": {
+     "spec": "cerere-dsp-model-3",
+     "score": 0.557
+    }
    }
   },
   {
@@ -113190,9 +113212,11 @@
    "textLen": 2774,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2571 decides author-vs-detect"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-2",
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R4)"
    }
   },
   {
@@ -113216,9 +113240,11 @@
    "textLen": 2749,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2532 decides author-vs-detect"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-3",
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R4)"
    }
   },
   {
@@ -113245,10 +113271,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113275,10 +113300,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113361,10 +113385,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113409,10 +113432,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113568,10 +113590,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113598,10 +113619,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113634,9 +113654,11 @@
    "textLen": 2904,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2687 decides author-vs-detect"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-2",
+    "matchScore": 0.77,
+    "reason": "match: cos=0.77 vs cerere-dsp-model-2 (was R4)"
    }
   },
   {
@@ -113678,11 +113700,11 @@
    "textLen": 2813,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2588 decides author-vs-detect",
-    "fanOutInstitutions": 3,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-3",
+    "matchScore": 0.764,
+    "reason": "match: cos=0.76 vs cerere-dsp-model-3 (was R4)"
    }
   },
   {
@@ -113715,11 +113737,15 @@
    "textLen": 2278,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2091 decides author-vs-detect",
-    "fanOutInstitutions": 4,
-    "nationalModelCandidate": true
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "dsp-model-7-colegiu",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: DSP Modelul nr. 7 (dovadă transmitere Colegiul Farmaciștilor)",
+    "matchCandidate": {
+     "spec": "cerere-dsp-model-3",
+     "score": 0.375
+    }
    }
   },
   {
@@ -113746,10 +113772,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113776,10 +113801,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113850,10 +113874,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113880,10 +113903,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -113910,10 +113932,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.833,
+    "reason": "match: cos=0.83 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -113940,10 +113961,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.831,
+    "reason": "match: cos=0.83 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114135,9 +114155,15 @@
    "textLen": 2911,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 2795 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.469
+    }
    }
   },
   {
@@ -114184,10 +114210,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.826,
+    "reason": "match: cos=0.83 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114213,10 +114238,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.818,
+    "reason": "match: cos=0.82 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114239,10 +114263,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.83,
+    "reason": "match: cos=0.83 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114328,10 +114351,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.766,
+    "reason": "match: cos=0.77 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114377,10 +114399,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114407,10 +114428,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114437,10 +114457,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114466,9 +114485,11 @@
    "textLen": 2774,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2571 decides author-vs-detect"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-2",
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R4)"
    }
   },
   {
@@ -114494,11 +114515,11 @@
    "textLen": 2749,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2532 decides author-vs-detect",
-    "fanOutInstitutions": 3,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-dsp-model-3",
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R4)"
    }
   },
   {
@@ -114524,10 +114545,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114546,10 +114566,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114572,10 +114591,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114594,10 +114612,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114623,10 +114640,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114645,10 +114661,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114674,10 +114689,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114696,10 +114710,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114719,10 +114732,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-2'",
     "archetypeGuess": "cerere-dsp-model-2",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.856,
+    "reason": "match: cos=0.86 vs cerere-dsp-model-2 (was R2)"
    }
   },
   {
@@ -114741,10 +114753,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114763,10 +114774,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-dsp-model-3'",
     "archetypeGuess": "cerere-dsp-model-3",
-    "fanOutInstitutions": 27,
-    "nationalModelCandidate": true
+    "matchScore": 0.874,
+    "reason": "match: cos=0.87 vs cerere-dsp-model-3 (was R2)"
    }
   },
   {
@@ -114783,11 +114793,15 @@
    "textLen": 2826,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 4,
-    "nationalModelCandidate": true
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "dsp-model-7-colegiu",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: DSP Modelul nr. 7 (dovadă transmitere Colegiul Farmaciștilor)",
+    "matchCandidate": {
+     "spec": "cerere-dsp-model-3",
+     "score": 0.377
+    }
    }
   },
   {
@@ -117936,11 +117950,11 @@
    "textLen": 6211,
    "extractError": null,
    "classification": {
-    "route": "R5",
-    "confidence": "low",
-    "reason": "form signals=4; length 6155 decides author-vs-detect",
-    "fanOutInstitutions": 176,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.556,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -118232,9 +118246,11 @@
    "textLen": 5146,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.536,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -118635,11 +118651,11 @@
    "textLen": 4217,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -119112,11 +119128,11 @@
    "textLen": 4481,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.702,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -119410,7 +119426,11 @@
     "confidence": "high",
     "reason": "llm: Cerere explicit Legea 544/2001 public information access form",
     "source": "llm",
-    "archetypeGuess": "cerere-544"
+    "archetypeGuess": "cerere-544",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.486
+    }
    }
   },
   {
@@ -119743,7 +119763,11 @@
    "classification": {
     "route": "R4",
     "confidence": "low",
-    "reason": "form signals=3; length 1584 decides author-vs-detect"
+    "reason": "form signals=3; length 1584 decides author-vs-detect",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.43
+    }
    }
   },
   {
@@ -120874,7 +120898,11 @@
     "reason": "filename matches archetype 'tabel-nominal-auto'",
     "archetypeGuess": "tabel-nominal-auto",
     "fanOutInstitutions": 7,
-    "nationalModelCandidate": true
+    "nationalModelCandidate": true,
+    "matchCandidate": {
+     "spec": "tabel-nominal-auto",
+     "score": 0.598
+    }
    }
   },
   {
@@ -120982,7 +121010,11 @@
     "reason": "filename matches archetype 'tabel-nominal-persoane'",
     "archetypeGuess": "tabel-nominal-persoane",
     "fanOutInstitutions": 7,
-    "nationalModelCandidate": true
+    "nationalModelCandidate": true,
+    "matchCandidate": {
+     "spec": "tabel-nominal-persoane",
+     "score": 0.367
+    }
    }
   },
   {
@@ -121025,7 +121057,11 @@
     "route": "R2",
     "confidence": "high",
     "reason": "filename matches archetype 'tabel-nominal-auto'",
-    "archetypeGuess": "tabel-nominal-auto"
+    "archetypeGuess": "tabel-nominal-auto",
+    "matchCandidate": {
+     "spec": "tabel-nominal-auto",
+     "score": 0.598
+    }
    }
   },
   {
@@ -121045,7 +121081,11 @@
     "route": "R2",
     "confidence": "high",
     "reason": "filename matches archetype 'tabel-nominal-persoane'",
-    "archetypeGuess": "tabel-nominal-persoane"
+    "archetypeGuess": "tabel-nominal-persoane",
+    "matchCandidate": {
+     "spec": "tabel-nominal-persoane",
+     "score": 0.367
+    }
    }
   },
   {
@@ -130499,11 +130539,15 @@
    "textLen": 3176,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=4; length 2885 decides author-vs-detect",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "dsp-model-4",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: DSP Modelul nr. 4 (Legea 266/2008 order)",
+    "matchCandidate": {
+     "spec": "cerere-dsp-model-3",
+     "score": 0.453
+    }
    }
   },
   {
@@ -134869,9 +134913,15 @@
    "textLen": 1337,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 1265 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.442
+    }
    }
   },
   {
@@ -134930,11 +134980,11 @@
    "textLen": 4774,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -135519,11 +135569,11 @@
    "textLen": 6390,
    "extractError": null,
    "classification": {
-    "route": "R5",
-    "confidence": "low",
-    "reason": "form signals=3; length 6205 decides author-vs-detect",
-    "fanOutInstitutions": 176,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.53,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -136694,11 +136744,11 @@
    "textLen": 4419,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 176,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.671,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -139827,8 +139877,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.659,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -140914,11 +140965,11 @@
    "textLen": 4743,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.705,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -141674,9 +141725,15 @@
    "textLen": 1828,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 1763 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.452
+    }
    }
   },
   {
@@ -143127,8 +143184,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.706,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -143207,9 +143265,11 @@
    "textLen": 5474,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.409,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -143437,9 +143497,11 @@
    "textLen": 2290,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.352,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -144358,11 +144420,11 @@
    "textLen": 4489,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -144908,11 +144970,11 @@
    "textLen": 4476,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -145301,11 +145363,11 @@
    "textLen": 4721,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -145679,8 +145741,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.619,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -146068,11 +146131,15 @@
    "textLen": 2517,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 2424 decides author-vs-detect",
-    "fanOutInstitutions": 3,
-    "nationalModelCandidate": true
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.441
+    }
    }
   },
   {
@@ -150634,11 +150701,11 @@
    "textLen": 4834,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.622,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -151134,11 +151201,11 @@
    "textLen": 4741,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.705,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -151398,8 +151465,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.672,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -152811,11 +152879,11 @@
    "textLen": 4716,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 4,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.705,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -154318,8 +154386,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.697,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -154469,11 +154538,11 @@
    "textLen": 2612,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=5; length 2486 decides author-vs-detect",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.641,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -156316,9 +156385,11 @@
    "textLen": 4741,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)"
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.705,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -157673,11 +157744,11 @@
    "textLen": 4464,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.702,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -158150,11 +158221,11 @@
    "textLen": 4393,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.7,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -158531,11 +158602,11 @@
    "textLen": 4507,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.685,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -159325,11 +159396,11 @@
    "textLen": 4476,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -160079,11 +160150,11 @@
    "textLen": 4853,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.654,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -160161,9 +160232,15 @@
    "textLen": 2911,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "low",
-    "reason": "form signals=3; length 2795 decides author-vs-detect"
+    "route": "R3",
+    "confidence": "high",
+    "archetypeGuess": "formular-544-solicitare",
+    "nationalModelCandidate": true,
+    "reason": "adjudicated from match queue: Legea 544 formular-tip annex (replica needed for exact fidelity)",
+    "matchCandidate": {
+     "spec": "cerere-544",
+     "score": 0.469
+    }
    }
   },
   {
@@ -160180,11 +160257,11 @@
    "textLen": 4476,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -160537,8 +160614,9 @@
    "classification": {
     "route": "R2",
     "confidence": "high",
-    "reason": "filename matches archetype 'cerere-atestare-fiscala'",
-    "archetypeGuess": "cerere-atestare-fiscala"
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.588,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -161148,11 +161226,11 @@
    "textLen": 4834,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.622,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -161209,11 +161287,11 @@
    "textLen": 4603,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -161251,11 +161329,11 @@
    "textLen": 4476,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -161293,11 +161371,11 @@
    "textLen": 4476,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 213,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.699,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
@@ -162761,11 +162839,11 @@
    "textLen": 4512,
    "extractError": null,
    "classification": {
-    "route": "R4",
-    "confidence": "medium",
-    "reason": "simple linear form (subsemnat → fields → semnatura)",
-    "fanOutInstitutions": 176,
-    "nationalModelCandidate": true
+    "route": "R2",
+    "confidence": "high",
+    "archetypeGuess": "cerere-atestare-fiscala",
+    "matchScore": 0.694,
+    "reason": "adjudicated: ITL 010 / Anexa nr. 10 instance (header noise depressed score)"
    }
   },
   {
