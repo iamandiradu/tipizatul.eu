@@ -1,0 +1,604 @@
+# Routing review — Phase 1 complete (rules + LLM pass)
+
+_Generated 2026-07-08. 3905 unique docs, 8477 catalog files, 100% routed._
+
+Routes: R0 original AcroForm · R2 archetype match · R3 national model (new spec needed)
+· R4 one-off authorable · R5 detection overlay · R6 scan · R7 excluded (not a form).
+
+## Route × confidence (unique docs; last column = catalog files incl. duplicates)
+
+| route | high | medium | low | unique | files |
+|---|---:|---:|---:|---:|---:|
+| R0 | 134 | 0 | 0 | 134 | 219 |
+| R2 | 138 | 1 | 0 | 139 | 1066 |
+| R3 | 97 | 8 | 0 | 105 | 434 |
+| R4 | 121 | 1591 | 562 | 2274 | 3496 |
+| R5 | 67 | 5 | 257 | 329 | 547 |
+| R6 | 526 | 39 | 12 | 577 | 889 |
+| R7 | 326 | 20 | 1 | 347 | 1826 |
+| **total** | | | | **3905** | **8477** |
+
+## R3 national-model candidates (Phase 3 authoring queue)
+
+- **igpf-aviz-frontiera** — 1 unique / 98 files · e.g. `Inspectoratul General al Politiei de Frontiera/Cerere tip_3092.doc`
+- **cerere-declaratie-drepturi-asistenta-sociala** — 14 unique / 47 files · e.g. `Directia de Asistenta Sociala Husi/CERERE TIP_7890545.pdf`
+- **cerere-inscriere-clasa-pregatitoare** — 3 unique / 35 files · e.g. `Inspectoratul Scolar al Municipiului Bucuresti/Cererea-tip de înscriere în clasa pregătito`
+- **cerere-declaratie-ajutor-social-416** — 1 unique / 34 files · e.g. `Agentia Judeteana pentru Plati si Inspectie Sociala Buzau/Ajutorul social, acordat în baza`
+- **cerere-inscriere-gradinita-siiir** — 1 unique / 34 files · e.g. `Inspectoratul Scolar al Municipiului Bucuresti/Cerere tip înscriere grădiniță_3395298.pdf`
+- **cerere-inregistrare-registrul-comertului** — 1 unique / 29 files · e.g. `Oficiul National al Registrului Comertului/1.1 Cerere de inregistrare_46470543.pdf`
+- **cerere-declaratie-modificare-drepturi-asistenta-sociala** — 4 unique / 25 files · e.g. `Directia de Asistenta Sociala Husi/CERERE TIP_7890604.pdf`
+- **cerere-autorizatie-construire-f8** — 12 unique / 21 files · e.g. `Judetul Maramures - Consiliul Judetean Maramures/Cerere tip_6441536.doc`
+- **indicatori-economico-financiari-anexa7** — 1 unique / 19 files · e.g. `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Indi`
+- **fisa-standardizata-alimentatie-publica** — 1 unique / 5 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
+- **fisa-standardizata-cazare-categorii** — 1 unique / 5 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
+- **situatie-dotare-instalatii-utilaje** — 4 unique / 5 files · e.g. `Ministerul Agriculturii si Dezvoltării Rurale/Situația dotarii cu instalații și utilaje sp`
+- **cerere-inregistrare-pfa-ii-if** — 1 unique / 5 files · e.g. `Oficiul National al Registrului Comertului/Cerere inregistrare PFA_II_IF_4186283.pdf`
+- **declaratie-impozit-cladiri-pf** — 3 unique / 4 files · e.g. `Primaria Comunei Vanatori-Neamt/Declaratie fiscala pentru stabilirea impozitului pe cladir`
+- **cerere-autorizatie-construire-desfiintare** — 3 unique / 3 files · e.g. `Consiliul Judetean Mures/Cererea pentru emiterea autorizației de construire_desființare_33`
+- **cerere-declaratie-vmg** — 2 unique / 3 files · e.g. `Primaria Comunei Vulcana-Pandele/Cerere tip_27447010.pdf`
+- **cerere-licenta-speciala-precursori** — 1 unique / 2 files · e.g. `Agentia Nationala Antidrog/Cerere pentru acordarea Licenţei Speciale_5154276.docx`
+- **cerere-inregistrare-speciala-precursori** — 1 unique / 2 files · e.g. `Agentia Nationala Antidrog/Cerere pentru acordarea Înregistrării Speciale_5154636.docx`
+- **memoriu-activitate-anexa2** — 1 unique / 2 files · e.g. `Autoritatea Nationala de Reglementare in Domeniul Energiei/Memoriul de activitate_5491488.`
+- **lista-documente-performanta-foc-constructii** — 2 unique / 2 files · e.g. `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Modelul listei cu documentele `
+- **cerere-inscriere-educatie-timpurie** — 2 unique / 2 files · e.g. `Inspectoratul Scolar Judetean Vrancea/Cerere-tip de înscriere în educația timpurie – 2025 `
+- **cerere-declaratie-stimulent-educational** — 1 unique / 2 files · e.g. `Primaria Comunei Beresti-Bistrita/Cerere pentru acordarea stimulentului educational_264755`
+- **cerere-declaratie-vmg-asf** — 1 unique / 2 files · e.g. `Primaria Comunei Costache Negri/CERERE ACORDARE DREPT VMG_ASF_14833959.docx`
+- **cerere-declaratie-concediu-crestere-copil** — 1 unique / 2 files · e.g. `Primaria Comunei Murighiol/Cerere tip a solicitantului și declarația tip a celuilalt părin`
+- **ancheta-sociala-vmg** — 1 unique / 2 files · e.g. `Primaria Comunei Valea Lunga - Dambovita/ancheta sociala_9447064.pdf`
+- **declaratie-impozit-cladiri-pj** — 2 unique / 2 files · e.g. `Primaria Municipiului Barlad/1.1.Declaratia fiscala pentru stabilirea impozitului pe cladi`
+- **itl-declaratie-impunere-cladiri-pf** — 1 unique / 2 files · e.g. `Primaria Municipiului Oltenita/Declaratie de impunere pentru stabilirea impozitului pe cla`
+- **itl-declaratie-impunere-cladiri-pj** — 1 unique / 2 files · e.g. `Primaria Municipiului Oltenita/Declarația de impunere pentru stabilirea impozitului pe clă`
+- **itl-declaratie-fiscala-cladiri** — 1 unique / 2 files · e.g. `Primaria Municipiului Resita/Declarație fiscala - decizie de impunere pentru stabilirea im`
+- **cerere-certificat-urbanism** — 2 unique / 2 files · e.g. `Primaria Orasului Bals/Cerere tip_5459.pdf`
+- **notificare-proiect-mediu-anexa5a** — 1 unique / 1 files · e.g. `Administratia Rezervatiei Biosferei Delta Dunarii/notificare privind intenţia de realizare`
+- **formular-inregistrare-participanti-pocu** — 1 unique / 1 files · e.g. `Agentia Judeteana pentru Plati si Inspectie Sociala Sibiu/Formular de inregistrare individ`
+- **cerere-autorizatie-export-precursori** — 1 unique / 1 files · e.g. `Agentia Nationala Antidrog/CERERE in vederea emiterii autorizaţiei de export_5147440.docx`
+- **cerere-autorizatie-export-simplificata-precursori** — 1 unique / 1 files · e.g. `Agentia Nationala Antidrog/CERERE in vederea emiterii autorizaţiei de import_5150982.docx`
+- **notificare-metale-pretioase-anexa2** — 1 unique / 1 files · e.g. `Autoritatea Nationala pentru Protectia Consumatorilor/Notificare_4153835.docx`
+- **lista-automate-vending-anexa17** — 1 unique / 1 files · e.g. `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/___ Dosar necesa`
+- **fisa-sanatate-animale-origine-animala** — 1 unique / 1 files · e.g. `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/h)Fşa de sănătat`
+- **cerere-inregistrare-snep** — 1 unique / 1 files · e.g. `Autoritatea pentru Digitalizarea Romaniei/Cerere inregistrare institutii publice in Ghiseu`
+- **cerere-abilitare-servicii-externe-ssm** — 1 unique / 1 files · e.g. `Comisii de abilitare si avizare/cerere de abilitare_449.doc`
+- **cerere-reinnoire-abilitare-ssm** — 1 unique / 1 files · e.g. `Comisii de abilitare si avizare/cerere de reînnoire_2091708.doc`
+- **cerere-avizare-documentatii-ssm** — 1 unique / 1 files · e.g. `Comisii de abilitare si avizare/cerere pentru avizarea documentațiilor cu caracter tehnic `
+- **cerere-prelungire-certificat-urbanism** — 1 unique / 1 files · e.g. `Consiliul Judetean Arad/Cerere pentru prelungirea certificatului de urbanism_8290744.doc`
+- **adeverinta-angajator-indemnizatie-crestere-copil** — 1 unique / 1 files · e.g. `Directia de Asistenta Sociala a Municipiului Pitesti/Adeverinţă de salariu tip pentru inde`
+- **cerere-suplimentara-informatii-alocatie-copii** — 1 unique / 1 files · e.g. `Directia de Asistenta Sociala a Municipiului Pitesti/Anexa 1_32254714.pdf`
+- **cerere-declaratie-indemnizatie-crestere-copil** — 1 unique / 1 files · e.g. `Directia de Asistenta Sociala a Municipiului Pitesti/Cerere_32256348.pdf`
+- **adeverinta-angajator-stimulent-insertie** — 1 unique / 1 files · e.g. `Directia de Asistenta Sociala Ramnicu Valcea/ADEVERINȚĂ STIMULENT - Anexa 3_12451384.pdf`
+- **lista-ambulante-serviciu-urgenta** — 1 unique / 1 files · e.g. `Directia de Sanatate Publica Alba/Lista ambulanţelor care urmează să fie utilizate_4110849`
+- **lista-personal-serviciu-urgenta-prespitaliceasca** — 1 unique / 1 files · e.g. `Directia de Sanatate Publica Alba/Lista personalului furnizorului privat de servicii de as`
+- **lista-statii-substatii-serviciu-urgenta** — 1 unique / 1 files · e.g. `Directia de Sanatate Publica Alba/Lista staţiilor, a substaţiilor şi a punctelor de lucru `
+- **declaratie-ghid-turism-transfrontalier** — 1 unique / 1 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
+- **notificare-agentie-turism-transfrontalier** — 1 unique / 1 files · e.g. `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatu`
+- **registru-evidenta-diriginte-santier** — 1 unique / 1 files · e.g. `Inspectoratul de Stat in Constructii - I.S.C/Registrul de evidenta a activitatii de dirigi`
+- **formular-tip-survol-filmare** — 1 unique / 1 files · e.g. `Ministerul Apararii Nationale - Centrul National Militar de Comanda -nucleu/Formular-tip_3`
+- **fisa-identificare-riscuri** — 1 unique / 1 files · e.g. `Primaria Comunei Homocea/Fisa de identificare a riscurilor_48668844.pdf`
+- **declaratie-casatorie-anexa27** — 1 unique / 1 files · e.g. `Primaria Comunei Salistea/Declaraţie din care să rezulte că cei 2 soţi nu cunosc niciun mo`
+- **fisa-calcul-ajutor-social** — 1 unique / 1 files · e.g. `Primaria Comunei Valea Lunga - Dambovita/fisa de calcul_9447085.doc`
+- **cerere-prelungire-certificat-urbanism-f7** — 1 unique / 1 files · e.g. `Primaria Municipiului Bucuresti/Cerere tip_4689.pdf`
+- **anexa-cerere-autorizatie-construire** — 1 unique / 1 files · e.g. `Primaria Municipiului Campina/Anexa la cererea tip pentru emiterea autorizației de constru`
+- **cerere-act-identitate-strainatate** — 1 unique / 1 files · e.g. `Primaria Municipiului Lugoj/Cerere pentru eliberarea actului de identitate ca urmare a sch`
+- **cerere-act-identitate-resedinta** — 1 unique / 1 files · e.g. `Primaria Municipiului Lugoj/Cerere pentru eliberarea actului de identitate cetațenilor rom`
+- **anexa-28-ac-construire** — 1 unique / 1 files · e.g. `Primaria Municipiului Oltenita/Anexa la cererea de autorizatie de construire_desfiintare_3`
+- **itl-001-declaratie-impunere-cladiri** — 1 unique / 1 files · e.g. `Primaria Municipiului Sfantu Gheorghe/Declarația fiscală pentru stabilirea impozitului_tax`
+- **cerere-autorizatie-construire-f9** — 1 unique / 1 files · e.g. `Primaria Orasului Brosteni/CERERE TIP EMITERE AUTORIZATIE CONSTRUIRE_6448.pdf`
+- **cerere-ajutor-social-anexa1** — 1 unique / 1 files · e.g. `Primaria Orasului Ineu/Cerere tip_6505.pdf`
+
+## R2 archetype matches
+
+- `cerere-dsp-model-3` — 20 unique / 242 files
+- `acord-prelucrare-date` — 18 unique / 88 files
+- `cerere-dsp-model-2` — 18 unique / 244 files
+- `cerere-recunoastere` — 17 unique / 40 files
+- `cerere-atestare-fiscala` — 16 unique / 21 files
+- `declaratie-consimtamant` — 11 unique / 158 files
+- `declaratie-proprie-raspundere` — 8 unique / 9 files
+- `cerere-alocatie-copii` — 7 unique / 8 files
+- `declaratie-gdpr` — 7 unique / 62 files
+- `cerere-tip` — 5 unique / 5 files
+- `cerere-eliberare-certificat` — 4 unique / 4 files
+- `cerere` — 2 unique / 2 files
+- `tabel-nominal-auto` — 2 unique / 93 files
+- `tabel-nominal-persoane` — 2 unique / 88 files
+- `cerere-544` — 1 unique / 1 files
+- `imputernicire` — 1 unique / 1 files
+
+## Low-confidence calls (skim these)
+
+### R4 — 562 low-confidence
+
+- `Academia Nationala de Muzica Gheorghe Dima/Cerere de recunoaştere_5313239.doc` (1×) — form signals=4; length 1324 decides author-vs-detect
+- `Academia Nationala de Muzica Gheorghe Dima/Cerere de recunoaștere_5313883.doc` (1×) — form signals=4; length 1413 decides author-vs-detect
+- `Academia Nationala de Muzica Gheorghe Dima/Cerere de recunoaștere_5352329.doc` (1×) — form signals=4; length 1392 decides author-vs-detect
+- `Administratia Rezervatiei Biosferei Delta Dunarii/cerere de autorizare_2138234.docx` (1×) — form signals=3; length 3228 decides author-vs-detect
+- `Administratia Rezervatiei Biosferei Delta Dunarii/Cerere de eliberare a permisului pentru desfășurar` (1×) — form signals=3; length 2339 decides author-vs-detect
+- `Administratia Serviciilor Sociale Comunitare Ploiesti/Cerere de admitere care este redactată şi semn` (1×) — form signals=5; length 3967 decides author-vs-detect
+- `Administratia Serviciilor Sociale Comunitare Ploiesti/cerere_9315640.doc` (1×) — form signals=4; length 3726 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Bihor/Cerere_4675194.doc` (1×) — form signals=4; length 2582 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Bistrita-Nasaud/Cerere eliberare adeverință_4474` (1×) — form signals=4; length 1192 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Buzau/Cerere_5517971.doc` (1×) — form signals=3; length 5823 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Sibiu/CENTRALIZATSTIMULENT DE RISC_7554708.doc` (1×) — form signals=3; length 980 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Vaslui/Acte doveditoare privind realizarea de ve` (1×) — form signals=3; length 3069 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/1 CERERE ELIBERARE AVIZ ` (1×) — form signals=3; length 2912 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/1 CERERE ELIBERARE REÎNN` (1×) — form signals=3; length 2740 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/1 CERERE ELIBERARE REÎNN` (1×) — form signals=3; length 2740 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/1 CERERE MODIFICARE AVIZ` (1×) — form signals=4; length 3912 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Formular notificare disc` (1×) — form signals=3; length 1465 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Formular plata reinnoire` (1×) — form signals=3; length 2326 decides author-vs-detect
+- `Agentia Nationala Anti-Doping/CERERE DE AUTORIZARE pentru eliberarea certificatului de functionare d` (1×) — form signals=3; length 1510 decides author-vs-detect
+- `Agentia Nationala Anti-Doping/cerere de înscriere la cursul de instruire anti doping pentru persoane` (1×) — form signals=3; length 577 decides author-vs-detect
+- `Agentia Nationala Anti-Doping/Declaratie de consimtamant_4441680.docx` (1×) — form signals=4; length 2021 decides author-vs-detect
+- `Agentia Nationala de Administrare Fiscala/Adeverinta de venit_41696110.pdf` (1×) — form signals=3; length 1495 decides author-vs-detect
+- `Agentia Nationala de Administrare Fiscala/Adeverinta_41696111.pdf` (1×) — form signals=3; length 1228 decides author-vs-detect
+- `Agentia Nationala de Administrare Fiscala/Cerere solicitare informatii publice de interes general_39` (1×) — form signals=3; length 1509 decides author-vs-detect
+- `Agentia Nationala de Cadastru si Publicitate Imobiliara/Cerere pentru recunoasterea autorizarii_1017` (1×) — form signals=5; length 3961 decides author-vs-detect
+- `Agentia Nationala de Cadastru si Publicitate Imobiliara/Cerere pentru recunoasterea autorizarii_1027` (1×) — form signals=5; length 4209 decides author-vs-detect
+- `Agentia Nationala pentru Sport/Cererea de înregistrare în Registrul sportiv_5050866.doc` (1×) — form signals=3; length 2009 decides author-vs-detect
+- `APAVITAL S.A./Cerere încheiere contract utilizatori casnici – F-012_60762089.pdf` (1×) — form signals=4; length 5748 decides author-vs-detect
+- `Aquatim S.A./Chestionar date primare - localități_13838352.pdf` (2×) — form signals=3; length 4057 decides author-vs-detect
+- `Aquatim S.A./Chestionar date primare - Timișoara_13838392.pdf` (2×) — form signals=3; length 4067 decides author-vs-detect
+- `Aquatim S.A./Formular - Cerere agenți economici, instituții, organizații_13838288.pdf` (2×) — form signals=3; length 2589 decides author-vs-detect
+- `Aquatim S.A./Formular - Cerere asociații legal constituite și neconstituite_13838245.pdf` (2×) — form signals=3; length 2311 decides author-vs-detect
+- `Aquatim S.A./Formular - Cerere persoane juridice_13864039.pdf` (4×) — form signals=4; length 901 decides author-vs-detect
+- `Aquatim S.A./Formular - Cerere persoane juridice_13867170.pdf` (1×) — form signals=4; length 925 decides author-vs-detect
+- `Asociatia Nationala a Evaluatorilor Autorizati din Romania/Cerere de inscriere exercitare temporara_` (1×) — form signals=4; length 3188 decides author-vs-detect
+- `Asociatia Nationala a Evaluatorilor Autorizati din Romania/Cerere de inscriere_5261.pdf` (1×) — form signals=5; length 1405 decides author-vs-detect
+- `Asociatia Nationala a Evaluatorilor Autorizati din Romania/Cerere de inscriere_5698638.pdf` (1×) — form signals=4; length 2977 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Aprobare_6363957.pdf` (2×) — form signals=4; length 1195 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Cerere AOA_4177219.doc` (1×) — form signals=3; length 3044 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Cerere privind autorizarea agenţilor aeronautici de handling_4` (1×) — form signals=4; length 4080 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Cerere privind autorizarea agenţilor de handling combustibil_4` (1×) — form signals=4; length 2833 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Declaraţie pentu efectuarea de operaţiuni necomerciale cu aero` (1×) — form signals=3; length 4889 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni cu elicoptere deasupra unui mediu ostil_4176563.rtf` (1×) — form signals=3; length 3038 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni cu elicopterul fără capacitatea de a asigura o ater` (1×) — form signals=3; length 3305 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni HEMS_4176409.rtf` (1×) — form signals=3; length 2501 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni HHO_4176451.rtf` (1×) — form signals=3; length 2487 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni la aerodromuri izolate_4176396.rtf` (1×) — form signals=3; length 2267 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni NVIS_4176596.rtf` (1×) — form signals=3; length 2500 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni PIS_4176601.rtf` (1×) — form signals=3; length 2114 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Scrisoare de aprobare_6364197.pdf` (1×) — form signals=3; length 2958 decides author-vs-detect
+- `Autoritatea Feroviara Romana - AFER/Cerere_12436123.doc` (1×) — form signals=4; length 1839 decides author-vs-detect
+- `Autoritatea Feroviara Romana - AFER/Cerere_12669587.doc` (1×) — form signals=4; length 1839 decides author-vs-detect
+- `Autoritatea Feroviara Romana - AFER/Cerere_12934658.doc` (1×) — form signals=4; length 1511 decides author-vs-detect
+- `Autoritatea Feroviara Romana - AFER/Cerere_7224506.doc` (1×) — form signals=4; length 2784 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Energiei/Cerere de autorizare_4381.doc` (8×) — form signals=3; length 5099 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Energiei/cerere_5420774.docx` (3×) — form signals=4; length 3517 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Energiei/Structura de personal_2458852.doc` (3×) — form signals=3; length 1033 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Minier, Petrolier si al Stocarii Geologice a Dioxi` (1×) — form signals=3; length 2699 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Minier, Petrolier si al Stocarii Geologice a Dioxi` (1×) — form signals=3; length 1025 decides author-vs-detect
+- `Autoritatea Nationala pentru Cetatenie/Model solicitare de informaţii de interes public_12533096.doc` (1×) — form signals=3; length 2871 decides author-vs-detect
+- … and 502 more (manifest.json)
+
+### R5 — 257 low-confidence
+
+- `Academia de Politie Alexandru Ioan Cuza/Metodologie privind recunoașterea diplomei de doctor și titl` (1×) — form signals=4; length 7408 decides author-vs-detect
+- `Administratia Rezervatiei Biosferei Delta Dunarii/Memoriu de prezentare_4218819.docx` (1×) — form signals=3; length 13323 decides author-vs-detect
+- `Administratia Serviciilor Sociale Comunitare Ploiesti/Cerere_declarație pe propria răspundere pentru` (4×) — form signals=3; length 14978 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Buzau/Cerere pentru acordarea indemnizației de c` (20×) — form signals=3; length 12029 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Covasna/Cerere_5504910.pdf` (1×) — form signals=4; length 6781 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Sibiu/Cerere_4666746.doc` (1×) — form signals=3; length 6232 decides author-vs-detect
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Timis/Cerere+Declaratia propria raspundere_58625` (1×) — form signals=3; length 7339 decides author-vs-detect
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Formular plata autorizar` (1×) — form signals=4; length 8106 decides author-vs-detect
+- `APAVITAL S.A./CERERE EMITERE AVIZ PERSOANE FIZICE_ASOCIATII PROPRIETARI - F- 089.1_32288675.pdf` (1×) — form signals=4; length 9610 decides author-vs-detect
+- `APAVITAL S.A./Cerere emitere aviz persoane juridice - F-089.2_37765122.pdf` (1×) — form signals=4; length 8594 decides author-vs-detect
+- `APAVITAL S.A./COMANDĂ SERVICII LAU_29358220.pdf` (1×) — form signals=3; length 8423 decides author-vs-detect
+- `APAVITAL S.A./Formular comanda servicii de laborator_60764698.pdf` (1×) — form signals=3; length 10418 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/cerere aprobare utilizare FSTD_4177997.pdf` (1×) — form signals=3; length 7145 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/cerere pentru efectuarea de operațiuni comerciale specializate` (1×) — form signals=3; length 7458 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/cerere tip_4176248.pdf` (1×) — form signals=3; length 14035 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Cerere tip_6362749.doc` (1×) — form signals=3; length 9284 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/Cerere tip_6364167.doc` (1×) — form signals=3; length 6885 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni ETOPS_4176326.rtf` (1×) — form signals=4; length 6251 decides author-vs-detect
+- `Autoritatea Aeronautica Civila Romana/operaţiuni PBN complexe_4176395.rtf` (1×) — form signals=3; length 7758 decides author-vs-detect
+- `Autoritatea Nationala de Reglementare in Domeniul Energiei/Lista cuprinzând dotarea tehnico-material` (3×) — form signals=3; length 21409 decides author-vs-detect
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Cerere_4911242.doc` (1×) — form signals=3; length 11233 decides author-vs-detect
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Cerere_4924154.doc` (1×) — form signals=3; length 10149 decides author-vs-detect
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Cerere_5047823.doc` (1×) — form signals=3; length 14105 decides author-vs-detect
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Formular de notificare_489` (1×) — form signals=3; length 12594 decides author-vs-detect
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Formular de notificare_489` (1×) — form signals=3; length 8343 decides author-vs-detect
+- `Autoritatea pentru Digitalizarea Romaniei/Cerere tip_1833274.docx` (2×) — form signals=3; length 9748 decides author-vs-detect
+- `Autoritatea Rutiera Romana/Cerere tip_1680.docx` (1×) — form signals=3; length 6244 decides author-vs-detect
+- `Autoritatea Rutiera Romana/Cerere tip_1690.docx` (1×) — form signals=3; length 6651 decides author-vs-detect
+- `Biroul Roman de Metrologie Legala/Cererea de autorizare_extindere_88.docx` (1×) — form signals=3; length 6146 decides author-vs-detect
+- `Colegiul Fizioterapeutilor din Romania/Cerere de actualizare a datelor personale_datelor profesional` (1×) — form signals=4; length 7322 decides author-vs-detect
+- `Colegiul Fizioterapeutilor din Romania/Cerere pentru eliberarea certificatului de status profesional` (1×) — form signals=4; length 6155 decides author-vs-detect
+- `Colegiul Medicilor Botoșani/Cerere tip inscriere_10904151.docx` (1×) — form signals=4; length 11807 decides author-vs-detect
+- `Colegiul Medicilor Botoșani/Cerere tip pentru acordarea avizului anual_11129157.docx` (1×) — form signals=3; length 6611 decides author-vs-detect
+- `Colegiul Medicilor Calarasi/Formular de înscriere_35780902.pdf` (1×) — form signals=4; length 6934 decides author-vs-detect
+- `Colegiul Medicilor din Romania/Cerere_9672567.pdf` (1×) — form signals=4; length 7030 decides author-vs-detect
+- `Colegiul Medicilor Stomatologi Bistrita Nasaud/Cerere pentru eliberarea certificatului profesional c` (1×) — form signals=3; length 6562 decides author-vs-detect
+- `Colegiul Medicilor Suceava/CERERE ELIBERARE CERTIFICAT DE MEMBRU_35746610.pdf` (1×) — form signals=4; length 12481 decides author-vs-detect
+- `Colegiul Medicilor Veterinari/Declaratie prealabila pe propria raspundere - limba engleza_6506459.pd` (1×) — form signals=3; length 7000 decides author-vs-detect
+- `Colegiul National al Asistentilor Sociali/Consimtamant in vederea prelucrarii datelor cu caracter pe` (1×) — form signals=4; length 6392 decides author-vs-detect
+- `Compania de Apa Somes S.A./Cartea tehnică a construcției (Procese verbale_Protocol) emisă și complet` (2×) — form signals=3; length 15752 decides author-vs-detect
+- `Compania de Apa Somes S.A./Cerere încheiere contract_29200329.pdf` (2×) — form signals=4; length 8344 decides author-vs-detect
+- `Compania de Apa Somes S.A./Formuar analiză apă uzată_29688121.pdf` (1×) — form signals=3; length 13108 decides author-vs-detect
+- `Compania de Apa Somes S.A./Formular cerere analiză apă_29688273.pdf` (1×) — form signals=3; length 14555 decides author-vs-detect
+- `Compania de Apa Somes S.A./Formular solicitare prestare serviciu_29705883.pdf` (1×) — form signals=5; length 7532 decides author-vs-detect
+- `Consiliul Judetean Arad/Cerere pentru emiterea certificatului de urbanism_8290494.doc` (1×) — form signals=3; length 7689 decides author-vs-detect
+- `Consiliul Judetean Bistrita-Nasaud/Cererea de solicitare privind efectuarea stagiului de practică_88` (1×) — form signals=3; length 17885 decides author-vs-detect
+- `Consiliul Judetean Braila/Cerere - formular model F.1_32406332.pdf` (1×) — form signals=4; length 8231 decides author-vs-detect
+- `Consiliul Judetean Ialomita/Cererea-tip pentru emiterea certificatului de urbanism_2209634.doc` (1×) — form signals=3; length 7996 decides author-vs-detect
+- `Consiliul Judetean Mures/Cererea pentru emiterea certificatului de urbanism_48405221.doc` (2×) — form signals=3; length 6686 decides author-vs-detect
+- `Corpul Expertilor Contabili si Contabililor Autorizati din Romania/Acord privind prelucrarea datelor` (3×) — form signals=4; length 7321 decides author-vs-detect
+- `Delgaz Grid S.A./CERERE AVIZE_21295106.docx` (4×) — form signals=4; length 27683 decides author-vs-detect
+- `Delgaz Grid S.A./Solicitare de selectare_36947403.docx` (1×) — form signals=3; length 11845 decides author-vs-detect
+- `Directia de Asistenta Sociala a Municipiului Giurgiu/Cerere - declaratie pe proprie răspundere privi` (1×) — form signals=3; length 19850 decides author-vs-detect
+- `Directia de Asistenta Sociala a Municipiului Giurgiu/Cerere şi declaraţie pe propria răspundere_4890` (1×) — form signals=4; length 15166 decides author-vs-detect
+- `Directia de Asistenta Sociala a Municipiului Pitesti/CERERE DE ACORDARE_32219930.pdf` (7×) — form signals=3; length 19594 decides author-vs-detect
+- `Directia de Asistenta Sociala Calarasi/Cerere si declarație pe propria răspundere pentru acordarea u` (2×) — form signals=3; length 29045 decides author-vs-detect
+- `Directia de Asistenta Sociala Calarasi/Formular prelucrare date cu caracter personal_49275930.docx` (1×) — form signals=3; length 8320 decides author-vs-detect
+- `Directia de Asistenta Sociala Dorohoi/Cerere si declaratie pe propria raspundere_30419974.pdf` (3×) — form signals=3; length 28155 decides author-vs-detect
+- `Directia de Asistenta Sociala Husi/SOLICITARE SUPLIMENTARĂ DE INFORMAȚII_7885803.doc` (1×) — form signals=3; length 9280 decides author-vs-detect
+- `Directia de Asistenta Sociala Macin/Cerere-declaratie pe propria raspundere pentru acordarea unor dr` (1×) — form signals=3; length 19600 decides author-vs-detect
+- … and 197 more (manifest.json)
+
+### R6 — 12 low-confidence
+
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Bistrita-Nasaud/Declarație pe propria răspundere` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Agentia Nationala pentru Ocuparea Fortei de Munca/Notificare_1488.docx` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Agentia Nationala pentru Ocuparea Fortei de Munca/Notificare_1497.docx` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Agentia Nationala pentru Ocuparea Fortei de Munca/Notificare_1505.docx` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `APAVITAL S.A./Formular de comanda verificare metrologica F-30_60764630.pdf` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Comisia de clasificare a carcaselor/ANGAJAMENT DE NEUTRALITATE_108.doc` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Comisia de clasificare a carcaselor/CERERE DE AUTORIZARE PENTRU ACTIVITATEA DE CLASIFICARE A CARCASE` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Inspectoratul de Stat in Constructii - I.S.C/Declaratie pe propria raspundere privind îndeplinirea c` (3×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Planul de evacuare în situații de urgenț` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Primaria Comunei Beresti-Bistrita/Cerere pentru eliberarea autorizatiei de functionare_26502619.pdf` (2×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Primaria Comunei Satu Mare - Harghita/Cerere pentru eliberarea certificatului privind încadrarea ter` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+- `Universitatea Sapientia din Cluj-Napoca/Cerere tip_4345506.docx` (1×) — mojibake extraction (>2% non-Romanian letters) — unreliable text
+
+### R7 — 1 low-confidence
+
+- `Agentia Nationala de Administrare Fiscala/Certificat de cazier fiscal_41672920.pdf` (1×) — llm: output document (certificat cazier fiscal issued by ANAF), garbled extraction
+
+## R7 exclusions — FULL LIST for sign-off (347 unique docs)
+
+- `Inspectoratul Scolar al Municipiului Bucuresti/Înscrierea la licee_3392178.docx` (70×) — llm: List of required documents for high school enrollment, no embedded cerere
+- `Inspectoratul Scolar al Municipiului Bucuresti/Cerere_3382429.doc` (36×) — llm: Informational text about professional scholarship application rules, no form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Documente necesare obținerii Tichetului de grădiniță_` (36×) — llm: List of required documents for kindergarten ticket; no embedded cerere
+- `Inspectoratul Scolar al Municipiului Bucuresti/Metodologie-cadru de concurs pentru ocuparea posturil` (36×) — non-form title, long text, no blanks
+- `Inspectoratul Scolar al Municipiului Bucuresti/Acte necesare la înscrierea în Programul „A doua şans` (35×) — llm: List of required documents for A doua sansa secondary school enrollment
+- `Inspectoratul Scolar al Municipiului Bucuresti/Acte necesare înscriere în Programul „A doua şansă” -` (35×) — llm: List of required documents for A doua sansa primary school enrollment
+- `Inspectoratul Scolar al Municipiului Bucuresti/Admiterea românilor de pretutindeni pe locuri fără pl` (35×) — llm: List of required documents for overseas Romanian high school admission
+- `Inspectoratul Scolar al Municipiului Bucuresti/Admiterea în clasa A IX-A a românilor de pretutindeni` (35×) — llm: List of required documents for overseas Romanian class IX admission
+- `Inspectoratul Scolar al Municipiului Bucuresti/Anexa Metodologie-cadru școlarizarea la domiciliu_339` (35×) — llm: Methodology for home schooling, regulatory framework document
+- `Inspectoratul Scolar al Municipiului Bucuresti/Cifra de școlarizare acordată romanilor de pretutinde` (35×) — llm: Statistical table of university seats for diaspora Romanians, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Cifra de școlarizare acordată romanilor de pretutinde` (35×) — llm: Statistical table of doctoral seats for diaspora Romanians, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Cifra de școlarizare acordată romanilor de pretutinde` (35×) — llm: Statistical table of master seats for diaspora Romanians, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Dosar înscrierea candidaţilor pentru examenul de baca` (35×) — llm: Informational procedure text for baccalaureate enrollment, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Locuri alocate elevilor din Republica Moldova, Ucrain` (35×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul Scolar al Municipiului Bucuresti/Metodologia de organizare si desfasurare a examenului` (35×) — llm: Methodology regulation for baccalaureate exam organization, not a form
+- `Inspectoratul Scolar al Municipiului Bucuresti/METODOLOGIA de organizare și desfășurare a examenului` (35×) — non-form title, long text, no blanks
+- `Inspectoratul Scolar al Municipiului Bucuresti/Metodologie-cadru școlarizarea la domiciliu_3391960.p` (35×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul Scolar al Municipiului Bucuresti/Respectarea prevederilor inscrise in Ordinul nr.5574 ` (35×) — non-form title, long text, no blanks
+- `Inspectoratul Scolar al Municipiului Bucuresti/Tabel oferte inscriere românii de pretutindeni - supe` (35×) — llm: Table of university links for diaspora enrollment offers, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Înscrierea la clasele cu predare a unei limbi moderne` (35×) — llm: Informational text about intensive language class enrollment process, not a form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Înscrierea la examenul de certificare la filiera tehn` (35×) — llm: Procedural text describing certification exam enrollment steps, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Înscrierea în învățământul profesional_3394549.docx` (35×) — llm: Informational text about vocational education enrollment procedure, not a form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Şcolarizarea românilor de pretutindeni, cu domiciliul` (35×) — llm: List of required documents for diaspora preuniversity schooling, no cerere embedded
+- `Inspectoratul Scolar al Municipiului Bucuresti/Școlarizare la domiciliu si infiintare grupe in spita` (35×) — llm: Ministerial order and methodology for home schooling, not a fillable form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Ghid pentru inscrierea la gradiniță (ARACIP - 2016)_3` (34×) — llm: Informational guide for parents on choosing a kindergarten, not a form
+- `Inspectoratul Scolar al Municipiului Bucuresti/Înscriere în clasa pregătitoare_3396943.docx` (33×) — llm: List of required documents for clasa pregatitoare enrollment, no embedded form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (28×) — llm: Procedura 03 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (27×) — llm: Procedura 07 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Anexa nr. 9_48` (25×) — llm: Procedura 15 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (25×) — llm: Procedura 04 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (25×) — llm: Procedura 02 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Anexa nr. 9_48` (24×) — llm: Procedura 16 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (24×) — llm: Procedura 08 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (24×) — llm: Procedura 06 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Atestatul pent` (21×) — llm: Procedura 19 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (21×) — llm: Procedura 10 acte necesare list for license application, no fillable form content
+- `Oficiul Roman pentru Drepturile de Autor/Cerere de inregistrare puncte de lucru_spatii de depozitare` (21×) — xlsx data table (roadmap §5 default)
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Anexa nr. 9_48` (20×) — llm: Procedura 14 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat con` (20×) — llm: Procedura 12 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificat de ` (20×) — llm: Procedura 11 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie a autori` (20×) — llm: Procedura 05 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Atestatul pent` (19×) — llm: Procedura 20 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Atestatul pent` (19×) — llm: Procedura 18 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copia a Certif` (19×) — llm: Procedura 01 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Anexa nr. 9_48` (17×) — llm: Procedura 13 acte necesare list for license application, no fillable form content
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copia a Certif` (15×) — llm: Procedura 09 acte necesare list for license application, no fillable form content
+- `OAMGMAMR - Filiala Arad/Adeverința de vechime în muncă_53213411.doc` (15×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Atestatul pent` (14×) — llm: Procedura 17 acte necesare list for license application, no fillable form content
+- `Oficiul Roman pentru Drepturile de Autor/Cerere de înregistrare operatori economici în Registrele Na` (13×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere de reinnoire_preschimbare_anulare a Certificatului d` (12×) — xlsx data table (roadmap §5 default)
+- `Primaria Municipiului Constanta/actul de proprietate cu care se face dovada adresei de domiciliu - o` (9×) — llm: Info sheet listing acceptable domicile proof documents, no fillable form
+- `Oficiul Roman pentru Drepturile de Autor/Cerere inregistrare spații de depozitare (Formular 3)_2754.` (8×) — xlsx data table (roadmap §5 default)
+- `OAMGMAMR - Filiala Bacau/Adeverința de vechime în muncă_58876068.doc` (7×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `Directia de Asistenta Sociala Resita/Lista cu bunurile care exclud acordarea ajutorului_7870183.pdf` (6×) — title + content signal non-form (methodology/order/info)
+- `Primaria Municipiului Constanta/chitanta achitare taxa_7648705.docx` (6×) — title + content signal non-form (methodology/order/info)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere inscriere fonograme importate (Formular 7)_2451306.x` (5×) — xlsx data table (roadmap §5 default)
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Mures/Raport statistic_10437931.xlsx` (4×) — xlsx data table (roadmap §5 default)
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/4 TABEL PRODUCATORI DM_1` (4×) — xlsx data table (roadmap §5 default)
+- `Inspectoratul de Stat in Constructii - I.S.C/Documente cu privire la studiile si experienta profesio` (4×) — llm: Ministerial order text modifying annex, regulatory normative act
+- `Ministerul Agriculturii si Dezvoltării Rurale/Experienta de 5 ani în activitate_622.docx` (4×) — llm: Annex listing categories of land improvement works for attestation; not a fillable fo
+- `Oficiul Roman pentru Drepturile de Autor/Cerere inscriere fonograme produse pe teritoriul României (` (4×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere înscriere programe pentru calculator, în Registrul N` (4×) — xlsx data table (roadmap §5 default)
+- `Primaria Municipiului Constanta/Taxe administare cimitire_2223212.docx` (4×) — llm: Tariff/tax table for cemetery concession, not a citizen-filled form
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/4 INFO CATEGORII SI GRUP` (3×) — llm: Informational categorii dispozitive medicale list, not a fillable citizen form
+- `Directia de Asistenta Sociala a Municipiului Pitesti/Acordul privind prelucrarea datelor cu caracter` (3×) — llm: Informare GDPR — institution-issued privacy notice, not a fillable citizen form
+- `Inspectia Muncii/Dovada notificare activitate transfrontaliera de selecție și plasare forță de muncă` (3×) — llm: Dovada issued by institution confirming registration, output document
+- `Oficiul Roman pentru Drepturile de Autor/Cerere înregistrare opere existente pe fonogramele produse ` (3×) — xlsx data table (roadmap §5 default)
+- `Primaria Municipiului Constanta/Chitanta achitare taxa aferenta lucrarilor modificatoare_2132879.pdf` (3×) — title + content signal non-form (methodology/order/info)
+- `Primaria Municipiului Constanta/opis_7648774.pdf` (3×) — llm: Opis checklist for certificat de urbanism application, only lists documents
+- `Primaria Municipiului Oltenita/Acord locatari_33395652.xlsx` (3×) — xlsx data table (roadmap §5 default)
+- `Administratia Serviciilor Sociale Comunitare Ploiesti/Adeverinta de la asociatia de proprietari_7758` (2×) — llm: Adeverinta issued by asociatia de proprietari TO applicant, institution-output docume
+- `Administratia Serviciilor Sociale Comunitare Ploiesti/Termeni, beneficiari, condiții de acordare, co` (2×) — non-form title, long text, no blanks
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (2×) — llm: Procedura 02 modificare licenta acte necesare list, no fillable citizen form
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Document de înregistrare p` (2×) — llm: Document inregistrare siguranta alimentelor Anexa 10, institution-issued output docum
+- `Directia de Asistenta Sociala Dorohoi/Formular – Cerere si declaratie pe propria raspundere – (modif` (2×) — title + content signal non-form (methodology/order/info)
+- `Ministerul Agriculturii si Dezvoltării Rurale/Aviz de recunoaştere a grupurilor şi organizaţiilor de` (2×) — llm: Aviz de recunoaștere issued by ministry to producer group; institution-issued output 
+- `Ministerul Agriculturii si Dezvoltării Rurale/Experienta în activitate_956.doc` (2×) — llm: Duplicate annex listing land improvement work categories; informational
+- `Ministerul Agriculturii si Dezvoltării Rurale/Procesul-verbal de constatare a reţetei consacrate la ` (2×) — llm: Propunere de atestare issued by Directia pentru Agricultura; institution output docum
+- `Ministerul Agriculturii si Dezvoltării Rurale/Registrul de evidenţă a grupurilor şi organizaţiilor d` (2×) — llm: Registrul de evidenta maintained by institution, not a citizen-submitted form
+- `OAMGMAMR - Filiala Valcea/Adeverința de vechime_53324855.doc` (2×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `Oficiul Roman pentru Drepturile de Autor/Cerere de înscriere echipamente multiplicare (Formular 18)_` (2×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere inscriere videograme importate (Formularul 14)_24754` (2×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere pentru înscrierea videogramelor produse pe teritoriu` (2×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Decalarație pe propria răspundere (Formular 11)_4290249.xls` (2×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Declarație pe propria răspundere (Formular 10)_4290175.xlsx` (2×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Declarație pe propria răspundere (Formular 9)_4290174.xlsx` (2×) — xlsx data table (roadmap §5 default)
+- `Primaria Comunei Magiresti/Buletin_carte de identitate al celui decedat_7476839.pdf` (2×) — llm: Informational sheet on deces registration procedure, no fillable form
+- `Primaria Comunei Mogosoaia/Piese desenate_6520860.pdf` (2×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Padina - Buzau/Adeverinta registrul agricol Primaria Padina_33107289.doc` (2×) — llm: Adeverinta issued by institution (registru agricol), output document
+- `Primaria Comunei Sabaoani/Anexa 2_11065276.pdf` (2×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Sabaoani/Taxe_10857408.doc` (2×) — llm: Informational sheet on divorce procedure and required documents
+- `Primaria Comunei Ticvaniu Mare/Legea nr 448_2006 privind protectia si promovarea drepturilor persoan` (2×) — llm: Legea 448/2006 full text on disability rights, regulatory law not a form
+- `Primaria Comunei Ticvaniu Mare/OUG nr, 111_2010 privind concediul si indemnizatia lunara pentru cres` (2×) — non-form title, long text, no blanks
+- `Primaria Municipiului Barlad/Lista bunurilor ce conduc la excluderea acordării ajutorului social_329` (2×) — title + content signal non-form (methodology/order/info)
+- `Primaria Municipiului Constanta/aviz pentru obtinerea autorizatiei de construire_10544243.docx` (2×) — llm: Aviz DASOE document issued by institution, not a citizen-submitted form
+- `Universitatea de Arhitectura si Urbanism Ion Mincu/Fişa de verificare a îndeplinirii standardelor na` (2×) — xlsx data table (roadmap §5 default)
+- `Academia Nationala de Informatii Mihai Viteazul/Atestat de recunoastere titlu de doctor_9445226.docx` (1×) — llm: Atestat issued BY institution to recipient, not a citizen-filled form
+- `Academia Nationala de Informatii Mihai Viteazul/Atestat de recunoaştere automată a calităţii de cond` (1×) — llm: Atestat output document issued by institution, not fillable by citizen
+- `Academia Nationala de Informatii Mihai Viteazul/ATESTAT de recunoaştere automată a funcției didactic` (1×) — llm: Atestat output model issued by institution (Anexa 2 model), not citizen form
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Buzau/Atestat de recunoaștere a exeperienței pro` (1×) — llm: Atestat de recunoastere experienta profesionala issued by institution, output documen
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Mures/Situatia privind beneficiarii şi cuantumul` (1×) — xlsx data table (roadmap §5 default)
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Mures/Situaţia centralizatoare privind titularii` (1×) — xlsx data table (roadmap §5 default)
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Mures/Situaţia centralizatoare privind titularii` (1×) — xlsx data table (roadmap §5 default)
+- `Agentia Judeteana pentru Plati si Inspectie Sociala Mures/Situația privind beneficiarii şi cuantumul` (1×) — xlsx data table (roadmap §5 default)
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Aviz de funcționare temp` (1×) — llm: Aviz de functionare issued BY ANMDM to operator, institution-output certificate
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Plan de comunicare al CD` (1×) — title + content signal non-form (methodology/order/info)
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Plan de comunicare al CD` (1×) — title + content signal non-form (methodology/order/info)
+- `Agentia Nationala a Medicamentului si a Dispozitivelor Medicale din Romania/Situaţia (raportarea lun` (1×) — title + content signal non-form (methodology/order/info)
+- `Agentia Nationala de Administrare Fiscala/Certificat de cazier fiscal_41672920.pdf` (1×) — llm: output document (certificat cazier fiscal issued by ANAF), garbled extraction
+- `Agentia Nationala pentru Sport/Cerere HG 884_2001, anexa nr. 6_5051582.jpg` (1×) — image file
+- `Agentia Romana de Asigurare a Calitatii in Invatamantul Superior/Raportul de Evaluare Internă (REI)_` (1×) — title + content signal non-form (methodology/order/info)
+- `APAVITAL S.A./DE CE SUNT NECESARE DOCUMENTELE_32288687.pdf` (1×) — non-form title, long text, no blanks
+- `APAVITAL S.A./Formular F-566 - Informații obținere contract cu APAVITAL S.A._38125188.pdf` (1×) — llm: Informational guide on obtaining APAVITAL contract, no fillable citizen form
+- `APAVITAL S.A./Ghid pentru obţinerea unui branşament sau a unui racord de apă sau canalizare_48504669` (1×) — llm: Ghid documente necesare bransament, acte necesare info sheet only
+- `APAVITAL S.A./Modalitate accesare servicii de laborator_60764934.pdf` (1×) — llm: Info sheet on accessing lab services, procedural description, not a citizen form
+- `APAVITAL S.A./NOTIFICARE DE PROCESARE A DATELOR_29358942.docx` (1×) — llm: Notificare informativa privind procesarea datelor, GDPR notice not a fillable form
+- `Arhivele Nationale ale Romaniei/Chitanța_4883.docx` (1×) — title + content signal non-form (methodology/order/info)
+- `Autoritatea Aeronautica Civila Romana/Aprobare specifica (inclusa in Specificatiile de Operare, anex` (1×) — llm: Specificatii de Operare COA issued by AACR to operator, institution-output document
+- `Autoritatea Aeronautica Civila Romana/Autorizatie de operator aerian_8255.pdf` (1×) — llm: Autorizatie de Operator Aerian issued by AACR, institution-output certificate
+- `Autoritatea Aeronautica Civila Romana/Certificat de Operator Aerian_8230.pdf` (1×) — llm: Certificat de Operator Aerian issued by AACR, institution-output certificate
+- `Autoritatea Aeronautica Civila Romana/confirmarea din partea AACR a declaraţiei_4176927.doc` (1×) — llm: Confirmare AACR a declaratiei, institution-to-operator notification output document
+- `Autoritatea Feroviara Romana - AFER/lista responsabili atestați ASFR_12437400.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Autoritatea Feroviara Romana - AFER/lista responsabili atestați ASFR_12673785.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Autoritatea Feroviara Romana - AFER/lista responsabili atestați ASFR_13019616.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Certificatul c` (1×) — llm: Procedura 08 acte necesare list from ANRSC, no fillable citizen form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (1×) — llm: Procedura 03 modificare licenta acte necesare list, no fillable citizen form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (1×) — llm: Procedura 01 modificare licenta acte necesare list, no fillable citizen form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (1×) — llm: Procedura 02 modificare licenta acte necesare list, no fillable citizen form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (1×) — llm: Procedura retragere licenta acte necesare list, no fillable citizen form
+- `Autoritatea Nationala de Reglementare pentru Servicii Comunitare de Utilitati Publice/Copie document` (1×) — llm: Procedura retragere permisiune acte necesare list, no fillable citizen form
+- `Autoritatea Nationala pentru Cetatenie/tematica si bibliografia_12534869.docx` (1×) — llm: Tematica si bibliografia exam cetatenie, informational study guide not a form
+- `Autoritatea Nationala pentru Cetatenie/Întrebări Constituția României_12534895.pdf` (1×) — llm: List of exam questions about Romanian constitution, informational document not a form
+- `Autoritatea Nationala pentru Cetatenie/Întrebări cultură și civilizație românească_12534909.pdf` (1×) — llm: List of exam questions about Romanian culture, informational document not a form
+- `Autoritatea Nationala pentru Cetatenie/Întrebări geografia României_12534938.pdf` (1×) — llm: List of exam questions about Romanian geography, informational document not a form
+- `Autoritatea Nationala pentru Cetatenie/Întrebări istoria României_12534959.pdf` (1×) — long dense text, zero form signals
+- `Autoritatea Nationala pentru Protectia Consumatorilor/Adeverinta_4398493.doc` (1×) — llm: Adeverinta issued by institution ANPC confirming notification, output document not ci
+- `Autoritatea Nationala pentru Protectia Consumatorilor/Adeverinta_4398815.doc` (1×) — llm: Adeverinta privind marca responsabilitate, institution-issued output document not cit
+- `Autoritatea Nationala pentru Protectia Consumatorilor/Adresa raspuns eliberata de catre Autoritatea ` (1×) — llm: Adresa raspuns institutie ANPC, institution-issued letter template not citizen form
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Autorizatia sanitar veteri` (1×) — llm: Autorizatie sanitar veterinara issued by institution ANSVSA, output document not citi
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Certificatul de înregistra` (1×) — manual fix: output certificate template issued by DSVSA (Anexa 42 Model C), not a citizen 
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Document de înregistrare p` (1×) — llm: Document inregistrare sanitar veterinara Anexa 3, institution-issued output document
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Documentul de înregistrare` (1×) — llm: Document issued by institution (registration certificate), not filled by citizen
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Documentul de înregistrare` (1×) — llm: Institution-issued registration document (Anexa 3 ANSVSA), output certificate
+- `Autoritatea Nationala Sanitara Veterinara si pentru Siguranta Alimentelor/Registru privind evidența ` (1×) — llm: Register/log book filled by transporter operator, not a citizen submission form
+- `Autoritatea pentru Administrarea Activelor Statului/Decizie_2660936.doc` (1×) — llm: Decision template issued by institution (AAAS), not a citizen-submitted form
+- `Autoritatea pentru Administrarea Activelor Statului/Decizie_2660959.doc` (1×) — llm: Decision template issued by institution, not citizen-filled form
+- `Autoritatea pentru Administrarea Activelor Statului/Referatul de plată_2674923.doc` (1×) — llm: Internal referral/report template (Anexa 3), institutional document not citizen form
+- `Biroul Roman de Metrologie Legala/Dovada de plata tarif _ taxa avizare_extinderea avizarii (tarifele` (1×) — llm: Tariff price list for avizare, informational document not a citizen form
+- `Biroul Roman de Metrologie Legala/Dovada de plata tarif _ taxa avizare_extinderea avizarii (tarifele` (1×) — llm: Tariff price list for modificare avizare, informational not a form
+- `Biroul Roman de Metrologie Legala/Dovada de plata tarif _ taxa avizare_extinderea avizarii (tarifele` (1×) — llm: Tariff price list for montare avizare, informational not a form
+- `Casa Nationala de Pensii Publice/Model completat de act aditional, daca este cazul_11816627.doc` (1×) — llm: Contract addendum template issued by CNPP, institution document not citizen form
+- `Colegiul Farmacistilor Arad/NOTIFICARE_5647557.doc` (1×) — llm: Legal text excerpt (law articles), not a citizen form
+- `Colegiul Farmacistilor Olt/Cerere eliberare certificat profesional curent_48413418.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere emitere certificat membru duplicat_48415149.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere emitere certificat membru duplicat_48415233.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere emitere certificat membru duplicat_48415989.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere privind suspendarea calitatii de membru_48413869.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere reluarea calitatii de membru_48415449.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Cerere solicitare nota de transfer_48413660.jpeg` (1×) — image file
+- `Colegiul Farmacistilor Olt/Declaratie pe proprie raspundere privind inexistenta unei situatii de inc` (1×) — image file
+- `Colegiul Farmacistilor Prahova/Cerere emitere duplicat certificat membru_5681131.docx` (1×) — llm: Procedural info page listing required documents and steps, not a fillable form
+- `Colegiul Farmacistilor Suceava/Nota de transfer_48492694.docx` (1×) — llm: Transfer note issued by Colegiu institution, output document not citizen form
+- `Colegiul Medicilor Stomatologi Constanta/CERTIFICAT PROFESIONAL CURENT_6101428.doc` (1×) — llm: Certificat profesional curent issued by institution, output document not form
+- `Colegiul Medicilor Veterinari/Decizie de recunoastere_4240973.pdf` (1×) — llm: Decizie de recunoastere issued by Colegiul Medicilor Veterinari, output doc
+- `Colegiul Medicilor Veterinari/Decizie de recunoastere_4241010.pdf` (1×) — llm: Decizie de recunoastere (variant 2), institution-issued output document
+- `Colegiul National al Asistentilor Sociali/Model de adeverinta_3475.doc` (1×) — llm: Adeverinta salariat issued by institution, output certificate not citizen form
+- `Delgaz Grid S.A./Nota de Informare cu privire la Prelucrarea datelor cu caracter personal_36947148.p` (1×) — llm: GDPR privacy notice issued by Delgaz Grid, informational document not a form
+- `Directia de Asistenta Sociala Husi/Anexa nr. 3 H.G. 778_2013_7892002.jpg` (1×) — image file
+- `Directia de Asistenta Sociala Macin/CV - Model european DAS Măcin_33020429.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Directia de Asistenta Sociala Oradea/OPIS acte necesare_28528859.docx` (1×) — llm: OPIS — checklist of required documents only, no fillable citizen form
+- `Directia de Asistenta Sociala Oradea/OPIS acte necesare_44122026.docx` (1×) — llm: OPIS — checklist of required documents only, no fillable citizen form
+- `Directia de Asistenta Sociala Oradea/OPIS acte necesare_44145815.doc` (1×) — llm: Informational list of required documents for alocatie de stat, no fillable form embed
+- `Directia de Asistenta Sociala Ramnicu Valcea/FLUTURAS DOCUMENTE_42414419.doc` (1×) — llm: Fluturas listing required documents for rovinieta — no fillable form, just document l
+- `Directia de Asistenta Sociala Ramnicu Valcea/INSTRUCTIUNI DE COMPLETARE_12450079.pdf` (1×) — llm: Instructions for completing alocatie de stat cerere — methodology/guide, not a form
+- `Directia de Asistenta Sociala Ramnicu Valcea/INSTRUCȚIUNI DE COMPLETARE_12451540.pdf` (1×) — llm: Instructions for completing indemnizatie crestere copil cerere — methodology/guide, n
+- `Directia de Asistenta Sociala Resita/Lista cu actele necesare_13651621.pdf` (1×) — llm: Lista orientativa — list of required court documents for child custody abroad, not a 
+- `Directia de Asistenta Sociala Sighetu Marmației/C E R E R E Ș I D E C L A R A Ț I E P E P R O P R I ` (1×) — xlsx data table (roadmap §5 default)
+- `Directia de Asistenta Sociala Sighetu Marmației/C E R E R E Ș I D E C L A R A Ț I E P E P R O P R I ` (1×) — xlsx data table (roadmap §5 default)
+- `Directia de Asistenta Sociala Sighetu Marmației/SUPLIMENT MEMBRI DE FAMILIE_39143885.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Directia de Asistenta Sociala Tecuci/Alocație de stat_14954395.pdf` (1×) — llm: DOSAR ALOCATIE DE STAT — list of required documents only, no fillable form
+- `Directia de Asistenta Sociala Tecuci/Alocație de Susținere a Familiei_14862134.pdf` (1×) — llm: DOSAR ALOCATIE SUSTINERE FAMILIEI — list of required documents only, no fillable form
+- `Directia de Asistenta Sociala Tecuci/Indemnizație de Creștere a Copilului și Stimulent de Inserție_1` (1×) — llm: DOSAR INDEMNIZATIE/STIMULENT — list of required documents only, no fillable form
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Brasov/Informare repartizare caz_55185` (1×) — llm: Informare repartizare caz — institutional notification letter issued by institution, 
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Buzau/Lista documente necesare la dosa` (1×) — image file
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Sector 3/Curiculum vitae_47287458.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Sector 4/Cerere_4341374.doc` (1×) — llm: Raspuns institutional letter from DGASPC — issued by institution to citizen, not a fi
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Suceava/pliant informativ Asistență ma` (1×) — llm: Pliant informativ asistenta maternala — informational brochure about foster care righ
+- `Directia Generala de Asistenta Sociala si Protectia Copilului Tulcea/Acord privind prelucrarea datel` (1×) — image file
+- `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatului si Tur` (1×) — xlsx data table (roadmap §5 default)
+- `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatului si Tur` (1×) — title + content signal non-form (methodology/order/info)
+- `Directia Generala Turism din cadrul Ministerului Economiei, Digitalizării, Antreprenoriatului si Tur` (1×) — title + content signal non-form (methodology/order/info)
+- `Directia Judeteana de Administrare a Drumurilor si Podurilor Iasi/Autorizaţie specială de transport_` (1×) — llm: Autorizatie speciala de transport issued by institution, output document
+- `Directia pentru Cultura a Municipiului Bucuresti/Documente necesare eliberarii avizului_29193347.doc` (1×) — llm: List of required documents for obtaining aviz, acte necesare only
+- `Directia pentru Cultura a Municipiului Bucuresti/Lista cu documente de interes public - anexa 4_2919` (1×) — llm: List of public interest documents produced by institution, informational
+- `Directia pentru Cultura a Municipiului Bucuresti/Nota de calcul_29193269.doc` (1×) — llm: Tariff calculation note per ministerial order, informational pricing
+- `Inspectia Muncii/Cerere de înregistrare a agentului de plasare pentru desfășurarea activității de pl` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectia Muncii/copie actul de identitate_2107088.doc` (1×) — llm: List of ITM email addresses for sending ID copies, informational
+- `Inspectia Muncii/Notificare de înregistrare a furnizorului de plasare pentru desfășurarea activități` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectia Muncii/Notificare de înregistrare a furnizorului de plasare transfrontalieră pentru desfăș` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul General al Poliției Române-Directia Arme, Explozivi si Substante Periculoase/CERERE RE` (1×) — xlsx data table (roadmap §5 default)
+- `Inspectoratul General al Poliției Române-Directia Arme, Explozivi si Substante Periculoase/Declarati` (1×) — xlsx data table (roadmap §5 default)
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord privind comercializarea materialel` (1×) — llm: Acord issued by ISU institution for pyrotechnic sales, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUD-Protecție Civilă_37062804.docx` (1×) — llm: Acord favorabil PUD civil protection issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUD-Securitate la incendiu_3706239` (1×) — llm: Acord favorabil PUD fire safety issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUG_37061653.docx` (1×) — llm: Acord favorabil PUG fire safety issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUG_37062052.docx` (1×) — llm: Acord favorabil PUG civil protection issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUZ-Protecție Civilă_37059681.docx` (1×) — llm: Acord favorabil PUZ civil protection issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Acord PUZ_37058836.docx` (1×) — llm: Acord favorabil PUZ fire safety issued by ISU, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Anexa 4 Tematică obligatorie SVSU_594648` (1×) — llm: Mandatory training curriculum thematic list, informational methodology
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Anexa 5 Furnizori_59464087.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Anexa 5 Furnizori_59464686.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Anexa nr. 4 Tematică obligatorie SPSU_59` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Aviz de inființare _ sector de competenț` (1×) — llm: Aviz de infiintare issued by ISU to private service, output document
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Aviz de infiițare _ sector de competențe` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Documente necesare dosar de inscriere_37` (1×) — llm: List of documents required for enrollment, acte necesare informational
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Neâncadrare în HGR 571 si HGR 862_370562` (1×) — llm: Response letter from ISU about non-applicability of fire safety rules, output
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Plan pregătire 2026_59463808.doc` (1×) — llm: Emergency situation training plan document, methodology/regulation text
+- `Inspectoratul pentru Situatii de Urgenta Vasile Goldis Arad/Plan pregătire 2026_59464761.doc` (1×) — long dense text, zero form signals
+- `Inspectoratul Scolar Judetean Arad/TEMATICA OBLIGATORIE_49161499.pdf` (1×) — title + content signal non-form (methodology/order/info)
+- `Inspectoratul Scolar Judetean Vrancea/Documente necesare înscriere_48798783.docx` (1×) — llm: List of required documents for clasa pregatitoare enrollment, no embedded form
+- `Institutul Teologic Protestant din Cluj-Napoca/Atestat de recunoaștere_5388500.pdf` (1×) — llm: Atestat de recunoaștere issued by institution to a recipient; output document not a c
+- `Institutul Teologic Protestant din Cluj-Napoca/Atestatul de recunoaștere a calității de conducător d` (1×) — llm: Atestat de recunoaștere for doctoral supervisor qualification; institution-issued out
+- `Institutul Teologic Protestant din Cluj-Napoca/Atestatul de recunoaștere_5388715.pdf` (1×) — llm: Atestat de recunoaștere for academic rank; institution-issued output document
+- `Ministerul Agriculturii si Dezvoltării Rurale/Autorizatie de depozit_1965868.docx` (1×) — llm: Autorizatie de Depozit model issued by institution (Anexa 5); output document not cit
+- `Ministerul Agriculturii si Dezvoltării Rurale/Autorizatie de unitate prim procesatoare de tutun brut` (1×) — llm: Autorizatie de prim-procesare tutun model issued by ministry; institution-issued outp
+- `Ministerul Agriculturii si Dezvoltării Rurale/Experienta în activitate_674.doc` (1×) — llm: Annex listing categories of land improvement works; regulation/informational annex
+- `Ministerul Agriculturii si Dezvoltării Rurale/Experienta în activitate_935.doc` (1×) — llm: Duplicate annex listing land improvement work categories; informational
+- `Ministerul Agriculturii si Dezvoltării Rurale/Experiența în activitate_993.doc` (1×) — llm: Duplicate annex listing land improvement work categories; informational
+- `Ministerul Agriculturii si Dezvoltării Rurale/Logo naţional pentru produse tradiţionale_1987227.docx` (1×) — llm: Description of national logo graphic design specifications; not a fillable form
+- `Ministerul Agriculturii si Dezvoltării Rurale/Procesul verbal de conformitate_neconformitate, decizi` (1×) — llm: Decision issued BY institution withdrawing recognition; output document not a citizen
+- `Ministerul Agriculturii si Dezvoltării Rurale/Registru evidenta licente depozit_1983567.docx` (1×) — llm: Registry/register template maintained by institution, not submitted by citizen
+- `Ministerul Agriculturii si Dezvoltării Rurale/Utilizarea logoului naţional pentru reţete consacrate ` (1×) — llm: Logo usage specification/graphic guide; not a fillable citizen form
+- `Ministerul Agriculturii si Dezvoltării Rurale/Utilizarea logoului naţional_2094971.docx` (1×) — llm: Logo usage specification with CMYK/negative variants; informational document
+- `Ministerul Apararii Nationale - Comandamentul Comunicatiilor si Informaticii/Notificare privind semn` (1×) — llm: Notification/info sheet about leasing procedure; not a citizen-submitted form
+- `Ministerul Apărării Naționale - Spitalul Clinic Militar de Urgenta Dr. Alexandru Augustin Sibiu/Adev` (1×) — llm: Adeverinta CASS issued by Casa de Asigurari; institution output certificate template
+- `Ministerul Apărării Naționale - Spitalul Clinic Militar de Urgenta Dr. Alexandru Augustin Sibiu/Adev` (1×) — llm: Adeverinta angajat issued by employer/CAS; institution output certificate template
+- `Ministerul Economiei, Digitalizarii, Anteprenoriatului si Turismului-Directia Achizitii Publice, Inv` (1×) — title + content signal non-form (methodology/order/info)
+- `Ministerul Educatiei si Cercetarii - Directia Generala Invatamant Universitar (MEN-DGIU)/Adeverinta ` (1×) — llm: Adeverinta issued by MEN-DGIU certifying diploma equivalence; institution output
+- `Ministerul Educației și Cercetării - Centrul Național de Recunoaștere și Echivalare a Diplomelor/Dov` (1×) — llm: Payment info sheet for taxa vizare; tariff/instructions document not a fillable form
+- `Ministerul Muncii si Protectiei Sociale/Angajament furnizor servicii sociale_6477116.pdf` (1×) — title + content signal non-form (methodology/order/info)
+- `Ministerul Muncii si Protectiei Sociale/Certificat de acreditare a furnizorului de servicii sociale ` (1×) — llm: Certificat de acreditare MODEL issued by minister; institution output document
+- `Ministerul Muncii si Protectiei Sociale/Decizie de reacreditare a serviciului social_6480099.pdf` (1×) — llm: Decizie de reacreditare serviciu social issued by minister; institution output docume
+- `Ministerul Muncii si Protectiei Sociale/Decizie de respingere a acreditării furnizorului de servicii` (1×) — llm: Decizie de respingere acreditare issued by minister; institution output document
+- `Ministerul Muncii si Protectiei Sociale/Decizie de respingere a acreditării furnizorului de servicii` (1×) — llm: Decizie de respingere acreditare duplicate; institution output document
+- `Ministerul Muncii si Protectiei Sociale/Decizie de retragere acreditare serviciu social_6480115.pdf` (1×) — llm: Decizie de retragere acreditare serviciu social issued by minister; institution outpu
+- `Ministerul Muncii si Protectiei Sociale/g) angajamentul furnizorului_6478815.pdf` (1×) — title + content signal non-form (methodology/order/info)
+- `Ministerul Muncii si Protectiei Sociale/Licența de funcționare_6480095.pdf` (1×) — llm: Licenta de functionare MODEL issued by minister; institution output document
+- `Ministerul Sanatatii - Directia Farmaceutica și Dispozitive Medicale/2. Lista plantelor, substanțelo` (1×) — xlsx data table (roadmap §5 default)
+- `OAMGMAMR - Filiala Arges/Adeverința de vechime în muncă_58549270.doc` (1×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `OAMGMAMR - Filiala Teleorman/Adeverința de vechime în muncă_53362215.doc` (1×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `OAMGMAMR - Filiala Vaslui/Adeverința de vechime în muncă_53618581.doc` (1×) — llm: Adeverinta vechime MODEL issued by employer; institution output certificate template
+- `Oficiul Roman pentru Drepturile de Autor/adresa de confirmare a inregistrarii lucrarii in Registrul ` (1×) — llm: Confirmation letter issued by ORDA to applicant, not a fillable form
+- `Oficiul Roman pentru Drepturile de Autor/Cerere de înregistrare a operei în Registrul National de Op` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere eliberare marcaje holografice (Formular 16)_4290269.` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere pentru înregistrarea operelor audioviuale continute ` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere privind înscrierea opere audiovizuale continute de v` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere înscriere filme cinematografice produse pe teritoriu` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Cerere înscriere suporturi_aparate in RNCP (Formular 23)_25` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Declarație pe propria răspundere (Formular 17)_4290292.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Formular 1_2538998.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Formular 23_2539009.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Formular 2_2539003.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Oficiul Roman pentru Drepturile de Autor/Formularul 2_2475406.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Primaria Comunei Balteni - Olt/adeverinta ci_34205333.docx` (1×) — llm: Adeverinta issued by institution to citizen, output document
+- `Primaria Comunei Cruset/chitanta achitare taxa_35307532.docx` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Magiresti/Lista statelor pentru ai caror cetateni nu este obligatorie viza de intra` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Mogosesti - Iasi/Acte necesare dosar de Indemnizație creștere copil_7345081.pdf` (1×) — llm: Acte necesare dosar indemnizatie crestere copil, list only, no fillable form
+- `Primaria Comunei Mogosesti - Iasi/Termeni și condiții încadrare beneficiu_7343620.pdf` (1×) — llm: Acte necesare ajutor social, list of required documents only
+- `Primaria Comunei Mogosoaia/Cerere tip anexe_48552157.pdf` (1×) — long dense text, zero form signals
+- `Primaria Comunei Padina - Buzau/Acte necesare acordare alocației pentru susținerea familiei_33107037` (1×) — llm: Acte necesare alocatie pentru sustinerea familiei, informational list only
+- `Primaria Comunei Padina - Buzau/Acte necesare acordare indemnizație de crestere copil sau stimulent ` (1×) — llm: Acte necesare indemnizatie crestere copil, list only, no fillable form
+- `Primaria Comunei Padina - Buzau/Acte necesare pentru acordarea alocației de stat_33104319.docx` (1×) — llm: Acte necesare alocatie de stat copii, list only, no fillable form
+- `Primaria Comunei Padina - Buzau/Certificat pentru atestarea pierderii capacității de muncă_33113502.` (1×) — image file
+- `Primaria Comunei Padina - Buzau/Dovada faptului că sunteți în evidența Agenției Teritoriale pentru O` (1×) — llm: Informational sheet on documents needed for AJOFM evidence, no form
+- `Primaria Comunei Paulesti - Prahova/cerere tip_26212578.pdf` (1×) — llm: Government order HG modifying normele metodologice, regulatory text not a form
+- `Primaria Comunei Paulesti - Prahova/Lista acte necesare_26229698.doc` (1×) — llm: Acte necesare ajutor incalzire, list of required documents only
+- `Primaria Comunei Paulesti - Prahova/Lista bunuri care exclud acordarea_26229677.doc` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Paulesti - Prahova/LISTA BUNURI_38494178.docx` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Comunei Paulesti - Prahova/lista documente necesare_26189800.doc` (1×) — llm: Acte necesare indemnizatie crestere copil, list only, no fillable form
+- `Primaria Comunei Plescuta/Cerere tip_7270576.doc` (1×) — llm: Adeverinta registrul agricol issued by institution, output document
+- `Primaria Comunei Plescuta/Certificat de Inmatriculare_8696984.xlsx` (1×) — xlsx data table (roadmap §5 default)
+- `Primaria Comunei Plescuta/Certificat nomenclatura stradala_7265184.doc` (1×) — llm: Certificat de nomenclatura stradala issued by institution, output document
+- `Primaria Comunei Salistea/Cerere_32512010.pdf` (1×) — long dense text, zero form signals
+- `Primaria Comunei Ticvaniu Mare/ACTE NORMATIVE LEGEA NR. 61_1993 PRIVIND ALOCATIA DE STAT PENTRU COPI` (1×) — llm: Legea 61/1993 text on child allowance, regulatory law not a form
+- `Primaria Comunei Ticvaniu Mare/Legea nr 416_2001 privind venitul minim garantat_7270544.pdf` (1×) — non-form title, long text, no blanks
+- `Primaria Comunei Vanatori-Neamt/Certificat atestare fiscala_10232249.doc` (1×) — llm: Certificat de atestare fiscala - document issued by institution, not citizen form
+- `Primaria Municipiului Barlad/Adeverinţa eliberată de angajator – formular tip_32980772.pdf` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Municipiului Barlad/Declaraţie pe propria răspundere - formular tip_32980862.jpg` (1×) — image file
+- `Primaria Municipiului Constanta/Alte acte doveditoare_2227013.doc` (1×) — llm: Explanatory procedure text about civil records rectification, not a form
+- `Primaria Municipiului Constanta/Alte precizari_2224391.pdf` (1×) — llm: Informational text about civil marriage procedures, not a fillable form
+- `Primaria Municipiului Constanta/Certificatul medical constatator al nasterii_2224173.docx` (1×) — llm: Informational list of required docs for birth registration, no fillable form
+- `Primaria Municipiului Constanta/chitanta achitare taxe_2129595.pdf` (1×) — llm: Regulatory text from Ordinul 839/2009 on construction fees, not a form
+- `Primaria Municipiului Constanta/Dovada achitarii taxei_2141813.pdf` (1×) — non-form title, long text, no blanks
+- `Primaria Municipiului Constanta/INFORMATII IMPORTANTE_54411897.docx` (1×) — llm: Important informational notice about minor identity documents, not a form
+- `Primaria Municipiului Constanta/informatii suplimentare_51590828.docx` (1×) — llm: List of required documents for death registration, no fillable form embedded
+- `Primaria Municipiului Constanta/informatii suplimentare_51590925.docx` (1×) — llm: List of required documents for marriage registration, no fillable form
+- `Primaria Municipiului Constanta/Opis_2132759.pdf` (1×) — llm: Opis checklist of required documents for gas connection permit, not a form
+- `Primaria Municipiului Constanta/precizari_2229902.pdf` (1×) — llm: Informational notice for Romanian citizens with foreign domicile, not a form
+- `Primaria Municipiului Constanta/Schita cu amplasarea arborelui in domeniul public_2201708.pdf` (1×) — llm: Precizari about tree trimming requests, not a fillable form
+- `Primaria Municipiului Constanta/Taxe_2224340.pdf` (1×) — llm: Informational text about marriage declaration and fees, not a fillable form
+- `Primaria Municipiului Constanta/Taxe_2226408.pdf` (1×) — llm: Informational text about foreign divorce registration, not a fillable form
+- `Primaria Municipiului Constanta/Taxe_2226983.pdf` (1×) — llm: Informational text about livret de familie issuance, not a fillable form
+- `Primaria Municipiului Constanta/Taxe_2229412.pdf` (1×) — llm: Informational text about multilingual civil status extracts, not a form
+- `Primaria Municipiului Constanta/Taxe_2229678.pdf` (1×) — llm: Informational text and required docs list for foreign divorce inscription
+- `Primaria Municipiului Constanta/vinieta_10523359.png` (1×) — image file
+- `Primaria Municipiului Iasi/Documente necesare_2574339.docx` (1×) — llm: List of required docs for aviz de oportunitate urbanism, no fillable form
+- `Primaria Municipiului Moinesti/Copie dupa dovada platiii taxei de acces autovehicul in oras conform ` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Municipiului Moinesti/Formular documente de atasat pentru eliberare autorizatie de transpor` (1×) — llm: Only lists required documents for taxi authorisation, no fillable form
+- `Primaria Municipiului Oltenita/Cerere tip - formular Anexa 28_33138168.doc` (1×) — llm: Certificate issued by institution, not a citizen-submitted form
+- `Primaria Municipiului Ramnicu Valcea/Acte emitere AC_6594.pdf` (1×) — llm: List of required documents for building permit, no fillable cerere
+- `Primaria Municipiului Ramnicu Valcea/Acte emitere CU_6592.pdf` (1×) — llm: List of required documents for urbanism certificate, no fillable form
+- `Primaria Orasului Ineu/Acte necesare_48876945.doc` (1×) — llm: List of required documents for operating authorisation, no fillable form
+- `Primaria Orasului Ineu/Formular Tip_48542734.doc` (1×) — llm: Adeverinta template issued by institution, not citizen-submitted form
+- `Primaria Orasului Ineu/Formular Tip_48751823.doc` (1×) — llm: Adeverinta template issued by primarie, not a citizen-submitted form
+- `Primaria Orasului Ineu/Ordonanta-de-Urgenta-nr-64-2010 privind modificarea si completarea Legii cada` (1×) — llm: Emergency ordinance law text (OUG 64/2010), not a fillable form
+- `Primaria Orasului Negresti/Lista activităţilor economice pentru care este necesară autorizaţia_acord` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Orasului Sinaia/Dovada platii taxelor de eliberare a acordului de functionare_ vizare anual` (1×) — llm: Payment instruction sheet with bank account and tariff info, not a fillable form
+- `Primaria Orasului Turceni/Acordarea venitului minim garantat_7600870.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/ACTE NECESARE PENTRU INTOCMIREA DOSARULUI DE AJUTSOCIAL_9451276.docx` (1×) — llm: List of required documents for ajutor social, no fillable cerere
+- `Primaria Orasului Turceni/ACTE NECESARE PENTRU INTOCMIREA DOSARULUI PENTRU STIMULENTUL EDUCATIONAL_9` (1×) — llm: List of required documents for stimulent educational, no fillable cerere
+- `Primaria Orasului Turceni/PO acordare ajutoare de urgenta_7751448.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/PO privind acordarea dreptului la concediu si indemnizatia lunara pentru c` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/PO tichete gradinita_7750808.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/PO-Acordarea drepturilor persoanelor cu handicap_7713844.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/PO-evaluarea si monitorizarea situatiilor de risc pentru copii_7711197.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/PO-intocmirea planului de servicii_7711293.pdf` (1×) — long dense text, zero form signals
+- `Primaria Orasului Turceni/Procedura Operationala privind acordarea ajutoarelor pentru incalzirea loc` (1×) — title + content signal non-form (methodology/order/info)
+- `Primaria Orasului Valea lui Mihai/Certificat Atestare Fiscala persoane fizice_8751.doc` (1×) — llm: Certificat de atestare fiscala issued by institution, output document not citizen for
+- `Primaria Orasului Valea lui Mihai/Certificatului de Atestare Fiscala pentru persoanele juridice_2046` (1×) — llm: Certificat de atestare fiscala PJ issued by institution, output document
+- `Universitatea 1 Decembrie 1918 din Alba Iulia/Decizia Directorului CSUD privind numirea Comisiei de ` (1×) — llm: Decizie issued by institution naming evaluation committee, not citizen form
+- `Universitatea 1 Decembrie 1918 din Alba Iulia/Decizia Rectorului_19004720.docx` (1×) — llm: Decizie de recunoastere issued by rector, institutional output document
+- `Universitatea 1 Decembrie 1918 din Alba Iulia/Decizia Rectorului_19033245.docx` (1×) — llm: Decizie rectorului issued by university, institutional output document
+- `Universitatea 1 Decembrie 1918 din Alba Iulia/Hotărârea CSUD_19004743.docx` (1×) — llm: Hotarare CSUD institutional decision document, not a citizen-submitted form
+- `Universitatea 1 Decembrie 1918 din Alba Iulia/Raport de evaluare care conține soluția cu privire la ` (1×) — llm: Raport de evaluare institutional document, not a citizen-submitted form
+- `Universitatea Alexandru Ioan Cuza din Iasi/Procedură privind recunoaşterea a titlului de doctor şi a` (1×) — llm: Procedura de sistem operational methodology document, not a citizen form
+- `Universitatea Alexandru Ioan Cuza din Iasi/Procedură privind recunoaşterea calităţii de conducător d` (1×) — llm: Procedura de sistem operational methodology, not a citizen-submitted form
+- `Universitatea Crestina Partium/Decizia de recunoaștere a calității de conducător de doctorat_5419712` (1×) — llm: Decision issued by rector, not a citizen-filled form
+- `Universitatea Crestina Partium/Decizie_5418903.docx` (1×) — llm: Rector decision on PhD diploma recognition, institution-issued
+- `Universitatea Crestina Partium/Decizie_5419951.docx` (1×) — llm: Rector decision on teaching function recognition, institution-issued
+- `Universitatea de Medicina si Farmacie Carol Davila Bucuresti/DECIZIE DE RECUNOAŞTERE diplomei de doc` (1×) — llm: Anexa 2 certificate issued by institution for PhD recognition
+- `Universitatea de Medicina si Farmacie Grigore T. Popa din Iasi/Decision of recognition_5510144.docx` (1×) — llm: Decision issued by university representative, not citizen-filled
+- `Universitatea Dimitrie Cantemir Targu Mures/Procedura de recunoaşterea_6157742.pdf` (1×) — llm: Methodology/regulation document for recognition procedures
+- `Universitatea Maritima din Constanta/Adeverința de autenticitate_24826476.pdf` (1×) — llm: Adeverință certificate of authenticity issued BY the university
+- `Universitatea Ovidius din Constanta/Lista de verificare - opis dosar_4940127.docx` (1×) — llm: Checklist/opis verification list, not a citizen-submitted form
+- `Universitatea Spiru Haret/Atestat de recunoaştere_5010328.pdf` (1×) — llm: Atestat certificate issued BY Universitatea Spiru Haret
+- `Universitatea Tehnica de Constructii Bucuresti/Atestat recunoaștere funcții didactice_4456398.pdf` (1×) — llm: Atestat de recunoaștere issued by institution, not citizen form
+- `Universitatea Transilvania din Brasov/Dovada de plată a taxei de procesare a dosarului_5466672.pdf` (1×) — llm: Info sheet about fee payment instructions, not a fillable form

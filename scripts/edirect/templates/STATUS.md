@@ -191,5 +191,36 @@ Remaining work is not authoring:
    pipeline by design.
 
 ## Pick-up checklist for next session
+- [ ] **READ `scripts/edirect/FULL-EDITABILITY-ROADMAP.md` FIRST** — the complete
+      plan for taking the whole 8,403-file catalog to browser-editable AcroForm
+      (corpus census, routing model R0–R7, phase plan, edge-case catalog).
+      This STATUS file covers only the authored-templates subsystem.
 - [ ] `node test-editability.mjs` — one command re-verifies all 22 archetypes.
 - [ ] Publish decision + commit (see "What's left").
+
+---
+
+## Progress note — 2026-07-08 (roadmap Phase 0 + Phase 1 done)
+
+Session A of the FULL-EDITABILITY-ROADMAP executed: corpus manifest built
+(`scripts/edirect/manifest/` — manifest.json, build_manifest.py,
+convert_doc_batch.py) and 100% of unique docs routed R0–R7
+(route_rules.py rules + 11 parallel Claude-subagent batches for the
+undecided 618; emit_review.py → routing-review.md).
+
+Key facts discovered:
+- The 2026-07-02 census undercounted: Windows MAX_PATH silently dropped 74
+  long-path files. True corpus: **8,477 files / 3,905 unique** (manifest is
+  the new baseline; always walk with the `\\?\` prefix).
+- Routing (unique/files): R0 134/219, R2 139/1,066, R3 105/434,
+  R4 2,274/3,496, R5 329/547, R6 577/889, R7 347/1,826.
+- R7 exclusions = 21.5% of files — inside the roadmap's 20–30% expectation.
+- Phase 3 queue confirmed: `igpf-aviz-frontiera` (98× from one unique doc)
+  is the top replica target; full ranked list in routing-review.md.
+- One DOC (`c06e0f2d…`) hangs LibreOffice — routed R6, do not retry blindly.
+
+Waiting on Radu: R7 exclusion-list sign-off (routing-review.md §R7) and the
+§12 roadmap decisions (instance model a/b/c blocks Phase 2 materialization).
+Next session: Phase 2 archetype matching (`match-archetypes.mjs`,
+`specs/reference/` texts) — does not need the §12 Q1 answer until
+materialization.
