@@ -20,10 +20,17 @@ import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
 import { loadProcedure } from '@/lib/procedures'
 import { fetchCatalog } from '@/lib/firestore'
+import { mirrorFileUrl } from '@/lib/drive'
 import type { Procedure, ProcedureDocument, SlimTemplate } from '@/types/template'
 
 const EDIRECT_BASE_URL =
   'https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare='
+
+function formatBytes(n: number): string {
+  if (n < 1024) return `${n} B`
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`
+  return `${(n / 1024 / 1024).toFixed(1)} MB`
+}
 
 function MultiLine({ text }: { text: string }) {
   return (
@@ -129,7 +136,7 @@ function DocumentCard({
               )}
             </div>
           )}
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-2">
             {template && (
               <Link
                 to={`/fill/${template.id}`}
@@ -139,15 +146,46 @@ function DocumentCard({
                 <ChevronRight className="w-4 h-4" />
               </Link>
             )}
-            {doc.downloadUrl && (
+            {/* Prefer our mirror: eDirect drops and renames files, and every
+                such break used to surface here as a dead download button. The
+                eDirect link stays reachable below as the cited source. */}
+            {doc.mirrorFileId ? (
               <a
-                href={doc.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={mirrorFileUrl(doc.mirrorFileId)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
               >
                 <Download className="w-4 h-4" />
                 Descarcă original
+                {doc.mirrorExt && (
+                  <span className="text-xs uppercase text-gray-400 dark:text-gray-500">
+                    {doc.mirrorExt}
+                    {doc.mirrorBytes ? ` · ${formatBytes(doc.mirrorBytes)}` : ''}
+                  </span>
+                )}
+              </a>
+            ) : (
+              doc.downloadUrl && (
+                <a
+                  href={doc.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Descarcă original
+                </a>
+              )
+            )}
+            {doc.mirrorFileId && doc.downloadUrl && (
+              <a
+                href={doc.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Fișierul original, direct de pe portalul eDirect"
+                className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              >
+                sursa eDirect
+                <ExternalLink className="w-3 h-3" aria-hidden="true" />
               </a>
             )}
           </div>

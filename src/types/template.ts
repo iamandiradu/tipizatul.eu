@@ -131,6 +131,17 @@ export interface ProcedureDocument {
   // index.json. Same key Templates carry, so the procedure detail page
   // can pair this document with its editable Template if one exists.
   eDirectDocId?: string
+  // Drive file id of our byte-identical copy of `downloadUrl`, written by
+  // mirror-documents.mjs. Present only for documents we managed to mirror;
+  // `downloadUrl` stays the fallback (and the attribution link) for the rest.
+  // Served via /api/file — not /api/pdf, since most source documents are
+  // .doc/.docx rather than PDFs.
+  mirrorFileId?: string
+  // Extension and MIME of the mirrored bytes, carried so the UI can label the
+  // download ("DOCX · 42 KB") without a round-trip to Drive.
+  mirrorExt?: string
+  mirrorMimeType?: string
+  mirrorBytes?: number
 }
 
 export interface ProcedureOutputDocument {

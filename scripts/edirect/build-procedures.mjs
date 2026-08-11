@@ -17,6 +17,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PROCEDURES_PATH = path.join(__dirname, 'procedures.json')
 const INDEX_PATH = path.join(__dirname, 'index.json')
 const PROGRESS_PATH = path.join(__dirname, 'upload-templates-progress.json')
+const MIRROR_PROGRESS_PATH = path.join(__dirname, 'mirror-progress.json')
 const OUT_PATH = path.join(__dirname, '..', '..', 'public', 'procedures.json')
 
 // Normalize the URL the same way both sides do — trim, strip trailing slashes,
@@ -34,7 +35,7 @@ function normalizeUrl(u) {
   return s
 }
 
-function slim(p, meta, urlToDocId) {
+function slim(p, meta, urlToDocId, mirrored) {
   const institution =
     meta?.institution ||
     (p.fields?.institutiaResponsabila || '').split(',')[0].trim() ||
@@ -62,6 +63,10 @@ function slim(p, meta, urlToDocId) {
       const eDirectDocId = d.downloadUrl
         ? urlToDocId.get(normalizeUrl(d.downloadUrl)) ?? null
         : null
+      // Our own copy of the file, when mirror-documents.mjs has uploaded one.
+      // Keyed by the same doc id, so a document that never resolved an
+      // eDirectDocId simply keeps hotlinking eDirect.
+      const m = eDirectDocId ? mirrored.get(eDirectDocId) : null
       return {
         nr: d.nr,
         name: d.name,
@@ -71,6 +76,14 @@ function slim(p, meta, urlToDocId) {
         type: d.type || '',
         downloadUrl: d.downloadUrl || null,
         ...(eDirectDocId ? { eDirectDocId } : {}),
+        ...(m
+          ? {
+              mirrorFileId: m.driveFileId,
+              mirrorExt: m.ext,
+              mirrorMimeType: m.mimeType,
+              mirrorBytes: m.bytes,
+            }
+          : {}),
       }
     }),
     outputDocuments: (p.outputDocuments ?? []).map((d) => ({
@@ -103,6 +116,18 @@ async function main() {
   const procedures = JSON.parse(proceduresRaw).procedures
   const index = JSON.parse(indexRaw).entries
   const progress = JSON.parse(progressRaw)
+
+  // Optional: absent until mirror-documents.mjs has run at least once. The
+  // bundle is still valid without it — documents just keep pointing at eDirect.
+  const mirrored = new Map()
+  try {
+    const raw = await fs.readFile(MIRROR_PROGRESS_PATH, 'utf8')
+    for (const [docId, m] of Object.entries(JSON.parse(raw).mirrored || {})) {
+      if (m?.driveFileId) mirrored.set(String(docId), m)
+    }
+  } catch {
+    /* no mirror yet — fall through with an empty map */
+  }
 
   // doc-id → procedureId via index.json. Also collects per-procedureId meta
   // (institution, county) for the join, plus url → doc-id so the per-document
@@ -151,8 +176,20 @@ async function main() {
       missingScrape++
       continue
     }
-    out[id] = slim(p, meta.get(id), urlToDocId)
+    out[id] = slim(p, meta.get(id), urlToDocId, mirrored)
     kept++
+  }
+
+  // Mirror coverage over what the bundle actually surfaces — the number that
+  // matters is "downloads that survive eDirect going away", not raw upload count.
+  let linkedDocs = 0
+  let mirroredDocs = 0
+  for (const p of Object.values(out)) {
+    for (const d of p.documents) {
+      if (!d.downloadUrl) continue
+      linkedDocs++
+      if (d.mirrorFileId) mirroredDocs++
+    }
   }
 
   const payload = {
@@ -174,6 +211,13 @@ async function main() {
         : ''),
   )
   console.log(`Output: ${OUT_PATH} (${size} KB)`)
+  const pct = linkedDocs ? ((mirroredDocs / linkedDocs) * 100).toFixed(1) : '0.0'
+  console.log(
+    `Mirror coverage: ${mirroredDocs}/${linkedDocs} downloadable documents (${pct}%)` +
+      (mirroredDocs < linkedDocs
+        ? ` — the rest still hotlink eDirect; run mirror-documents.mjs to close the gap.`
+        : ''),
+  )
 }
 
 main().catch((err) => {
