@@ -18,9 +18,10 @@ import {
 } from 'lucide-react'
 import { useDocumentMeta } from '@/lib/useDocumentMeta'
 import { useDevMode } from '@/lib/useDevMode'
-import { loadProcedure } from '@/lib/procedures'
+import { loadProcedure, templateDocIds } from '@/lib/procedures'
 import { fetchCatalog } from '@/lib/firestore'
 import { mirrorFileUrl } from '@/lib/drive'
+import AccuracyBadge from '@/components/AccuracyBadge'
 import type { Procedure, ProcedureDocument, SlimTemplate } from '@/types/template'
 
 const EDIRECT_BASE_URL =
@@ -119,6 +120,9 @@ function DocumentCard({
                 Completabil online
               </span>
             )}
+            {/* Sits beside "Completabil online" so the promise and its
+                trustworthiness are read together, not one without the other. */}
+            {template && <AccuracyBadge template={template} />}
           </div>
           {doc.description && (
             <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
@@ -331,8 +335,10 @@ export default function ProcedureDetailPage() {
       .filter(
         (t) =>
           !t.archived &&
-          (t.procedureId === id ||
-            (t.eDirectDocId && docIds.has(t.eDirectDocId))),
+          // A shared archetype's primary id usually belongs to some other
+          // procedure, so match on every id it serves — otherwise it is
+          // filtered out here and never reaches the document cards below.
+          (t.procedureId === id || templateDocIds(t).some((x) => docIds.has(x))),
       )
       .sort((a, b) => a.name.localeCompare(b.name, 'ro'))
   })()
@@ -386,19 +392,27 @@ export default function ProcedureDetailPage() {
   // eDirect doc id. Templates whose linkage didn't make it into a specific
   // document fall through to "Alte formulare" below the document list, so
   // the user can still reach them.
+  // Mirrors buildTemplateIndex's precedence: specific templates first, then
+  // shared archetypes fill the gaps, so one archetype can serve many documents.
   const formByDocId = new Map<string, SlimTemplate>()
   for (const f of forms) {
-    if (f.eDirectDocId) formByDocId.set(f.eDirectDocId, f)
+    if (f.eDirectDocId && !formByDocId.has(f.eDirectDocId)) formByDocId.set(f.eDirectDocId, f)
   }
-  const matchedDocIds = new Set<string>()
-  for (const d of p.documents) {
-    if (d.eDirectDocId && formByDocId.has(d.eDirectDocId)) {
-      matchedDocIds.add(d.eDirectDocId)
+  for (const f of forms) {
+    for (const id of f.eDirectDocIds ?? []) {
+      if (id && !formByDocId.has(id)) formByDocId.set(id, f)
     }
   }
-  const orphanForms = forms.filter(
-    (f) => !f.eDirectDocId || !matchedDocIds.has(f.eDirectDocId),
-  )
+  // A form is an orphan when it is not already reachable from one of the
+  // document cards. Tracking the template ids actually surfaced (rather than
+  // doc ids) keeps a shared archetype from being listed twice — once on its
+  // document and again under "Alte formulare".
+  const surfacedTemplateIds = new Set<string>()
+  for (const d of p.documents) {
+    const t = d.eDirectDocId ? formByDocId.get(d.eDirectDocId) : undefined
+    if (t) surfacedTemplateIds.add(t.id)
+  }
+  const orphanForms = forms.filter((f) => !surfacedTemplateIds.has(f.id))
 
   return (
     <div className="max-w-5xl mx-auto">

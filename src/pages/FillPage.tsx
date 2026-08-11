@@ -16,6 +16,7 @@ import SignatureOverlay from '@/components/SignatureOverlay'
 import { harvestWidgetRects, type WidgetRect } from '@/lib/pdf-widget-rects'
 import FormField from '@/components/FormField'
 import VoteWidget from '@/components/VoteWidget'
+import AccuracyBadge from '@/components/AccuracyBadge'
 import type { Template, FormValues } from '@/types/template'
 
 export default function FillPage() {
@@ -376,7 +377,7 @@ export default function FillPage() {
           )}
         </div>
       )}
-      <div className="flex items-center flex-wrap gap-2 mb-6">
+      <div className="flex items-center flex-wrap gap-2 mb-3">
         <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{template.name}</h1>
         {template.category && (
           <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded-full">
@@ -384,6 +385,11 @@ export default function FillPage() {
           </span>
         )}
       </div>
+
+      {/* Shown before the form, not after: the user is about to spend minutes
+          typing, so how much to trust these fields is information they need
+          up front — not a footnote next to the download button. */}
+      <AccuracyBadge template={template} variant="full" className="mb-6" />
 
       <div className={pdfOnly ? '' : 'lg:grid lg:grid-cols-[minmax(360px,520px)_minmax(0,1fr)] lg:gap-8 lg:items-start'}>
         <div className={pdfOnly ? 'lg:hidden' : ''}>
