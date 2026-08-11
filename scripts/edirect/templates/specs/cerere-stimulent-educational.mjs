@@ -4,21 +4,15 @@
  * Legea nr. 248/2015. 36 byte-identical copies across the corpus — the highest
  * fan-out timeless form in the catalog.
  *
- * ── INCOMPLETE: section E is not authored ───────────────────────────────────
- * The source's section E is a legally enumerated income table: 83 numbered
- * rows under 14 headings (activităţi independente, salarii, pensii de stat /
+ * Complete: sections A, B, C, D, E and F.
+ *
+ * Section E is the legally enumerated income table — 80 numbered categories
+ * under 18 headings (activităţi independente, salarii, pensii de stat /
  * agricultori / militare, indemnizaţii, activităţi agricole, jocuri de noroc,
- * transferul proprietăţilor imobiliare, …), each carrying verbatim legal text,
- * an "acte doveditoare" column and a 6-cell amount grid. Transcribing it
- * faithfully is a job of its own; guessing at the wording would be content
- * drift in a document whose wording is the point.
- *
- * So this spec covers A, B, C, D and F. verify-replica.mjs will report E's
- * clauses as missing — that is accurate and expected until E lands.
- *
- * DO NOT PUBLISH until E is authored: income determines eligibility for this
- * benefit, so a version without it cannot actually be submitted, and offering
- * it as "completabil online" would waste an applicant's time.
+ * transferul proprietăţilor imobiliare, …). Its wording is EXTRACTED from the
+ * source rather than retyped, and lives in `_income-rows.mjs`; hand-copying 80
+ * legal definitions is exactly where content drift comes from. The extraction
+ * was validated for gaps and duplicates before use.
  *
  * Layout notes:
  *   · Every identity field is a comb grid in the original, one character per
@@ -30,6 +24,8 @@
  *   · Header note from the source: beneficiaries of ajutor social and/or
  *     alocaţie pentru familiile cu copii fill in only A, B, C and F.
  */
+
+import { INCOME_ROWS } from './_income-rows.mjs'
 
 const CNP_CELLS = 13
 
@@ -236,13 +232,55 @@ export const spec = {
       })
     }
 
-    // ── E — deliberately absent; see the file header. ──
+    // ── E ──
     p.paragraph(
       ctx,
-      'E. Venituri permanente nete realizate de familia/persoana singură ' +
-        'îndreptăţită — se completează pe formularul oficial tipărit.',
-      { size: 10, gap: 10 },
+      'E. Venituri permanente nete realizate de familia/persoana singură îndreptăţită în luna:',
+      { size: 12, gap: 6 },
     )
+    p.combField(ctx, { label: 'Luna/anul (llaaaa)', name: 'e_luna', group: 'E. Venituri' }, { cells: 6 })
+    p.paragraph(
+      ctx,
+      'Se completează numai rândurile pentru care există venit realizat. ' +
+        'Coloana „Acte doveditoare" indică documentul care trebuie ataşat.',
+      { size: 9, gap: 8 },
+    )
+
+    // 80 legally enumerated categories. Emitting them from data keeps the
+    // wording identical to the source; see specs/_income-rows.mjs.
+    let lastHeading = null
+    for (const row of INCOME_ROWS) {
+      if (row.heading !== lastHeading) {
+        p.paragraph(ctx, row.heading, { size: 10, gap: 6 })
+        lastHeading = row.heading
+      }
+      // The category text is the label, so the printed form still reads as the
+      // original table; `acte` becomes the hint because it tells the applicant
+      // what to attach, which is guidance rather than part of the legal text.
+      p.labeledField(ctx, {
+        label: `${row.cod}. ${row.categoria}`,
+        name: `e_venit_${row.cod}`,
+        group: 'E. Venituri',
+        ...(row.acte ? { hint: `Acte doveditoare: ${row.acte}` } : {}),
+        placeholder: 'lei',
+        maxLength: 12,
+      })
+    }
+
+    p.labeledField(ctx, {
+      label: 'VENIT NET LUNAR TOTAL AL FAMILIEI',
+      name: 'e_venit_total',
+      group: 'E. Venituri',
+      placeholder: 'lei',
+      maxLength: 12,
+    })
+    p.labeledField(ctx, {
+      label: 'VENIT NET LUNAR PE MEMBRU DE FAMILIE',
+      name: 'e_venit_pe_membru',
+      group: 'E. Venituri',
+      placeholder: 'lei',
+      maxLength: 12,
+    })
 
     // ── F ──
     p.paragraph(ctx, 'F.', { size: 12, gap: 6 })
