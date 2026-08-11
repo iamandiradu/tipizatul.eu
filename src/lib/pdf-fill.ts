@@ -1,6 +1,7 @@
 import {
   PDFDocument,
   PDFDict,
+  PDFName,
   type PDFImage,
   type PDFPage,
 } from 'pdf-lib'
@@ -106,6 +107,21 @@ export async function fillPdf(
 
   form.updateFieldAppearances(font)
   form.flatten()
+
+  // flatten() deletes the widget/field objects but leaves their refs in each
+  // page's /Annots array. The dangling refs are cosmetic for lenient viewers
+  // but trip strict parsers (MuPDF: "cannot find object in xref"), and some
+  // institution-side tooling is strict. Keep only refs that still resolve —
+  // non-widget annotations (e.g. link annots in scraped PDFs) survive intact.
+  for (const page of pdfDoc.getPages()) {
+    const annots = page.node.Annots()
+    if (!annots) continue
+    const live = annots
+      .asArray()
+      .filter((ref) => pdfDoc.context.lookup(ref) !== undefined)
+    if (live.length === 0) page.node.delete(PDFName.of('Annots'))
+    else page.node.set(PDFName.of('Annots'), pdfDoc.context.obj(live))
+  }
 
   // Signatures land last so they sit on top of every flattened widget. This
   // matters when a signature image overflows upward into the bbox of an

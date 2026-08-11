@@ -55,6 +55,11 @@ export interface Template {
   version: number
   createdAt: string
   fields: TemplateField[]
+  // Authored-archetype spec id (scripts/edirect/templates/specs/<id>.mjs)
+  // this template was generated from. Lets the catalog group "the same form
+  // at other institutions" and ties a published template back to its spec
+  // for regeneration. Absent on hand-annotated and detected templates.
+  archetype?: string
   archived?: boolean
   driveFileId: string
   // Drive file id of the truly-untouched bundle PDF (no AcroForm fields,
@@ -100,6 +105,7 @@ export interface SlimTemplate {
   eDirectDocId?: string
   version: number
   visibleFieldCount: number
+  archetype?: string
   archived?: boolean
   driveFileId: string
   originalDriveFileId?: string

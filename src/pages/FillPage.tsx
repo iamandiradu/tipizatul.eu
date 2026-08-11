@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useSearchParams, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight, Code2, Download, Loader2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
@@ -20,6 +20,7 @@ import type { Template, FormValues } from '@/types/template'
 
 export default function FillPage() {
   const { id } = useParams<{ id: string }>()
+  const [searchParams] = useSearchParams()
   const [template, setTemplate] = useState<Template | null>(null)
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null)
   const [notFound, setNotFound] = useState(false)
@@ -118,6 +119,19 @@ export default function FillPage() {
     defaultValues: savedValues as FormValues | undefined,
     mode: 'onBlur',
   })
+
+  // Deep-link prefill for shared templates: /fill/:id?institution=X fills the
+  // addressee slot (canonical field name `institutie`) so one generic template
+  // serves every institution with a pre-addressed link. A saved draft wins —
+  // never overwrite what the user already typed.
+  useEffect(() => {
+    if (!template) return
+    const institution = searchParams.get('institution')
+    if (!institution) return
+    if (!template.fields.some((f) => f.pdfFieldName === 'institutie')) return
+    if (savedValues && (savedValues as FormValues)['institutie']) return
+    setValue('institutie', institution, { shouldDirty: true, shouldValidate: false })
+  }, [template, searchParams, savedValues, setValue])
 
   // Persist form values to session store as the user types
   useEffect(() => {

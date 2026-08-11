@@ -1,0 +1,12 @@
+CERERE
+Către,
+Subsemnatul/a (nume și prenume):
+CNP:
+Telefon:
+Domiciliul (stradă, nr., bloc, ap.):
+Localitatea:
+Județul:
+E-mail:
+Conținutul cererii
+Data:
+Semnătura:

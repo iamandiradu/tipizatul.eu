@@ -1,0 +1,14 @@
+CERERE
+Către,
+Subsemnatul/a (nume și prenume):
+CNP:
+Telefon:
+Domiciliul (stradă, nr., bloc, ap.):
+Localitatea:
+Județul:
+E-mail:
+Prin prezenta, vă rog să binevoiți a aproba următoarea solicitare:
+Obiectul cererii
+Vă mulțumesc pentru solicitudine.
+Data:
+Semnătura:
