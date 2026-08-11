@@ -67,6 +67,7 @@ function getArg(name) {
 }
 const dryRun = args.includes('--dry-run')
 const mirrorAll = args.includes('--all')
+const allowStaleScope = args.includes('--allow-stale-scope')
 const limit = parseInt(getArg('limit') ?? '0', 10) || Infinity
 const concurrency = Math.max(1, parseInt(getArg('concurrency') ?? '3', 10))
 const extFilter = getArg('ext')?.split(',').map((e) => e.trim().toLowerCase()) ?? null
@@ -359,12 +360,48 @@ function saveProgress(p) {
 // The doc ids the public bundle can actually surface a download button for.
 // Without --all this is the whole point of the run: mirroring index entries no
 // procedure page links to just burns Drive quota.
+//
+// The bundle defines *scope*, so a stale one silently shrinks the job and then
+// lets the dry-run report "nothing to do" — a false completion signal, not an
+// empty queue. That already cost a full round trip: a bundle built 2026-05-04
+// from a 2026-05-13 scrape hid 732 downloadable files. Refuse to run against a
+// bundle older than any of its inputs unless the caller insists.
+function assertBundleIsFresh() {
+  const bundle = JSON.parse(readFileSync(PROCEDURES_BUNDLE_PATH, 'utf-8'))
+  const builtAt = bundle.builtAt ? new Date(bundle.builtAt).getTime() : 0
+  const inputs = [
+    ['index.json', resolve(__dirname, 'index.json')],
+    ['download-progress.json', DOWNLOAD_PROGRESS_PATH],
+    ['procedures.json (raw scrape)', resolve(__dirname, 'procedures.json')],
+  ]
+  const stale = []
+  for (const [label, p] of inputs) {
+    if (!existsSync(p)) continue
+    const mtime = statSync(p).mtimeMs
+    if (mtime > builtAt) stale.push(`${label} (${new Date(mtime).toISOString().slice(0, 10)})`)
+  }
+  if (!stale.length) return
+  const msg =
+    `public/procedures.json was built ${bundle.builtAt?.slice(0, 10) ?? '(unknown)'}, ` +
+    `which is older than: ${stale.join(', ')}.\n` +
+    `  The bundle defines which documents are in scope, so running now would ` +
+    `silently skip files and then report "nothing to do".\n` +
+    `  Fix: run build-procedures.mjs first. Override with --allow-stale-scope ` +
+    `if you really mean to mirror against the old scope.`
+  if (allowStaleScope) {
+    logErr(`${C.yellow}warning: ${msg}${C.reset}\n`)
+    return
+  }
+  throw new Error(msg)
+}
+
 function reachableDocIds() {
   if (!existsSync(PROCEDURES_BUNDLE_PATH)) {
     throw new Error(
       `Missing ${PROCEDURES_BUNDLE_PATH} — run build-procedures.mjs first, or pass --all`,
     )
   }
+  assertBundleIsFresh()
   const bundle = JSON.parse(readFileSync(PROCEDURES_BUNDLE_PATH, 'utf-8'))
   const ids = new Set()
   for (const p of Object.values(bundle.procedures || {})) {

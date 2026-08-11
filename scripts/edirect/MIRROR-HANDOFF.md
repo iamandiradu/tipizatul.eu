@@ -4,7 +4,35 @@ Written 2026-08-11 from the Windows PC. Read this top-to-bottom before running
 anything; the work is nearly done and the remaining step is small, but it
 depends on a file that only exists on the Windows machine.
 
+> ## ✅ Update 2026-08-11, from Windows — gap closed, mirror now complete
+>
+> The 732 files the Mac identified have been uploaded: `done. ok=732 fail=0`.
+> **Mirror is now 5,185 files / 1,250 MB, and a fresh dry-run queues nothing.**
+> Verified: Drive holds exactly 5,185 files, 5,185 progress entries, zero
+> orphans, zero missing `appProperties` tags, and 5 sampled uploads round-trip
+> byte-identical across Drive, progress record, and local disk.
+>
+> ❗ **One step left, on the Mac:** pull, re-run `build-procedures.mjs`, commit
+> `public/procedures.json`, deploy. Expect **6679/6854 (97.4%)** — not the 95.9%
+> estimated below. That estimate added 732 *files* to an occurrence count; the
+> Mac's own table has it right at 837 occurrences, and 5842 + 837 = 6679.
+> Residual 175 = 154 eDirect 404s + 21 unresolved doc ids, which reconciles
+> exactly and is unfixable — those sources are gone.
+>
+> (97.4% appearing again is a coincidence, not the old wrong number resurfacing.
+> It is now against the correct denominator of 6,854, not 5,845.)
+>
+> **Root cause is fixed in code.** `mirror-documents.mjs` now refuses to run when
+> `public/procedures.json` is older than `index.json`, `download-progress.json`,
+> or the raw `procedures.json`, naming the offending input. `--allow-stale-scope`
+> downgrades it to a warning. Verified both ways: passes on a current bundle,
+> throws on a backdated one.
+>
+> The diagnosis below was correct and is kept for the record.
+
 > ## ⛔ Update 2026-08-11, from the Mac — the mirror is NOT complete
+>
+> *(Superseded by the update above — the gap it identified has been closed.)*
 >
 > The Mac step below has been run and verified. **The expected coverage number in
 > this document is wrong, and "0 file(s) to mirror" was a false completion
