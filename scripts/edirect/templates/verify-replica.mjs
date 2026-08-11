@@ -44,6 +44,16 @@ function normalize(s) {
 // the replica actually says something different from the original.
 const MIN_WORDS = 6
 
+// Scraped forms are full of ASCII box drawing: `|_|_|_|` comb grids, `____`
+// rules, table frames. Normalization strips those characters, leaving word
+// fragments that look like prose and get reported missing forever — 27 false
+// positives on the first real run, which makes the gate useless. A clause whose
+// raw text is mostly frame characters is layout, not wording, so skip it.
+function isBoxDrawing(s) {
+  const frame = (s.match(/[|_─-╿]/g) || []).length
+  return frame / s.length > 0.25
+}
+
 const pdfPath = resolve(__dirname, 'dist', `${id}.pdf`)
 if (!existsSync(pdfPath)) {
   console.error(`missing ${pdfPath} — run: node build.mjs ${id}`)
@@ -62,6 +72,7 @@ const source = readFileSync(resolve(process.cwd(), sourcePath), 'utf8')
 const clauses = source
   .split(/(?<=[.:;])\s+|\n{2,}/)
   .map((s) => s.replace(/\s+/g, ' ').trim())
+  .filter((s) => !isBoxDrawing(s))
   .filter((s) => normalize(s).split(' ').filter(Boolean).length >= MIN_WORDS)
 
 const missing = []
