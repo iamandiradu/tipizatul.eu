@@ -330,6 +330,61 @@ function paragraph(ctx, text, { size = 11, gap = 8 } = {}) {
 }
 
 /** A "Label: ____________" line with an inline borderless text field on the rule. */
+/**
+ * One character per box: the `|_|_|_|` grids Romanian administrative forms use
+ * for nume, prenume, CNP and serie/număr. Officials read these positionally, so
+ * a replica that collapses them into a plain line loses information the form
+ * is built around.
+ *
+ * Implemented as a single AcroForm text field with the Comb flag plus a
+ * MaxLen, which is what makes a viewer distribute typed characters evenly
+ * across the cells. Comb requires MaxLen — without it the flag is ignored — so
+ * `cells` is the source of truth for both.
+ *
+ * The separators are drawn on the page rather than relying on the field
+ * border, because viewers disagree about whether to render comb dividers on an
+ * empty field, and the boxes must be visible on a printed blank form.
+ */
+function combField(ctx, spec, { cells = 13, cellW, labelW } = {}) {
+  const { font } = ctx
+  const size = 11
+  const h = 18
+  ctx.ensureSpace(h + 14)
+  const page = ctx.page
+  const label = spec.label + ':'
+  const lw = labelW ?? font.widthOfTextAtSize(label, size) + 8
+  page.drawText(label, { x: ctx.left, y: topToPdfY(ctx.y, size) - 3, size, font, color: INK })
+
+  const fx = ctx.left + lw
+  const available = ctx.right - fx
+  // Shrink to fit rather than overflow the margin: a 30-cell nume grid on an
+  // A4 page cannot use a comfortable cell width.
+  const w = Math.min(cellW ?? 15, available / cells)
+  const gridW = w * cells
+
+  const r = ctx._resolve({ ...spec, maxLength: cells })
+  const tf = ctx.form.createTextField(r.name)
+  tf.setText('')
+  tf.setMaxLength(cells)
+  tf.addToPage(page, { x: fx, y: topToPdfY(ctx.y, h), width: gridW, height: h, borderWidth: 0 })
+  tf.setFontSize(size)
+  tf.enableCombing()
+  finalizeTextField(tf, spec, size)
+
+  // Cell outlines: one box per character.
+  const top = topToPdfY(ctx.y)
+  const bottom = topToPdfY(ctx.y + h)
+  for (let i = 0; i <= cells; i++) {
+    const x = fx + i * w
+    page.drawLine({ start: { x, y: top }, end: { x, y: bottom }, thickness: 0.5, color: SLOT })
+  }
+  page.drawLine({ start: { x: fx, y: top }, end: { x: fx + gridW, y: top }, thickness: 0.5, color: SLOT })
+  page.drawLine({ start: { x: fx, y: bottom }, end: { x: fx + gridW, y: bottom }, thickness: 0.5, color: SLOT })
+
+  ctx._register({ ...spec, maxLength: cells }, r)
+  ctx.y += h + 14
+}
+
 function labeledField(ctx, spec, { labelW } = {}) {
   const { font } = ctx
   const size = 11
@@ -653,6 +708,7 @@ export async function buildArchetype(spec, instance = {}) {
   const primitives = {
     paragraph,
     labeledField,
+    combField,
     twoColFields,
     multilineField,
     checkbox,
