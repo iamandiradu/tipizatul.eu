@@ -4,6 +4,63 @@ Written 2026-08-11 from the Windows PC. Read this top-to-bottom before running
 anything; the work is nearly done and the remaining step is small, but it
 depends on a file that only exists on the Windows machine.
 
+> ## ⛔ Update 2026-08-11, from the Mac — the mirror is NOT complete
+>
+> The Mac step below has been run and verified. **The expected coverage number in
+> this document is wrong, and "0 file(s) to mirror" was a false completion
+> signal.** Actual coverage is **5842/6854 (85.2%)**, not 5694/5845 (97.4%).
+>
+> **Root cause.** `buildQueue` calls `reachableDocIds()`, which reads
+> `public/procedures.json` — *the already-built bundle* — to decide what is in
+> scope. On Windows that bundle was stale (it could not be rebuilt there; that
+> was the whole reason for this handoff), and it described a smaller scrape. So
+> 732 downloaded files were silently classified `notReachable`, never queued, and
+> the dry-run then truthfully reported nothing left to do. The scope was too
+> small, not the queue exhausted. **The mirror script's notion of "done" is only
+> as good as the bundle it reads — rebuild the bundle before trusting it.**
+>
+> With the bundle correctly rebuilt on the Mac, the same dry-run now reports:
+>
+> ```
+> index: 8818 entries · in scope: 5299 · already mirrored: 4479
+> skip: 3492 not linked from any procedure page, 114 never downloaded,
+>       732 missing on disk, 1 duplicate index rows
+> ```
+>
+> The 1,012 unmirrored document occurrences reconcile exactly:
+>
+> | Cause | Files | Occurrences | Fixable? |
+> |---|---|---|---|
+> | Downloaded, never mirrored (bundle scope was stale) | **732** | 837 | **yes — needs Windows** |
+> | 404 on eDirect at scrape time | 114 | 154 | no, source is gone |
+> | `downloadUrl` never resolved to an `eDirectDocId` | — | 21 | no |
+> | **total** | | **1012** | |
+>
+> (Denominators differ from this document throughout because the real scrape holds
+> 23,098 documents / 6,854 downloadable, not the ~19,300 / 5,845 assumed above.)
+>
+> **The remaining step must run on Windows**, because those 732 files' bytes exist
+> only in the Windows `downloads/` directory — `downloads/` on the Mac is empty, so
+> they show up as `missing on disk` here and cannot be uploaded from this machine.
+>
+> 1. Pull this branch on Windows so it has the rebuilt `public/procedures.json`.
+> 2. `node scripts/edirect/mirror-documents.mjs --dry-run` — expect ~732 queued.
+> 3. Drop `--dry-run` to upload. Needs fresh OAuth consent if >7 days have passed
+>    (see *OAuth token expiry* below).
+> 4. Commit the updated `mirror-progress.json`, pull it back to the Mac, re-run
+>    `build-procedures.mjs`, and expect coverage to rise to ~**6574/6854 (95.9%)**.
+>
+> Everything else in this document verified out as written: 4,453 mirror entries /
+> 1,072.6 MB, all four `mirror*` fields attached, `downloadUrl` retained on every
+> mirrored document, 34/34 tests passing, typecheck clean. The
+> `mirror-progress.json` commit decision was resolved as recommended — it is
+> committed, in `87f1b5ba`.
+>
+> **Worth fixing while you are in there:** `reachableDocIds()` should refuse to
+> define scope from a bundle older than `index.json` / `download-progress.json`,
+> or at minimum warn loudly. As written it converts a stale input into a confident
+> "nothing to do", which is what cost this round trip.
+
 ## Why this exists
 
 Procedure pages used to hotlink `edirect.e-guvernare.ro` directly for every
