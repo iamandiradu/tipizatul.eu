@@ -23,33 +23,29 @@ a scrape gap. Don't go hunting for the missing 13,500.
 
 ## State as of this handoff
 
-❗ **The Windows upload was still running when this was written — ~752 of 4,452
-files done (179 MB of ~1.05 GB). Confirm it finished before doing anything
-here.** It checkpoints to `mirror-progress.json` every 25 files and is safe to
-interrupt and resume (`node scripts/edirect/mirror-documents.mjs --concurrency 4`
-picks up exactly where it stopped). A partial mirror is *not* harmful — it just
-means lower coverage, with unmirrored documents still hotlinking eDirect — but
-you'd be baking a half-finished mapping into `public/procedures.json` and would
-have to rebuild later.
+The Windows upload is **complete**: `done. ok=4452 fail=0`, and a follow-up
+dry-run reports `0 file(s) to mirror`.
 
-To confirm it's done, on Windows:
+Done on Windows:
 
-```bash
-node -e "console.log(Object.keys(JSON.parse(require('fs').readFileSync('scripts/edirect/mirror-progress.json','utf8')).mirrored).length,'mirrored')"
-```
-
-Expect **~4,479**. The run's own final line reads `done. ok=… fail=…`.
-
-In progress / done on Windows:
-
-- Upload of the mirror corpus to Drive `Tipizatul.eu/PDFs/Mirror/`, every file
-  shared `anyone: reader`. Target: **4,479 files, ~1.05 GB.**
-- Each upload recorded in `scripts/edirect/mirror-progress.json`, keyed by
-  eDirect doc id.
+- **4,453 unique documents, 1,073 MB**, uploaded to Drive
+  `Tipizatul.eu/PDFs/Mirror/`, every file shared `anyone: reader`. Zero failures.
+- Each upload recorded in `scripts/edirect/mirror-progress.json` (1.5 MB),
+  keyed by eDirect doc id.
 - Code written: the mirror script, the `/api/file` proxy, the type additions,
-  the `build-procedures.mjs` wiring, and the UI change. ❗ Not yet committed or
-  pushed at time of writing — make sure the branch carrying these is pushed from
-  Windows and pulled here, or the Mac has none of the new code.
+  the `build-procedures.mjs` wiring, and the UI change. ❗ Only this document was
+  committed at time of writing — make sure the branch carrying the code is
+  pushed from Windows and pulled here, or the Mac has none of it.
+
+> **Why 4,453 and not 4,479.** `index.json` repeats 43 ids as byte-identical
+> rows. The original queue builder iterated rows, so 26 in-scope files uploaded
+> twice; the second write overwrote the first's progress entry, leaving **26
+> orphaned copies in Drive (3.9 MB)**. The mapping is unaffected — the duplicate
+> rows are identical, so whichever copy won points at the right bytes — and
+> `buildQueue` now dedupes by id. The orphans are harmless clutter; delete them
+> by listing the `Mirror` folder and dropping files whose id is absent from
+> `mirror-progress.json`. Every mirrored file carries
+> `appProperties.eDirectDocId`, verified present on all 4,479.
 
 Verified on Windows:
 
@@ -111,17 +107,22 @@ Expected tail:
 ```
 Wrote N procedures (…) from … unique procedureIds touched by … uploaded forms.
 Output: …/public/procedures.json (… KB)
-Mirror coverage: 4479/5845 downloadable documents (76.6%)
+Mirror coverage: 5694/5845 downloadable documents (97.4%)
 ```
 
-The coverage line is the number that matters. Roughly **76–77%** is the correct
-target, not 100%:
+The coverage line is the number that matters, and **5694/5845 (97.4%)** is the
+exact expected value — precomputed on Windows against the finished mirror, so
+treat any other number as a problem. The 151 shortfall breaks down as:
 
-- ~4,479 mirrored of 5,845 documents that have a `downloadUrl`.
-- 105 were never downloadable (eDirect 404s at scrape time — already recorded in
-  `download-progress.json`). These keep the eDirect hotlink as fallback.
-- The remainder are documents whose `eDirectDocId` didn't resolve, or index
-  entries no procedure page links to.
+- **140** documents whose file was already dead on eDirect when we scraped it
+  (404s recorded in `download-progress.json`).
+- **11** documents whose `downloadUrl` never resolved to an `eDirectDocId`.
+
+Both keep the eDirect hotlink as fallback, which is the pre-existing behaviour.
+
+Note the units: 4,453 *files* cover 5,694 *document occurrences*, because the
+same form is referenced from many procedures. Don't compare the file count to
+the coverage denominator — they aren't the same quantity.
 
 If coverage prints **0/5845**, `mirror-progress.json` isn't being found — check
 the path and that its top-level key is `mirrored`.
