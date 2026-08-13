@@ -71,6 +71,7 @@ const DIST_DIR = resolve(__dirname, 'templates/dist')
 const SPECS_DIR = resolve(__dirname, 'templates/specs')
 const MANIFEST_PATH = resolve(__dirname, 'manifest/manifest.json')
 const PROMOTED_PATH = resolve(__dirname, 'manifest/promoted-joins.json')
+const AUTHORED_PATH = resolve(__dirname, 'manifest/authored-joins.json')
 const PROGRESS_PATH = resolve(__dirname, 'publish-archetypes-progress.json')
 const OAUTH_TOKEN_PATH = resolve(__dirname, '.oauth-token.json')
 const OAUTH_LOOPBACK_PORT = parseInt(process.env.OAUTH_LOOPBACK_PORT || '53682', 10)
@@ -250,13 +251,25 @@ function docIdFromPath(p) {
 function buildJoinMap() {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8'))
   const byArchetype = new Map()
-  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0, promoted: 0 }
+  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0, promoted: 0, authored: 0 }
 
   // Joins rescued by score-held-joins.mjs: docs the LLM guessed, re-scored
   // against the archetype's reference text, and kept only where the wording
   // actually matches at the same threshold the adjudicated tier already uses.
   // This is evidence, so it merges in by default — unlike --include-guesses,
   // which ships the unscored remainder.
+  // Strongest evidence first: replicas authored FROM a known corpus document
+  // serve every copy of it by construction, with no threshold involved.
+  if (existsSync(AUTHORED_PATH)) {
+    const authored = JSON.parse(readFileSync(AUTHORED_PATH, 'utf-8'))
+    for (const [id, v] of Object.entries(authored.archetypes || {})) {
+      const bucket = byArchetype.get(id) ?? new Set()
+      for (const docId of v.docIds || []) bucket.add(String(docId))
+      byArchetype.set(id, bucket)
+      stats.authored += (v.docIds || []).length
+    }
+  }
+
   if (existsSync(PROMOTED_PATH)) {
     const promoted = JSON.parse(readFileSync(PROMOTED_PATH, 'utf-8'))
     for (const [id, v] of Object.entries(promoted.archetypes || {})) {
@@ -321,7 +334,7 @@ async function main() {
   const { byArchetype, stats } = buildJoinMap()
   log(`${C.dim}join evidence — strong ${stats.strong}, adjudicated ${stats.adjudicated}, ` +
     `candidate ${stats.candidate}, guess ${stats.guess} (unique docs)${C.reset}`)
-  log(`${C.dim}promoted from re-scoring: ${stats.promoted} docIds${C.reset}`)
+  log(`${C.dim}authored-from joins: ${stats.authored} docIds · promoted from re-scoring: ${stats.promoted} docIds${C.reset}`)
   log(`${C.dim}files joined: ${stats.filesJoined}` +
     (stats.filesHeld ? ` · held back for review: ${stats.filesHeld} ${C.yellow}(--include-guesses to publish)${C.reset}${C.dim}` : '') +
     `${C.reset}`)

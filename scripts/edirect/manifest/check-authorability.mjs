@@ -44,9 +44,14 @@ const FIELD_LABELS = [
   'subsemnat', 'data nasterii', 'data naşterii', 'starea civila', 'starea civilă',
 ]
 
+// Lowercase FIRST, then fold. Folding first leaves uppercase Ș/Ț/Ă/Î
+// untouched, and toLowerCase then turns them into the very diacritics the fold
+// was meant to remove — so "JUDEȚUL" ends up "județul" and misses a "judet"
+// probe. Here that would mean scoring zero label hits on a perfectly
+// authorable form and branding it a scan.
 const fold = (s) => s
-  .replace(/[şș]/g, 's').replace(/[ţț]/g, 't').replace(/[ăâ]/g, 'a').replace(/î/g, 'i')
   .toLowerCase()
+  .replace(/[şș]/g, 's').replace(/[ţț]/g, 't').replace(/[ăâ]/g, 'a').replace(/î/g, 'i')
 
 const manifest = JSON.parse(readFileSync(MANIFEST, 'utf-8'))
 
