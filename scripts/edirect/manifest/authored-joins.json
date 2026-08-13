@@ -236,6 +236,59 @@
     "5554294"
    ],
    "files": 21
+  },
+  "cerere-inregistrare-sanitar-veterinara": {
+   "md5": "c4117b36f7b0f8aaee5aeacd5eb46fc1",
+   "document": "Anexa nr. 6 la norma sanitara veterinara — cerere inregistrare sanitar-veterinara, ANSVSA",
+   "docIds": [
+    "4786452",
+    "4787869",
+    "4788006",
+    "4788094",
+    "4788785",
+    "4788887",
+    "4789051",
+    "4789333",
+    "4789751",
+    "4789823",
+    "4789881",
+    "4790008",
+    "4861747",
+    "4867065",
+    "4867346",
+    "4867428",
+    "4867503",
+    "4867591",
+    "4867644",
+    "4867860",
+    "4867931",
+    "4876336",
+    "4891177"
+   ],
+   "files": 23
+  },
+  "cerere-ms-modificare-autorizatie": {
+   "md5": "104131bfb8644a966ae859b94a9c04af",
+   "document": "Modelul nr. 4 (Ministerul Sanatatii) — modificarea conditiilor de autorizare, Legea farmaciei 266/2008",
+   "docIds": [
+    "23199312",
+    "3805140",
+    "3806244",
+    "3809076",
+    "3809269",
+    "3813617",
+    "3823264",
+    "3823418",
+    "3828103",
+    "3828771",
+    "3829565",
+    "3853629",
+    "3859973",
+    "4090821",
+    "4091274",
+    "48506494"
+   ],
+   "files": 16
   }
  }
 }

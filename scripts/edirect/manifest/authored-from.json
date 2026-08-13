@@ -28,6 +28,14 @@
     "cerere-certificat-profesional": {
       "md5": "d2c27b4f990e20d43a941eb55c742a6b",
       "document": "Anexa nr. 2 — Cerere certificat profesional curent (CPC), CMSR, Decizia CN 16/2CN/2019"
+    },
+    "cerere-inregistrare-sanitar-veterinara": {
+      "md5": "c4117b36f7b0f8aaee5aeacd5eb46fc1",
+      "document": "Anexa nr. 6 la norma sanitara veterinara — cerere inregistrare sanitar-veterinara, ANSVSA"
+    },
+    "cerere-ms-modificare-autorizatie": {
+      "md5": "104131bfb8644a966ae859b94a9c04af",
+      "document": "Modelul nr. 4 (Ministerul Sanatatii) — modificarea conditiilor de autorizare, Legea farmaciei 266/2008"
     }
   }
 }
