@@ -64,10 +64,23 @@ const SAMPLE = {
  * doesn't enumerate) still exercise the fill + presence check.
  */
 function valueFor(f) {
-  if (f.pdfFieldName in SAMPLE) return SAMPLE[f.pdfFieldName]
+  if (f.pdfFieldName in SAMPLE) return fitToField(SAMPLE[f.pdfFieldName], f)
   if (f.type === 'checkbox') return true
   if (f.isMultiline) return `Text de probă pentru „${f.label}".`
   return `Exemplu ${f.label}`.slice(0, f.maxLength || 60)
+}
+
+/**
+ * Make a curated sample fit the field it is going into. Comb grids declare a
+ * hard maxLength — a „Data" grid of 8 cells expects zzllaaaa with no
+ * separators — and pdf-lib throws outright when the text is longer, which
+ * reads as a broken archetype when the real problem is the sample. Strip
+ * separators first (24.06.2026 -> 24062026), truncate only as a last resort.
+ */
+function fitToField(value, f) {
+  if (typeof value !== 'string' || !f.maxLength || value.length <= f.maxLength) return value
+  const stripped = value.replace(/[^\p{L}\p{N}]/gu, '')
+  return stripped.length <= f.maxLength ? stripped : stripped.slice(0, f.maxLength)
 }
 
 // ── Presence validation (mirrors schema-builder's isRequired → min(1)) ──

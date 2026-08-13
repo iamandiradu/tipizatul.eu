@@ -20,6 +20,14 @@
     "cerere-dsp-model-13": {
       "md5": "dd53a1d970923cd4adab1f600ef9d499",
       "document": "Modelul nr. 13 — planificare inspecție după modificarea spațiului, Legea farmaciei 266/2008"
+    },
+    "cerere-apostila": {
+      "md5": "9bed40aae38ca50a0d3465e9b80cc7cc",
+      "document": "Anexa nr. 3 — Cerere pentru eliberarea apostilei, Institutia Prefectului"
+    },
+    "cerere-certificat-profesional": {
+      "md5": "d2c27b4f990e20d43a941eb55c742a6b",
+      "document": "Anexa nr. 2 — Cerere certificat profesional curent (CPC), CMSR, Decizia CN 16/2CN/2019"
     }
   }
 }

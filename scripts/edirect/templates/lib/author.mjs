@@ -363,6 +363,26 @@ function combField(ctx, spec, { cells = 13, cellW, labelW } = {}) {
   const gridW = w * cells
 
   const r = ctx._resolve({ ...spec, maxLength: cells })
+
+  // A comb grid holds exactly `cells` characters, but `_resolve` infers a
+  // validation pattern from the label — and an inferred pattern can demand
+  // more room than the grid has. "Data" infers ^\d{2}\.\d{2}\.\d{4}$, ten
+  // characters including separators, while the printed grid is eight cells of
+  // digits: the user could never satisfy it and the form could never be
+  // submitted. Keep the pattern only if a full grid of digits actually
+  // satisfies it — that retains the useful ones (CNP over 13 cells, phone over
+  // 12) and drops exactly the impossible ones.
+  if (r.patternId) {
+    const probe = '0'.repeat(cells)
+    const v = VALIDATION_BY_PATTERN[r.patternId]
+    let satisfiable = false
+    try {
+      satisfiable = !!v && new RegExp(v.pattern).test(probe)
+    } catch {
+      satisfiable = false
+    }
+    if (!satisfiable) r.patternId = null
+  }
   const tf = ctx.form.createTextField(r.name)
   tf.setText('')
   tf.setMaxLength(cells)
