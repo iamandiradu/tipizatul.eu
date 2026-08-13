@@ -19,18 +19,27 @@
  * ── Which joins are published ───────────────────────────────────────────────
  * A wrong join is worse than a missing one: it shows a citizen a form that is
  * not the one their procedure asks for, wearing a "verified" badge. So only
- * joins backed by actual text evidence ship by default:
+ * joins backed by actual text evidence ship:
  *
- *   strong       matchScore >= 0.75         40 docs /  552 files
+ *   strong       matchScore >= 0.75         40 docs /  552 files   PUBLISHED
  *   adjudicated  matchScore 0.35-0.75, confirmed by adjudicate_queue.py
- *                content rules              35 docs /   54 files
- *   candidate    matchCandidate, unconfirmed 6 docs /  191 files   EXCLUDED
+ *                content rules              35 docs /   54 files   PUBLISHED
+ *   promoted     re-scored by score-held-joins.mjs and cleared the same
+ *                0.35 bar                    5 docs /  182 files   PUBLISHED
+ *   candidate    matchCandidate, unconfirmed 6 docs                HELD
  *   guess        archetypeGuess only, no text evidence (mostly LLM)
- *                                           94 docs /  494 files   EXCLUDED
+ *                                           94 docs                HELD
  *
- * --include-guesses opts the excluded 685 files in. Do not use it without a
- * human sample check first — that is 94 documents asserted to be the same form
- * as an archetype on no more than an LLM's opinion.
+ * The held remainder was not merely unreviewed — it was measured.
+ * score-held-joins.mjs re-scored all 99 held docs against the archetype
+ * reference texts, calibrating first on the 40 known-strong docs (mean 0.678).
+ * 94 of 99 scored below 0.35 against the archetype the LLM assigned them, and
+ * 10 matched some OTHER archetype better. Those are wrong joins, not missing
+ * ones, so --include-guesses now means "publish joins already shown to be
+ * unsupported". Do not use it.
+ *
+ * --update-joins refreshes eDirectDocIds on already-published archetypes
+ * without re-uploading their PDFs (which would orphan the originals).
  *
  * Prerequisites: GOOGLE_SERVICE_ACCOUNT_KEY (Firestore) and
  * GOOGLE_OAUTH_CLIENT_KEY (Drive), both readable from .env or the environment.
@@ -61,6 +70,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const DIST_DIR = resolve(__dirname, 'templates/dist')
 const SPECS_DIR = resolve(__dirname, 'templates/specs')
 const MANIFEST_PATH = resolve(__dirname, 'manifest/manifest.json')
+const PROMOTED_PATH = resolve(__dirname, 'manifest/promoted-joins.json')
 const PROGRESS_PATH = resolve(__dirname, 'publish-archetypes-progress.json')
 const OAUTH_TOKEN_PATH = resolve(__dirname, '.oauth-token.json')
 const OAUTH_LOOPBACK_PORT = parseInt(process.env.OAUTH_LOOPBACK_PORT || '53682', 10)
@@ -77,6 +87,8 @@ const args = process.argv.slice(2)
 const getArg = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : null }
 const dryRun = args.includes('--dry-run')
 const includeGuesses = args.includes('--include-guesses')
+// Refresh eDirectDocIds on already-published archetypes without re-uploading.
+const updateJoins = args.includes('--update-joins')
 const only = getArg('only')
 
 const C = {
@@ -238,7 +250,22 @@ function docIdFromPath(p) {
 function buildJoinMap() {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8'))
   const byArchetype = new Map()
-  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0 }
+  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0, promoted: 0 }
+
+  // Joins rescued by score-held-joins.mjs: docs the LLM guessed, re-scored
+  // against the archetype's reference text, and kept only where the wording
+  // actually matches at the same threshold the adjudicated tier already uses.
+  // This is evidence, so it merges in by default — unlike --include-guesses,
+  // which ships the unscored remainder.
+  if (existsSync(PROMOTED_PATH)) {
+    const promoted = JSON.parse(readFileSync(PROMOTED_PATH, 'utf-8'))
+    for (const [id, v] of Object.entries(promoted.archetypes || {})) {
+      const bucket = byArchetype.get(id) ?? new Set()
+      for (const docId of v.docIds || []) bucket.add(String(docId))
+      byArchetype.set(id, bucket)
+      stats.promoted += (v.docIds || []).length
+    }
+  }
 
   for (const d of manifest.uniqueDocs || []) {
     const c = d.classification || {}
@@ -294,6 +321,7 @@ async function main() {
   const { byArchetype, stats } = buildJoinMap()
   log(`${C.dim}join evidence — strong ${stats.strong}, adjudicated ${stats.adjudicated}, ` +
     `candidate ${stats.candidate}, guess ${stats.guess} (unique docs)${C.reset}`)
+  log(`${C.dim}promoted from re-scoring: ${stats.promoted} docIds${C.reset}`)
   log(`${C.dim}files joined: ${stats.filesJoined}` +
     (stats.filesHeld ? ` · held back for review: ${stats.filesHeld} ${C.yellow}(--include-guesses to publish)${C.reset}${C.dim}` : '') +
     `${C.reset}`)
@@ -308,8 +336,10 @@ async function main() {
   // it — which is exactly what happened the first time this ran.
   if (!dryRun) {
     getFirestore()
-    await getDrive()
-    log(`${C.dim}credentials ok — Drive and Firestore both reachable${C.reset}\n`)
+    // --update-joins patches Firestore only, so demanding Drive credentials
+    // would block a run that never touches Drive.
+    if (!updateJoins) await getDrive()
+    log(`${C.dim}credentials ok — Firestore${updateJoins ? '' : ' and Drive'} reachable${C.reset}\n`)
   }
 
   const progress = loadProgress()
@@ -319,10 +349,33 @@ async function main() {
     const pdfPath = resolve(DIST_DIR, `${id}.pdf`)
     const jsonPath = resolve(DIST_DIR, `${id}.template.json`)
     if (!existsSync(pdfPath)) { logErr(`${C.red}SKIP${C.reset} ${id} — no built PDF`); skipped++; continue }
-    if (progress.published[id]) { skipped++; continue }
+    const prior = progress.published[id]
+    if (prior && !updateJoins) { skipped++; continue }
 
     const tpl = JSON.parse(readFileSync(jsonPath, 'utf-8'))
     const docIds = [...(byArchetype.get(id) ?? [])].sort()
+
+    // Joins-only refresh for an archetype already published: patch
+    // eDirectDocIds in place and leave Drive alone. Re-running the full path
+    // would upload a second copy of an unchanged PDF and orphan the first.
+    if (updateJoins && prior) {
+      if (dryRun) {
+        log(`[${C.cyan}DRY${C.reset}] ${id.padEnd(34)} joins ${String(prior.docIds).padStart(4)} → ${String(docIds.length).padStart(4)}`)
+        continue
+      }
+      if (docIds.length === prior.docIds) { skipped++; continue }
+      try {
+        await withBackoff(() => getFirestore().collection('templates').doc(id).update({ eDirectDocIds: docIds }))
+        progress.published[id] = { ...prior, docIds: docIds.length, joinsUpdatedAt: new Date().toISOString() }
+        saveProgress(progress)
+        ok++
+        log(`${C.green}OK${C.reset}   ${id.padEnd(34)} joins ${prior.docIds} → ${C.blue}${docIds.length}${C.reset}`)
+      } catch (err) {
+        failed++
+        logErr(`${C.red}FAIL${C.reset} ${id} — ${err?.message || err}`)
+      }
+      continue
+    }
 
     if (dryRun) {
       log(`[${C.cyan}DRY${C.reset}] ${id.padEnd(34)} ${String(tpl.fields?.length ?? 0).padStart(2)} fields  ` +

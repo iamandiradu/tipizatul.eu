@@ -17,8 +17,9 @@
     },
     "cerere-544": {
       "driveFileId": "1OF0ivJuSnRBzNj8Kz0VFllcTz3TOmgwa",
-      "docIds": 0,
-      "at": "2026-08-11T12:40:36.532Z"
+      "docIds": 1,
+      "at": "2026-08-11T12:40:36.532Z",
+      "joinsUpdatedAt": "2026-08-13T05:31:36.345Z"
     },
     "cerere-alocatie-copii": {
       "driveFileId": "13hekr5RFWI8XVSTiaALcHEvtECCZMPAr",
@@ -112,13 +113,20 @@
     },
     "tabel-nominal-auto": {
       "driveFileId": "1k1MRQyDKtuGryETY40_HZeggWC83xMlu",
-      "docIds": 0,
-      "at": "2026-08-11T12:41:13.640Z"
+      "docIds": 93,
+      "at": "2026-08-11T12:41:13.640Z",
+      "joinsUpdatedAt": "2026-08-13T05:31:36.626Z"
     },
     "tabel-nominal-persoane": {
       "driveFileId": "1-tcCnG8a6NVLs6KnfIuuiDKVpgu57uvI",
+      "docIds": 88,
+      "at": "2026-08-11T12:41:15.429Z",
+      "joinsUpdatedAt": "2026-08-13T05:31:36.769Z"
+    },
+    "cerere-stimulent-educational": {
+      "driveFileId": "1Be1KhJ2iRjeROevUK7Jx5-WOopF7dzUQ",
       "docIds": 0,
-      "at": "2026-08-11T12:41:15.429Z"
+      "at": "2026-08-13T05:32:08.147Z"
     }
   }
 }
