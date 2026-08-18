@@ -1,5 +1,5 @@
-import { useEffect, useId, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useId, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   Building2,
   ChevronDown,
@@ -21,10 +21,22 @@ import {
 } from '@/lib/procedures'
 import type { CountyGroup, InstitutionGroup, ProceduresPayload } from '@/lib/procedures'
 import { fetchCatalog } from '@/lib/firestore'
+import {
+  institutionKey,
+  isSectionOpen,
+  parseMenuState,
+  toggleSection,
+  writeMenuState,
+} from '@/lib/menu-url-state'
 import { diacriticless } from '@/lib/template-grouping'
 import type { Procedure, SlimTemplate } from '@/types/template'
 
 const ALL_COUNTIES = '__all__'
+
+// Mirror CatalogPage thresholds — broad searches that would mount thousands
+// of rows lock the main thread on a single keystroke.
+const AUTO_OPEN_INST_LIMIT = 200
+const AUTO_OPEN_COUNTY_LIMIT = 1500
 
 function ProcedureRow({
   procedure: p,
@@ -65,25 +77,23 @@ function ProcedureRow({
 function InstitutionSection({
   institution,
   procedures,
-  defaultOpen,
+  open,
+  onToggle,
   editableByProcedureId,
 }: {
   institution: string
   procedures: Procedure[]
-  defaultOpen: boolean
+  open: boolean
+  onToggle: () => void
   editableByProcedureId: Map<string, number> | null
 }) {
-  const [open, setOpen] = useState(defaultOpen)
   const panelId = useId()
-  useEffect(() => {
-    setOpen(defaultOpen)
-  }, [defaultOpen])
   const Chevron = open ? ChevronDown : ChevronRight
   return (
     <div className="border border-gray-200 dark:border-gray-800 rounded-md overflow-hidden bg-white dark:bg-gray-900">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         aria-expanded={open}
         aria-controls={panelId}
         className="w-full flex items-start justify-between px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
@@ -118,29 +128,29 @@ function CountySection({
   county,
   institutions,
   total,
-  defaultOpen,
-  defaultInstOpen,
+  open,
+  onToggle,
+  isInstitutionOpen,
+  onToggleInstitution,
   editableByProcedureId,
 }: {
   county: string
   institutions: InstitutionGroup[]
   total: number
-  defaultOpen: boolean
-  defaultInstOpen: boolean
+  open: boolean
+  onToggle: () => void
+  isInstitutionOpen: (institution: string) => boolean
+  onToggleInstitution: (institution: string) => void
   editableByProcedureId: Map<string, number> | null
 }) {
-  const [open, setOpen] = useState(defaultOpen)
   const panelId = useId()
-  useEffect(() => {
-    setOpen(defaultOpen)
-  }, [defaultOpen])
   const isNational = county === NATIONAL_COUNTY
   const Chevron = open ? ChevronDown : ChevronRight
   return (
     <section className="mb-3 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden bg-gray-50/40 dark:bg-gray-900/40">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         aria-expanded={open}
         aria-controls={panelId}
         className="w-full flex items-start justify-between px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-800/60 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-950"
@@ -168,7 +178,8 @@ function CountySection({
               key={g.institution}
               institution={g.institution}
               procedures={g.procedures}
-              defaultOpen={defaultInstOpen}
+              open={isInstitutionOpen(g.institution)}
+              onToggle={() => onToggleInstitution(g.institution)}
               editableByProcedureId={editableByProcedureId}
             />
           ))}
@@ -190,23 +201,70 @@ export default function ProceduresIndexPage() {
   const [payload, setPayload] = useState<ProceduresPayload | null>(null)
   const [catalog, setCatalog] = useState<SlimTemplate[] | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
-  const [county, setCounty] = useState<string>(ALL_COUNTIES)
-  const [onlyEditable, setOnlyEditable] = useState(false)
   const searchId = useId()
   const countyId = useId()
   const editableId = useId()
 
+  // The whole menu state lives in the query string, so a view can be handed to
+  // someone else as a link and comes back intact when returning from a
+  // procedure. Updates replace the history entry rather than pushing: expanding
+  // ten sections shouldn't cost ten presses of the back button.
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = searchParams.get('q') ?? ''
+  const county = searchParams.get('county') ?? ALL_COUNTIES
+  const onlyEditable = searchParams.get('editable') === '1'
+  const menuState = useMemo(() => parseMenuState(searchParams), [searchParams])
+
+  const updateParams = useCallback(
+    (mutate: (params: URLSearchParams) => void) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          mutate(next)
+          return next
+        },
+        { replace: true },
+      )
+    },
+    [setSearchParams],
+  )
+
+  // The input stays local so typing isn't gated on a URL round-trip; the
+  // debounced value is what lands in the query string and drives filtering.
+  const [search, setSearch] = useState(query)
   useEffect(() => {
     const trimmed = search.trim()
+    if (trimmed === query) return
+    const commit = () =>
+      updateParams((params) => {
+        if (trimmed === '') params.delete('q')
+        else params.set('q', trimmed)
+      })
     if (trimmed === '') {
-      setDebouncedSearch('')
+      commit()
       return
     }
-    const id = setTimeout(() => setDebouncedSearch(search), 250)
+    const id = setTimeout(commit, 250)
     return () => clearTimeout(id)
-  }, [search])
+  }, [search, query, updateParams])
+
+  const setCounty = useCallback(
+    (value: string) =>
+      updateParams((params) => {
+        if (value === ALL_COUNTIES) params.delete('county')
+        else params.set('county', value)
+      }),
+    [updateParams],
+  )
+
+  const setOnlyEditable = useCallback(
+    (value: boolean) =>
+      updateParams((params) => {
+        if (value) params.set('editable', '1')
+        else params.delete('editable')
+      }),
+    [updateParams],
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -285,7 +343,7 @@ export default function ProceduresIndexPage() {
   }, [indexed])
 
   const filteredProcedures = useMemo<Procedure[]>(() => {
-    const needle = diacriticless(debouncedSearch.trim())
+    const needle = diacriticless(query)
     const out: Procedure[] = []
     for (const e of indexed) {
       if (county !== ALL_COUNTIES && e.county !== county) continue
@@ -296,7 +354,7 @@ export default function ProceduresIndexPage() {
       out.push(e.procedure)
     }
     return out
-  }, [indexed, debouncedSearch, county, onlyEditable, editableByProcedureId])
+  }, [indexed, query, county, onlyEditable, editableByProcedureId])
 
   const grouped = useMemo<CountyGroup[]>(() => {
     if (!payload) return []
@@ -305,6 +363,34 @@ export default function ProceduresIndexPage() {
       procedures: Object.fromEntries(filteredProcedures.map((p) => [p.procedureId, p])),
     })
   }, [payload, filteredProcedures])
+
+  const isSearching = query.length > 0
+  const isFiltering = isSearching || county !== ALL_COUNTIES
+  const autoOpenCounty = isFiltering
+    ? filteredProcedures.length <= AUTO_OPEN_COUNTY_LIMIT
+    : grouped.length <= 8
+  const autoOpenInst = isSearching && filteredProcedures.length <= AUTO_OPEN_INST_LIMIT
+  const tooManyToAutoExpand =
+    isSearching && filteredProcedures.length > AUTO_OPEN_INST_LIMIT
+
+  // Every section the current filter renders, so stale keys from an earlier
+  // filter get pruned out of the URL on the next toggle instead of piling up.
+  const visibleKeys = useMemo(() => {
+    const keys = new Set<string>()
+    for (const g of grouped) {
+      keys.add(g.county)
+      for (const inst of g.institutions) keys.add(institutionKey(g.county, inst.institution))
+    }
+    return keys
+  }, [grouped])
+
+  const toggle = useCallback(
+    (key: string, heuristicallyOpen: boolean) => {
+      const next = toggleSection(menuState, key, heuristicallyOpen)
+      updateParams((params) => writeMenuState(params, next, visibleKeys))
+    },
+    [menuState, updateParams, visibleKeys],
+  )
 
   if (loadError) {
     return (
@@ -337,18 +423,6 @@ export default function ProceduresIndexPage() {
   }
 
   const totalProcedures = indexed.length
-  const isSearching = debouncedSearch.trim().length > 0
-  const isFiltering = isSearching || county !== ALL_COUNTIES
-  // Mirror CatalogPage thresholds — broad searches that would mount thousands
-  // of rows lock the main thread on a single keystroke.
-  const AUTO_OPEN_INST_LIMIT = 200
-  const AUTO_OPEN_COUNTY_LIMIT = 1500
-  const autoOpenCounty = isFiltering
-    ? filteredProcedures.length <= AUTO_OPEN_COUNTY_LIMIT
-    : grouped.length <= 8
-  const autoOpenInst = isSearching && filteredProcedures.length <= AUTO_OPEN_INST_LIMIT
-  const tooManyToAutoExpand =
-    isSearching && filteredProcedures.length > AUTO_OPEN_INST_LIMIT
 
   return (
     <div>
@@ -454,8 +528,14 @@ export default function ProceduresIndexPage() {
             county={g.county}
             institutions={g.institutions}
             total={g.total}
-            defaultOpen={autoOpenCounty}
-            defaultInstOpen={autoOpenInst}
+            open={isSectionOpen(menuState, g.county, autoOpenCounty)}
+            onToggle={() => toggle(g.county, autoOpenCounty)}
+            isInstitutionOpen={(institution) =>
+              isSectionOpen(menuState, institutionKey(g.county, institution), autoOpenInst)
+            }
+            onToggleInstitution={(institution) =>
+              toggle(institutionKey(g.county, institution), autoOpenInst)
+            }
             editableByProcedureId={editableByProcedureId}
           />
         ))
