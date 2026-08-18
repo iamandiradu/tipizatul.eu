@@ -31,6 +31,10 @@ export PYTHONIOENCODING=utf-8   # only needed for the PyMuPDF preview step
 # Generic, end-user-fillable (institution becomes an editable field):
 node build.mjs cerere-tip
 
+# Every spec, or every spec with a given id prefix (a family is rebuilt together):
+node build.mjs --all
+node build.mjs --all dasm-cj-
+
 # Stamped for a specific institution (name + logo baked into the header):
 node build.mjs cerere-tip \
   --institution "Primăria Comunei Exemplu" \
@@ -54,6 +58,29 @@ rasterize with PyMuPDF:
 ```bash
 python -c "import fitz; fitz.open('dist/cerere-tip.filled.pdf')[0].get_pixmap(dpi=110).save('dist/preview.png')"
 ```
+
+## Replicating one institution's own form
+
+Some forms exist only at one institution — a cerere addressed to „DIRECŢIA DE
+ASISTENŢĂ SOCIALĂ ŞI MEDICALĂ" has no generic version to stamp. Such a spec
+states its institution instead of taking one at build time:
+
+```js
+export const spec = {
+  id: 'dasm-cj-cantina-gratuita',
+  organization: 'Direcția de Asistență Socială și Medicală Cluj-Napoca',
+  county: 'Cluj',
+  body(ctx, p) {
+    p.addressee(ctx, { baked: 'DIRECȚIA DE ASISTENȚĂ SOCIALĂ ȘI MEDICALĂ', bakedAddress: 'Serviciul Protecție Socială' })
+    // …
+  },
+}
+```
+
+`organization`/`county` land on the Template JSON, so the catalog files the
+form under that institution with no per-instance build. A *national* model that
+many institutions reuse stays generic — it reaches each institution through the
+document joins instead. See `scripts/sources/README.md`.
 
 ## Adding a new archetype
 

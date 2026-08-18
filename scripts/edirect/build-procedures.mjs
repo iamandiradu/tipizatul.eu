@@ -8,6 +8,10 @@
 // ends in `_<eDirectDocId>`, mapped via index.json to its procedureId), so
 // the bundle naturally tracks the catalog. Procedures we haven't scraped
 // yet are skipped — they reappear once fetch-procedures.mjs catches up.
+//
+// Not every institution publishes on eDirect. Those that don't are scraped
+// directly into scripts/sources/<id>/procedures.json, already in this shape,
+// and merged in here (SOURCE_PATHS) so the app has one bundle to read.
 
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -15,6 +19,11 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PROCEDURES_PATH = path.join(__dirname, 'procedures.json')
+// Sources that don't publish on eDirect and are scraped directly. Each writes
+// an already-slim, Procedure-shaped payload (see scripts/sources/<id>/fetch.mjs),
+// so they merge in as-is rather than going through slim() — there is no
+// index.json to join them against, and their documents carry their own ids.
+const SOURCE_PATHS = [path.join(__dirname, '..', 'sources', 'dasm-cluj', 'procedures.json')]
 const INDEX_PATH = path.join(__dirname, 'index.json')
 const PROGRESS_PATH = path.join(__dirname, 'upload-templates-progress.json')
 const MIRROR_PROGRESS_PATH = path.join(__dirname, 'mirror-progress.json')
@@ -180,6 +189,30 @@ async function main() {
     kept++
   }
 
+  // Non-eDirect sources. They are additive: their procedureIds are namespaced
+  // (`dasm-cj-…`), so they cannot collide with eDirect's numeric ids, and a
+  // missing source file is not an error — the bundle is still valid without it.
+  let sourceProcedures = 0
+  for (const sourcePath of SOURCE_PATHS) {
+    let raw
+    try {
+      raw = await fs.readFile(sourcePath, 'utf8')
+    } catch {
+      console.warn(`Skipping ${path.relative(process.cwd(), sourcePath)} — not scraped yet.`)
+      continue
+    }
+    const payload = JSON.parse(raw)
+    for (const [id, p] of Object.entries(payload.procedures ?? {})) {
+      if (out[id]) {
+        console.warn(`Skipping duplicate procedureId ${id} from ${payload.source}`)
+        continue
+      }
+      out[id] = p
+      sourceProcedures++
+      kept++
+    }
+  }
+
   // Mirror coverage over what the bundle actually surfaces — the number that
   // matters is "downloads that survive eDirect going away", not raw upload count.
   let linkedDocs = 0
@@ -194,7 +227,9 @@ async function main() {
 
   const payload = {
     builtAt: new Date().toISOString(),
-    source: 'scripts/edirect/procedures.json + index.json + upload-templates-progress.json',
+    source:
+      'scripts/edirect/procedures.json + index.json + upload-templates-progress.json' +
+      (sourceProcedures > 0 ? ' + scripts/sources/*/procedures.json' : ''),
     total: kept,
     procedures: out,
   }
@@ -204,7 +239,9 @@ async function main() {
   await fs.writeFile(OUT_PATH, json)
   const size = (json.length / 1024).toFixed(0)
   console.log(
-    `Wrote ${kept} procedures (${(size / 1024).toFixed(1)} MB raw)` +
+    `Wrote ${kept} procedures` +
+      (sourceProcedures > 0 ? ` (${sourceProcedures} from non-eDirect sources)` : '') +
+      ` (${(size / 1024).toFixed(1)} MB raw)` +
       ` from ${procIds.size} unique procedureIds touched by ${coveredEntries} uploaded forms.` +
       (missingScrape > 0
         ? ` Skipped ${missingScrape} procedures not yet in procedures.json (re-run after the next fetch-procedures batch).`

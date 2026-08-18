@@ -70,3 +70,8 @@ scripts/edirect/llm/corpus-batch.progress.json.bak
 scripts/edirect/llm/corpus-batch.log
 scripts/edirect/llm/corpus-batch.run.out
 scripts/edirect/llm/acroform-scan.json
+
+# Non-eDirect source scrapes: the working copies each replica was authored
+# from, and their extracted text. Re-fetch with the source's download.mjs.
+scripts/sources/*/downloads/
+scripts/sources/*/text/

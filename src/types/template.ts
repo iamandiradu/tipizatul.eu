@@ -156,7 +156,15 @@ export interface ProcedureDocument {
   // eDirect listing record id, joined in by build-procedures.mjs from
   // index.json. Same key Templates carry, so the procedure detail page
   // can pair this document with its editable Template if one exists.
+  //
+  // Documents from a non-eDirect `source` carry a namespaced id instead
+  // (`dasm-cj-<hash>`), derived from their download URL. It is the same join
+  // key and behaves identically — only its provenance differs, and the prefix
+  // keeps it from ever colliding with a numeric eDirect id.
   eDirectDocId?: string
+  // File extension of `downloadUrl`, when the source states it. Lets the UI
+  // label a download before any mirror exists.
+  sourceExt?: string
   // Drive file id of our byte-identical copy of `downloadUrl`, written by
   // mirror-documents.mjs. Present only for documents we managed to mirror;
   // `downloadUrl` stays the fallback (and the attribution link) for the rest.
@@ -216,6 +224,14 @@ export interface Procedure {
   institution?: string
   county?: string | null
   city?: string | null
+  // Where this procedure was scraped from. Absent means eDirect, which is
+  // where all but a handful come from. A named source (e.g.
+  // 'dasm-cluj-napoca') is an institution that doesn't publish on eDirect and
+  // is scraped from its own site by scripts/sources/<source>/fetch.mjs; then
+  // `sourceUrl` is the page it came from, and the UI cites that instead of an
+  // eDirect procedure URL that would not exist.
+  source?: string
+  sourceUrl?: string
   // Set when the eDirect listing shows the "Procedura este informationala
   // si nu permite lansarea de solicitari" notice — the institution does
   // not accept online submissions for this procedure.

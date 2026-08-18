@@ -72,6 +72,10 @@ const SPECS_DIR = resolve(__dirname, 'templates/specs')
 const MANIFEST_PATH = resolve(__dirname, 'manifest/manifest.json')
 const PROMOTED_PATH = resolve(__dirname, 'manifest/promoted-joins.json')
 const AUTHORED_PATH = resolve(__dirname, 'manifest/authored-joins.json')
+// Non-eDirect sources publish their own authored-from joins, in the same shape
+// and to the same standard (the replica was written from the document it
+// serves). One file per source directory under scripts/sources/.
+const SOURCE_JOIN_PATHS = [resolve(__dirname, '../sources/dasm-cluj/archetype-joins.json')]
 const PROGRESS_PATH = resolve(__dirname, 'publish-archetypes-progress.json')
 const OAUTH_TOKEN_PATH = resolve(__dirname, '.oauth-token.json')
 const OAUTH_LOOPBACK_PORT = parseInt(process.env.OAUTH_LOOPBACK_PORT || '53682', 10)
@@ -251,7 +255,7 @@ function docIdFromPath(p) {
 function buildJoinMap() {
   const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf-8'))
   const byArchetype = new Map()
-  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0, promoted: 0, authored: 0 }
+  const stats = { strong: 0, adjudicated: 0, candidate: 0, guess: 0, filesJoined: 0, filesHeld: 0, promoted: 0, authored: 0, sourceAuthored: 0 }
 
   // Joins rescued by score-held-joins.mjs: docs the LLM guessed, re-scored
   // against the archetype's reference text, and kept only where the wording
@@ -267,6 +271,18 @@ function buildJoinMap() {
       for (const docId of v.docIds || []) bucket.add(String(docId))
       byArchetype.set(id, bucket)
       stats.authored += (v.docIds || []).length
+    }
+  }
+
+  // Same standard as the authored joins above, from the non-eDirect sources.
+  for (const path of SOURCE_JOIN_PATHS) {
+    if (!existsSync(path)) continue
+    const src = JSON.parse(readFileSync(path, 'utf-8'))
+    for (const [id, v] of Object.entries(src.archetypes || {})) {
+      const bucket = byArchetype.get(id) ?? new Set()
+      for (const docId of v.docIds || []) bucket.add(String(docId))
+      byArchetype.set(id, bucket)
+      stats.sourceAuthored += (v.docIds || []).length
     }
   }
 
@@ -334,7 +350,7 @@ async function main() {
   const { byArchetype, stats } = buildJoinMap()
   log(`${C.dim}join evidence — strong ${stats.strong}, adjudicated ${stats.adjudicated}, ` +
     `candidate ${stats.candidate}, guess ${stats.guess} (unique docs)${C.reset}`)
-  log(`${C.dim}authored-from joins: ${stats.authored} docIds · promoted from re-scoring: ${stats.promoted} docIds${C.reset}`)
+  log(`${C.dim}authored-from joins: ${stats.authored} docIds (+${stats.sourceAuthored} from non-eDirect sources) · promoted from re-scoring: ${stats.promoted} docIds${C.reset}`)
   log(`${C.dim}files joined: ${stats.filesJoined}` +
     (stats.filesHeld ? ` · held back for review: ${stats.filesHeld} ${C.yellow}(--include-guesses to publish)${C.reset}${C.dim}` : '') +
     `${C.reset}`)
