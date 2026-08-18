@@ -1,0 +1,566 @@
+{
+  "note": "Joins between the authored archetypes and the DASM Cluj-Napoca documents they replicate. Generated from archetype-map.json by build-joins.mjs — edit the map, not this file. Same evidence standard as manifest/authored-joins.json: each replica was written from the document it serves.",
+  "source": "https://dasmclujnapoca.ro/formulare/",
+  "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+  "county": "Cluj",
+  "archetypes": {
+    "adeverinta-indemnizatie-crestere-copil": {
+      "docIds": [
+        "dasm-cj-18e9b5c7",
+        "dasm-cj-95f9dca4"
+      ],
+      "documents": [
+        "ADEVERINTA-TIP.pdf",
+        "Adeverinta_model_2016.pdf"
+      ],
+      "files": 2
+    },
+    "adeverinta-vechime-munca": {
+      "docIds": [
+        "dasm-cj-36300756",
+        "dasm-cj-8f6332c8"
+      ],
+      "documents": [
+        "Adeverinta-vechime-model-orientativ-1.pdf",
+        "Formular-ADEVERINTA-VECHIME.pdf"
+      ],
+      "files": 2
+    },
+    "anexa-informatii-suplimentare-ue": {
+      "docIds": [
+        "dasm-cj-227957a2"
+      ],
+      "documents": [
+        "anexa-informatii-suplimentare-UE-pt.-alocatia-de-stat.pdf"
+      ],
+      "files": 1
+    },
+    "cerere-alocatie-copii": {
+      "docIds": [
+        "dasm-cj-eb8f7328"
+      ],
+      "documents": [
+        "cerere-alocatie-de-stat.pdf"
+      ],
+      "files": 1
+    },
+    "cerere-subventie-legea-34-1998": {
+      "docIds": [
+        "dasm-cj-11e35164"
+      ],
+      "documents": [
+        "Cerere-de-solicitare-a-subventiei-in-temeiul-Legii-nr.34-1998-si-anexe-la-cerere.pdf"
+      ],
+      "files": 1
+    },
+    "cerere-venit-minim-incluziune": {
+      "docIds": [
+        "dasm-cj-15203f3a",
+        "dasm-cj-5a1c9284",
+        "dasm-cj-8208658f",
+        "dasm-cj-bb741e5f"
+      ],
+      "documents": [
+        "CERERE-2025.pdf",
+        "Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala.pdf",
+        "Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala1.pdf"
+      ],
+      "files": 4
+    },
+    "cv-european-hg-1021-2004": {
+      "docIds": [
+        "dasm-cj-d2f96f33"
+      ],
+      "documents": [
+        "CV_European_HG_1021_2004-MODEL.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-adeverinta-indemnizatie-handicap": {
+      "docIds": [
+        "dasm-cj-5247a50c"
+      ],
+      "documents": [
+        "Cerere-adeverinta-indemnizatie.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ancheta-camin-varstnici": {
+      "docIds": [
+        "dasm-cj-59507342"
+      ],
+      "documents": [
+        "CERERE-INTERNARE-CAMIN-PERSOANE-VARSTNICE.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ancheta-centru-ingrijire": {
+      "docIds": [
+        "dasm-cj-70dc7354"
+      ],
+      "documents": [
+        "Cerere-admitere-centru-de-ingrijire-si-asistenta.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ancheta-comisie-adulti": {
+      "docIds": [
+        "dasm-cj-5277c405"
+      ],
+      "documents": [
+        "Cerere-ancheta-sociala-comisie-handicap-adult.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ancheta-comisie-copil": {
+      "docIds": [
+        "dasm-cj-673fe7ba"
+      ],
+      "documents": [
+        "Cerere-ancheta-sociala-comisie-copil-si-orientare-scolara.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-adeverinta-financiar": {
+      "docIds": [
+        "dasm-cj-198405de"
+      ],
+      "documents": [
+        "cerere-eliberare-adeverinte-FINANCIAR-1.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-adeverinta-resurse-umane": {
+      "docIds": [
+        "dasm-cj-664bb886"
+      ],
+      "documents": [
+        "cerere-eliberare-adeverinte-RUS.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-angajare": {
+      "docIds": [
+        "dasm-cj-c96e637a"
+      ],
+      "documents": [
+        "CERERE-ANGAJARE-AP.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-comunicare-deces": {
+      "docIds": [
+        "dasm-cj-bd3c6e54"
+      ],
+      "documents": [
+        "CERERE-INCETARE-IM-DECES-PH.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-concediu-fara-plata": {
+      "docIds": [
+        "dasm-cj-4125f9f7"
+      ],
+      "documents": [
+        "Cerere-CFS.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-concediu-odihna": {
+      "docIds": [
+        "dasm-cj-74feceb8"
+      ],
+      "documents": [
+        "cerere-CO-tip-2026.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-foaie-pontaj": {
+      "docIds": [
+        "dasm-cj-d4c92872"
+      ],
+      "documents": [
+        "foaie-de-pontaj-AS.PERS_.1.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ap-incetare-cim": {
+      "docIds": [
+        "dasm-cj-2b1fdb19"
+      ],
+      "documents": [
+        "CERERE-INCETARE-CIM-ACORD-PARTI.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-cantina-contributie-30": {
+      "docIds": [
+        "dasm-cj-90fc7672"
+      ],
+      "documents": [
+        "CERERE-CANTINA-301-2.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-cantina-gratuita": {
+      "docIds": [
+        "dasm-cj-cb4bd399"
+      ],
+      "documents": [
+        "Cerere-acordare-cantina-gratuita.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-card-parcare-handicap": {
+      "docIds": [
+        "dasm-cj-a939b6c5"
+      ],
+      "documents": [
+        "Cerere-card-parcare-persoane-cu-dizabilitati-1.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-completare-dosar-prestatii": {
+      "docIds": [
+        "dasm-cj-4929786a"
+      ],
+      "documents": [
+        "Cerere-completare-dosar-prestatii.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-declaratie-celalalt-parinte": {
+      "docIds": [
+        "dasm-cj-6cc0df41"
+      ],
+      "documents": [
+        "declaratia-celuilalt-parinte-cu-privire-la-acordarea-alocatiei-de-stat1.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-declaratie-plecare-strainatate": {
+      "docIds": [
+        "dasm-cj-f555046b"
+      ],
+      "documents": [
+        "Declaratie-parinte-care-pleaca-la-munca-in-strainatate.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-declaratie-stagiu-cotizare": {
+      "docIds": [
+        "dasm-cj-4ec41524"
+      ],
+      "documents": [
+        "declaratie-referitoare-la-dovada-stagiului-de-cotizare2.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-bilet-de-voie": {
+      "docIds": [
+        "dasm-cj-69e4b8b3"
+      ],
+      "documents": [
+        "bilet_de_voie-2.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-cerere-adeverinta": {
+      "docIds": [
+        "dasm-cj-fc8b719b"
+      ],
+      "documents": [
+        "cereri-adeverinte.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-concediu-odihna": {
+      "docIds": [
+        "dasm-cj-09d0e813"
+      ],
+      "documents": [
+        "Model-cerere-de-concediu.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-concediu-odihna-cabinete": {
+      "docIds": [
+        "dasm-cj-31cccf17"
+      ],
+      "documents": [
+        "cerere-concediu-odihna-Cabinete-Medicale.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-declaratie-mentinere-deducere": {
+      "docIds": [
+        "dasm-cj-81e012fa"
+      ],
+      "documents": [
+        "Declaratie-pe-proprie-raspundere-anexa-32.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-declaratie-persoana-intretinuta": {
+      "docIds": [
+        "dasm-cj-0c4a2864"
+      ],
+      "documents": [
+        "Declaratie-pe-proprie-raspundere-anexa-21.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-declaratie-persoane-intretinere": {
+      "docIds": [
+        "dasm-cj-25a63ec5"
+      ],
+      "documents": [
+        "Declaratie-anexa-11.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-extras-reges": {
+      "docIds": [
+        "dasm-cj-40328019"
+      ],
+      "documents": [
+        "Formular-REGES.doc"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-promovare-grad-profesional": {
+      "docIds": [
+        "dasm-cj-f055125e"
+      ],
+      "documents": [
+        "fisa-insciere-examen-promovare.docx"
+      ],
+      "files": 1
+    },
+    "dasm-cj-hr-zile-libere-evenimente": {
+      "docIds": [
+        "dasm-cj-108799e8"
+      ],
+      "documents": [
+        "Cerere-pentru-acordarea-zilelor-platite-pentru-evenimente-familiale.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-ingrijire-la-domiciliu": {
+      "docIds": [
+        "dasm-cj-e842a717"
+      ],
+      "documents": [
+        "CERERE-INGRIJIRE-LA-DOMICILIU-refacut-27062023.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-inscriere-centru-zi-seniori-1": {
+      "docIds": [
+        "dasm-cj-cc40942e"
+      ],
+      "documents": [
+        "Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.1.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-inscriere-centru-zi-seniori-2": {
+      "docIds": [
+        "dasm-cj-55ae56f2"
+      ],
+      "documents": [
+        "Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.-2.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-inscriere-program-stomatologic": {
+      "docIds": [
+        "dasm-cj-745312d7"
+      ],
+      "documents": [
+        "Cerere-inscriere-in-programul-stomatologic.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-locativ-completare-dosar": {
+      "docIds": [
+        "dasm-cj-5b81f091"
+      ],
+      "documents": [
+        "815.06-COMPLETARE-DOSAR.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-locativ-incheiere-contract": {
+      "docIds": [
+        "dasm-cj-2ea6b946"
+      ],
+      "documents": [
+        "815.02-CERERE-INCHEIERE-CONTRACT-LOCUINTA-SOCIALA.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-locativ-prelungire-contract": {
+      "docIds": [
+        "dasm-cj-4ea66c52"
+      ],
+      "documents": [
+        "815.03-CERERE-PRELUNGIRE-CONTRACT-LOCUINTA.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-locativ-schimb-locuinta": {
+      "docIds": [
+        "dasm-cj-6d3aeeb8"
+      ],
+      "documents": [
+        "815.05-CERERE-APROBARE-SCHIMB-LOCUINTA.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-locativ-transcriere-contract": {
+      "docIds": [
+        "dasm-cj-7cf3db8d"
+      ],
+      "documents": [
+        "815.04-CERERE-TRANSCRIERE-LOCUINTA.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-opis-dosar": {
+      "docIds": [
+        "dasm-cj-68812980"
+      ],
+      "documents": [
+        "opis.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-servicii-violenta-domestica": {
+      "docIds": [
+        "dasm-cj-23b8e814"
+      ],
+      "documents": [
+        "Cerere-CPCVF.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-suport-financiar-copil-dizabilitati": {
+      "docIds": [
+        "dasm-cj-961e7e96"
+      ],
+      "documents": [
+        "Cerere-suport-financiar-pentru-copiii-cu-dizabilitati.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-tichete-nou-nascuti": {
+      "docIds": [
+        "dasm-cj-7242f4fe"
+      ],
+      "documents": [
+        "CERERE-TICHETE-NOU-NASCUTI-SPCF.odt"
+      ],
+      "files": 1
+    },
+    "dasm-cj-tichete-sociale-alimente": {
+      "docIds": [
+        "dasm-cj-db248ea7"
+      ],
+      "documents": [
+        "cerere-si-declaratie-tichete-sociale.pdf"
+      ],
+      "files": 1
+    },
+    "dasm-cj-transport-urban-handicap": {
+      "docIds": [
+        "dasm-cj-94f9b6ac"
+      ],
+      "documents": [
+        "Cerere-transport-urban-persoane-cu-dizabilitati.doc"
+      ],
+      "files": 1
+    },
+    "declaratie-consimtamant": {
+      "docIds": [
+        "dasm-cj-86bf265f"
+      ],
+      "documents": [
+        "Declaratie-de-consimtamant.pdf"
+      ],
+      "files": 1
+    },
+    "declaratie-oug-24-2008": {
+      "docIds": [
+        "dasm-cj-71b2dee1"
+      ],
+      "documents": [
+        "Declaratie-pe-propria-raspundere-cf-OUG-24-20081.pdf"
+      ],
+      "files": 1
+    },
+    "declaratie-venituri-pfa": {
+      "docIds": [
+        "dasm-cj-b5fcad65"
+      ],
+      "documents": [
+        "ANAF-DECLARATIAPFA.pdf"
+      ],
+      "files": 1
+    },
+    "formular-inscriere-concurs-contractual": {
+      "docIds": [
+        "dasm-cj-74e07968"
+      ],
+      "documents": [
+        "Formular-inscriere-la-concurs-72-1.pdf"
+      ],
+      "files": 1
+    },
+    "formular-inscriere-functie-publica": {
+      "docIds": [
+        "dasm-cj-ce239000"
+      ],
+      "documents": [
+        "Formular-inscriere-Funct-Publici.doc"
+      ],
+      "files": 1
+    }
+  },
+  "downloadOnly": {
+    "informative": [
+      "10.-VENITURI-EXCLUSE-A3-L196.pdf",
+      "2.-Informatii-generale-A3.pdf",
+      "3.-Tipuri-de-ajutoare-A3.pdf",
+      "4.-Criterii-de-eligibilitate-A3.pdf",
+      "5.-Lista-bunurilor-A3-196.pdf",
+      "520.compressed.pdf",
+      "6.-Acte-necesare-A3.pdf",
+      "7.-Obligatii-A3.pdf",
+      "8.-Plafoane-si-cuantumuri-A3.pdf",
+      "9.-INFORMATII-SUPLIMENTARE.pdf",
+      "Acte-necesare-acordare-prestatii.pdf",
+      "Comunicat-de-presa-Program-social-Alimente-2026-2.pdf",
+      "INFORMATII-HCL-522-ISR-660.pdf",
+      "Informatii-program-stomatologic.pdf",
+      "Informatii-utile-privind-intocmirea-dosarelor-modificat-6.pdf",
+      "Instruirea-periodica-personal-muncitor-DASM-2026.pdf",
+      "Instruirea-periodica-personal-tehnico-administrativ-DASM-2026.pdf",
+      "Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+      "Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+      "acte-necesare-pentru-angajare-asistent-personal-.pdf"
+    ],
+    "native-acroform": [
+      "Cerere-tip-completata-si-semnata-OBLIGATORIU-de-ambii-parinti.pdf"
+    ],
+    "scan-of-native-acroform": [
+      "Cerere_indemnizatie_model_iunie_2016.pdf"
+    ],
+    "pdf-portfolio": [
+      "Cerere2024-v5.pdf"
+    ],
+    "dead-link": [
+      "cerere-CIS.doc"
+    ]
+  }
+}

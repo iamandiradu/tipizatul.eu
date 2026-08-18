@@ -1,0 +1,133 @@
+{
+  "note": "Which authored archetype serves each document on https://dasmclujnapoca.ro/formulare/, keyed by the file name the institution publishes it under. Every entry is either an `archetype` (a replica authored FROM that exact document — certainty, not similarity, the same standard as manifest/authored-from.json) or a `downloadOnly` reason. Nothing is left implicit: a document missing from this file is a scrape that has not been triaged yet, and build-joins.mjs fails on it. Regenerate the joins with `node build-joins.mjs`.",
+  "documents": {
+    "Cerere-inscriere-in-programul-stomatologic.pdf": { "archetype": "dasm-cj-inscriere-program-stomatologic" },
+    "Declaratie-de-consimtamant.pdf": {
+      "archetype": "declaratie-consimtamant",
+      "why": "DASM's consent declaration is an instance of the generic archetype, whose institution slot is the data operator. Joined rather than re-authored."
+    },
+    "cerere-si-declaratie-tichete-sociale.pdf": { "archetype": "dasm-cj-tichete-sociale-alimente" },
+    "Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala1.pdf": {
+      "archetype": "cerere-venit-minim-incluziune",
+      "why": "Anexa nr. 1 la H.G. 1154/2022. The same file backs the VMI and the chirie rows."
+    },
+    "Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala.pdf": {
+      "archetype": "cerere-venit-minim-incluziune",
+      "why": "Same national annex, the copy the încălzirea locuinței row links."
+    },
+    "CERERE-2025.pdf": {
+      "archetype": "cerere-venit-minim-incluziune",
+      "why": "The full 11-page copy of the same annex, from which the replica was authored."
+    },
+    "CERERE-CANTINA-301-2.pdf": { "archetype": "dasm-cj-cantina-contributie-30" },
+    "Cerere-acordare-cantina-gratuita.pdf": { "archetype": "dasm-cj-cantina-gratuita" },
+    "Cerere-completare-dosar-prestatii.pdf": { "archetype": "dasm-cj-completare-dosar-prestatii" },
+    "Adeverinta_model_2016.pdf": {
+      "archetype": "adeverinta-indemnizatie-crestere-copil",
+      "why": "Scan of Anexa nr. 2; same document as ADEVERINTA-TIP.pdf, from which the replica was authored."
+    },
+    "ADEVERINTA-TIP.pdf": { "archetype": "adeverinta-indemnizatie-crestere-copil" },
+    "Cerere-de-solicitare-a-subventiei-in-temeiul-Legii-nr.34-1998-si-anexe-la-cerere.pdf": {
+      "archetype": "cerere-subventie-legea-34-1998",
+      "why": "The cerere is replicated; anexele A and B stay download-only — see the spec header."
+    },
+    "opis.pdf": { "archetype": "dasm-cj-opis-dosar" },
+    "cerere-alocatie-de-stat.pdf": {
+      "archetype": "cerere-alocatie-copii",
+      "why": "Anexa nr. 1 la Normele metodologice ale Legii 61/1993 — the archetype already authored for it."
+    },
+    "anexa-informatii-suplimentare-UE-pt.-alocatia-de-stat.pdf": { "archetype": "anexa-informatii-suplimentare-ue" },
+    "declaratia-celuilalt-parinte-cu-privire-la-acordarea-alocatiei-de-stat1.pdf": { "archetype": "dasm-cj-declaratie-celalalt-parinte" },
+    "ANAF-DECLARATIAPFA.pdf": { "archetype": "declaratie-venituri-pfa" },
+    "declaratie-referitoare-la-dovada-stagiului-de-cotizare2.pdf": { "archetype": "dasm-cj-declaratie-stagiu-cotizare" },
+
+    "Cerere-suport-financiar-pentru-copiii-cu-dizabilitati.pdf": { "archetype": "dasm-cj-suport-financiar-copil-dizabilitati" },
+    "Cerere-admitere-centru-de-ingrijire-si-asistenta.doc": { "archetype": "dasm-cj-ancheta-centru-ingrijire" },
+    "Cerere-ancheta-sociala-comisie-handicap-adult.pdf": { "archetype": "dasm-cj-ancheta-comisie-adulti" },
+    "Cerere-card-parcare-persoane-cu-dizabilitati-1.doc": { "archetype": "dasm-cj-card-parcare-handicap" },
+    "Cerere-adeverinta-indemnizatie.doc": { "archetype": "dasm-cj-adeverinta-indemnizatie-handicap" },
+    "Cerere-transport-urban-persoane-cu-dizabilitati.doc": { "archetype": "dasm-cj-transport-urban-handicap" },
+    "Cerere-ancheta-sociala-comisie-copil-si-orientare-scolara.doc": { "archetype": "dasm-cj-ancheta-comisie-copil" },
+
+    "Cerere-CPCVF.odt": { "archetype": "dasm-cj-servicii-violenta-domestica" },
+    "CERERE-TICHETE-NOU-NASCUTI-SPCF.odt": { "archetype": "dasm-cj-tichete-nou-nascuti" },
+    "Declaratie-parinte-care-pleaca-la-munca-in-strainatate.doc": { "archetype": "dasm-cj-declaratie-plecare-strainatate" },
+
+    "fisa-insciere-examen-promovare.docx": { "archetype": "dasm-cj-hr-promovare-grad-profesional" },
+    "Formular-ADEVERINTA-VECHIME.pdf": { "archetype": "adeverinta-vechime-munca" },
+    "Adeverinta-vechime-model-orientativ-1.pdf": {
+      "archetype": "adeverinta-vechime-munca",
+      "why": "Same Anexa nr. 10 model as the personal contractual copy."
+    },
+    "Formular-inscriere-la-concurs-72-1.pdf": { "archetype": "formular-inscriere-concurs-contractual" },
+    "cereri-adeverinte.pdf": { "archetype": "dasm-cj-hr-cerere-adeverinta" },
+    "Formular-REGES.doc": { "archetype": "dasm-cj-hr-extras-reges" },
+    "Model-cerere-de-concediu.odt": { "archetype": "dasm-cj-hr-concediu-odihna" },
+    "cerere-concediu-odihna-Cabinete-Medicale.doc": { "archetype": "dasm-cj-hr-concediu-odihna-cabinete" },
+    "bilet_de_voie-2.pdf": { "archetype": "dasm-cj-hr-bilet-de-voie" },
+    "CV_European_HG_1021_2004-MODEL.pdf": { "archetype": "cv-european-hg-1021-2004" },
+    "Declaratie-pe-propria-raspundere-cf-OUG-24-20081.pdf": { "archetype": "declaratie-oug-24-2008" },
+    "Formular-inscriere-Funct-Publici.doc": { "archetype": "formular-inscriere-functie-publica" },
+
+    "CERERE-INCETARE-IM-DECES-PH.odt": { "archetype": "dasm-cj-ap-comunicare-deces" },
+    "cerere-CO-tip-2026.doc": { "archetype": "dasm-cj-ap-concediu-odihna" },
+    "Cerere-CFS.pdf": { "archetype": "dasm-cj-ap-concediu-fara-plata" },
+    "CERERE-ANGAJARE-AP.pdf": { "archetype": "dasm-cj-ap-angajare" },
+    "cerere-eliberare-adeverinte-RUS.odt": { "archetype": "dasm-cj-ap-adeverinta-resurse-umane" },
+    "CERERE-INCETARE-CIM-ACORD-PARTI.doc": { "archetype": "dasm-cj-ap-incetare-cim" },
+    "cerere-eliberare-adeverinte-FINANCIAR-1.odt": { "archetype": "dasm-cj-ap-adeverinta-financiar" },
+    "Cerere-pentru-acordarea-zilelor-platite-pentru-evenimente-familiale.pdf": { "archetype": "dasm-cj-hr-zile-libere-evenimente" },
+    "Declaratie-anexa-11.pdf": { "archetype": "dasm-cj-hr-declaratie-persoane-intretinere" },
+    "Declaratie-pe-proprie-raspundere-anexa-21.pdf": { "archetype": "dasm-cj-hr-declaratie-persoana-intretinuta" },
+    "Declaratie-pe-proprie-raspundere-anexa-32.pdf": { "archetype": "dasm-cj-hr-declaratie-mentinere-deducere" },
+    "foaie-de-pontaj-AS.PERS_.1.pdf": { "archetype": "dasm-cj-ap-foaie-pontaj" },
+
+    "CERERE-INGRIJIRE-LA-DOMICILIU-refacut-27062023.pdf": { "archetype": "dasm-cj-ingrijire-la-domiciliu" },
+    "CERERE-INTERNARE-CAMIN-PERSOANE-VARSTNICE.pdf": { "archetype": "dasm-cj-ancheta-camin-varstnici" },
+    "Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.1.odt": { "archetype": "dasm-cj-inscriere-centru-zi-seniori-1" },
+    "Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.-2.odt": { "archetype": "dasm-cj-inscriere-centru-zi-seniori-2" },
+
+    "815.02-CERERE-INCHEIERE-CONTRACT-LOCUINTA-SOCIALA.pdf": { "archetype": "dasm-cj-locativ-incheiere-contract" },
+    "815.03-CERERE-PRELUNGIRE-CONTRACT-LOCUINTA.pdf": { "archetype": "dasm-cj-locativ-prelungire-contract" },
+    "815.04-CERERE-TRANSCRIERE-LOCUINTA.pdf": { "archetype": "dasm-cj-locativ-transcriere-contract" },
+    "815.05-CERERE-APROBARE-SCHIMB-LOCUINTA.pdf": { "archetype": "dasm-cj-locativ-schimb-locuinta" },
+    "815.06-COMPLETARE-DOSAR.pdf": { "archetype": "dasm-cj-locativ-completare-dosar" },
+
+    "Cerere-tip-completata-si-semnata-OBLIGATORIU-de-ambii-parinti.pdf": {
+      "downloadOnly": "native-acroform",
+      "why": "Anexa nr. 1 la H.G. 52/2011 (cererea A.J.P.I.S. pentru indemnizație/stimulent/alocație). This copy already carries a 266-field AcroForm from A.J.P.I.S., so it is published as an original rather than re-authored — see scripts/sources/dasm-cluj/README.md."
+    },
+    "Cerere_indemnizatie_model_iunie_2016.pdf": {
+      "downloadOnly": "scan-of-native-acroform",
+      "why": "Image-only scan of the same H.G. 52/2011 Anexa nr. 1. The fillable copy above is the one to publish; a replica of the scan would duplicate it."
+    },
+    "cerere-CIS.doc": {
+      "downloadOnly": "dead-link",
+      "why": "The institution's own link returns HTTP 404 (uploads/2015/12/cerere-CIS.doc), so there is no document to author from. Re-check on the next scrape."
+    },
+    "Cerere2024-v5.pdf": {
+      "downloadOnly": "pdf-portfolio",
+      "why": "A PDF Portfolio wrapper — its only page says to open it in Acrobat. No extractable form content; the current-season CERERE-2025.pdf supersedes it."
+    },
+
+    "Informatii-program-stomatologic.pdf": { "downloadOnly": "informative" },
+    "INFORMATII-HCL-522-ISR-660.pdf": { "downloadOnly": "informative" },
+    "Acte-necesare-acordare-prestatii.pdf": { "downloadOnly": "informative" },
+    "Informatii-utile-privind-intocmirea-dosarelor-modificat-6.pdf": { "downloadOnly": "informative" },
+    "Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf": { "downloadOnly": "informative" },
+    "2.-Informatii-generale-A3.pdf": { "downloadOnly": "informative" },
+    "3.-Tipuri-de-ajutoare-A3.pdf": { "downloadOnly": "informative" },
+    "4.-Criterii-de-eligibilitate-A3.pdf": { "downloadOnly": "informative" },
+    "5.-Lista-bunurilor-A3-196.pdf": { "downloadOnly": "informative" },
+    "6.-Acte-necesare-A3.pdf": { "downloadOnly": "informative" },
+    "7.-Obligatii-A3.pdf": { "downloadOnly": "informative" },
+    "8.-Plafoane-si-cuantumuri-A3.pdf": { "downloadOnly": "informative" },
+    "9.-INFORMATII-SUPLIMENTARE.pdf": { "downloadOnly": "informative" },
+    "10.-VENITURI-EXCLUSE-A3-L196.pdf": { "downloadOnly": "informative" },
+    "acte-necesare-pentru-angajare-asistent-personal-.pdf": { "downloadOnly": "informative" },
+    "Comunicat-de-presa-Program-social-Alimente-2026-2.pdf": { "downloadOnly": "informative" },
+    "520.compressed.pdf": { "downloadOnly": "informative", "why": "H.C.L. 520/2024 — normative act, not a form." },
+    "Instruirea-periodica-personal-tehnico-administrativ-DASM-2026.pdf": { "downloadOnly": "informative", "why": "Material de instruire SSM." },
+    "Instruirea-periodica-personal-muncitor-DASM-2026.pdf": { "downloadOnly": "informative", "why": "Material de instruire SSM." }
+  }
+}

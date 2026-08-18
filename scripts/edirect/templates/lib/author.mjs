@@ -86,6 +86,9 @@ function topToPdfY(y, h = 0) {
  * @property {string} name          human template name
  * @property {string} [description]
  * @property {string} [category]
+ * @property {string} [organization]  institution this replica belongs to, when
+ *                                    the form is one institution's own
+ * @property {string} [county]        that institution's county
  * @property {(ctx: AuthorCtx) => void} body  draws the form body
  */
 
@@ -272,7 +275,14 @@ async function drawHeader(ctx, instance, title) {
 function addressee(
   ctx,
   instance,
-  { lead = 'Către,', label = 'Instituția', name = 'institutie', required = true } = {},
+  {
+    lead = 'Către,',
+    label = 'Instituția',
+    name = 'institutie',
+    required = true,
+    baked = null,
+    bakedAddress = null,
+  } = {},
 ) {
   const { font } = ctx
   const size = 11
@@ -282,14 +292,20 @@ function addressee(
   ctx.y += size * 1.6
 
   const indent = ctx.left + 16
-  if (instance.institutionName) {
+  // `baked` wins over the instance: a replica of one institution's own form
+  // (DASM Cluj's „Către, DIRECŢIA DE ASISTENŢĂ SOCIALĂ ŞI MEDICALĂ") addresses
+  // that institution by construction — there is no generic version of it to
+  // stamp, so the spec states the addressee rather than the build command.
+  const institutionName = baked ?? instance.institutionName
+  const addressLine = baked ? bakedAddress : instance.addressLine
+  if (institutionName) {
     // Baked — institution + optional address line, emphasized.
-    page.drawText(instance.institutionName, {
+    page.drawText(institutionName, {
       x: indent, y: topToPdfY(ctx.y, 13), size: 13, font, color: INK,
     })
     ctx.y += 13 * 1.5
-    if (instance.addressLine) {
-      page.drawText(instance.addressLine, {
+    if (addressLine) {
+      page.drawText(addressLine, {
         x: indent, y: topToPdfY(ctx.y, 9), size: 9, font, color: RULE,
       })
       ctx.y += 9 * 1.6
@@ -433,13 +449,33 @@ function labeledField(ctx, spec, { labelW } = {}) {
   ctx.y += h + 12
 }
 
-/** Two labeled fields sharing one row (e.g. Localitate | Județ). */
+/**
+ * Two labeled fields sharing one row (e.g. Localitate | Județ).
+ *
+ * A label wider than its half of the row would be drawn straight through the
+ * next column's label and leave no room to type — the national models carry
+ * labels like „Venituri totale realizate în luna anterioară depunerii cererii
+ * (lei)" that do not fit in half a page. When either label leaves less than
+ * MIN_FIELD_W for its input, the pair falls back to two full-width rows, which
+ * costs vertical space and keeps both readable.
+ */
+const MIN_FIELD_W = 70
+
 function twoColFields(ctx, leftSpec, rightSpec) {
   const { font } = ctx
   const size = 11
   const h = 16
   const colGap = 24
   const colW = (ctx.contentW - colGap) / 2
+
+  const fits = (spec) =>
+    colW - (font.widthOfTextAtSize(spec.label + ':', size) + 8) >= MIN_FIELD_W
+  if (!fits(leftSpec) || !fits(rightSpec)) {
+    labeledField(ctx, leftSpec)
+    labeledField(ctx, rightSpec)
+    return
+  }
+
   ctx.ensureSpace(h + 12)
   const page = ctx.page
 
@@ -755,7 +791,14 @@ export async function buildArchetype(spec, instance = {}) {
     name: instance.institutionName ? `${spec.name} — ${instance.institutionName}` : spec.name,
     ...(spec.description ? { description: spec.description } : {}),
     ...(spec.category ? { category: spec.category } : {}),
-    ...(instance.institutionName ? { organization: instance.institutionName } : {}),
+    // A spec that replicates one institution's own form carries that
+    // institution itself (`spec.organization` + `spec.county`), so the catalog
+    // files it under that organisation without a stamped per-instance build.
+    // An explicit `--institution` still wins: that is the stamping path.
+    ...(instance.institutionName || spec.organization
+      ? { organization: instance.institutionName || spec.organization }
+      : {}),
+    ...(spec.county ? { county: spec.county } : {}),
     version: 1,
     createdAt: new Date().toISOString(),
     fields: ctx.templateFields,

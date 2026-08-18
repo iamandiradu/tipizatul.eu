@@ -1,6 +1,6 @@
 # Authored-templates project — status & handoff
 
-_Last updated: 2026-07-02_
+_Last updated: 2026-08-18_
 
 ## The idea (why this exists)
 
@@ -235,3 +235,60 @@ ITL atestare PJ — added to roadmap Appendix C for Phase 3.
 Still waiting on Radu: item-by-item R7 sign-off (routing-review.md).
 Next session: Phase 3 replica authoring — igpf-aviz-frontiera first (98×),
 then cerere-declaratie asistență socială cluster, 544 formular-tip, DSP 4/7.
+
+---
+
+## Progress note — 2026-08-18 (first non-eDirect source: DASM Cluj-Napoca)
+
+`scripts/sources/dasm-cluj/` scrapes <https://dasmclujnapoca.ro/formulare/> —
+16 procedures, 102 rows, 86 unique files from an institution that never
+published on eDirect. See that directory's README for the pipeline and the
+per-document triage; what matters here is what it added to this subsystem.
+
+**55 new specs, 32 → 87 archetypes**, all passing `test-editability.mjs`:
+
+- **45 `dasm-cj-*` replicas** of DASM's own forms, in five families with shared
+  bodies: `_dasm-cluj.mjs` (baked addressee, registry line, e-mail consent
+  block, GDPR footer, the vârstnici consent declaration), `_dasm-hr.mjs`
+  (letterhead + employee rows), `_dasm-locativ.mjs` (the 815.0x fond-locativ
+  set, including the a)–h) declaration), `_dasm-czv.mjs`, `_dasm-ap-adeverinta.mjs`.
+- **10 new national models**, generic so any institution can join them:
+  `cerere-venit-minim-incluziune` (Anexa nr. 1 la H.G. 1154/2022 — VMI, ajutor
+  de încălzire and supliment pentru energie in one form; 205 fields, 8 pages,
+  the largest replica in the set), `adeverinta-indemnizatie-crestere-copil`
+  (Anexa nr. 2 cu grila pe 24 de luni), `adeverinta-vechime-munca`,
+  `anexa-informatii-suplimentare-ue`, `declaratie-venituri-pfa`,
+  `cerere-subventie-legea-34-1998`, `formular-inscriere-concurs-contractual`,
+  `formular-inscriere-functie-publica`, `cv-european-hg-1021-2004`,
+  `declaratie-oug-24-2008`.
+- **2 joins to archetypes that already existed** — DASM's alocație de stat form
+  is the `cerere-alocatie-copii` annex, its GDPR sheet is
+  `declaratie-consimtamant` with DASM in the operator slot. Joined, not
+  re-authored.
+
+### Changes to the engine
+
+- `ArchetypeSpec.organization` / `.county` — a spec that replicates one
+  institution's own form states which institution it belongs to, so the catalog
+  files it there without a stamped `--institution` build. An explicit
+  `--institution` still wins.
+- `addressee({ baked, bakedAddress })` — bakes a fixed addressee from the spec.
+  A DASM cerere is addressed to DASM by construction; there is no generic
+  version of it to stamp.
+- `twoColFields` falls back to two full-width rows when a label leaves under
+  70pt for its input. Labels like „Venituri totale realizate în luna anterioară
+  depunerii cererii (lei)" used to be drawn through the next column.
+- `build.mjs --all [prefix]` — batch build, since a family is rebuilt together
+  and 87 specs do not fit one invocation each.
+- `publish-archetypes.mjs` merges `scripts/sources/*/archetype-joins.json`
+  alongside the manifest joins, at the same evidence standard (authored FROM
+  the document, no threshold involved).
+
+### Held back, with reasons
+
+`Cerere-tip…OBLIGATORIU-de-ambii-parinti.pdf` already carries a 266-field
+AcroForm from A.J.P.I.S. — it wants the originals publish route, not a replica.
+The Legea 34/1998 anexe A și B are narrative annexes (three pages of free
+description per unit) and stay download-only. One source link is 404 upstream,
+one file is a PDF Portfolio wrapper, and 20 documents are informative. Full
+list in `scripts/sources/dasm-cluj/archetype-map.json`.

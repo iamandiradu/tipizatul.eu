@@ -1,0 +1,1468 @@
+{
+  "fetchedAt": "2026-08-18T18:58:24.625Z",
+  "source": "https://dasmclujnapoca.ro/formulare/",
+  "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+  "county": "Cluj",
+  "city": "Cluj-Napoca",
+  "total": 16,
+  "procedures": {
+    "dasm-cj-serviciul-protectie-sociala": {
+      "procedureId": "dasm-cj-serviciul-protectie-sociala",
+      "title": "Serviciul protecție socială",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Informatii program stomatologic",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Informatii-program-stomatologic.pdf",
+          "eDirectDocId": "dasm-cj-1e6e7b97",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere înscriere program stomatologic",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-inscriere-in-programul-stomatologic.pdf",
+          "eDirectDocId": "dasm-cj-745312d7",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Declarație GDPR",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Declaratie-de-consimtamant.pdf",
+          "eDirectDocId": "dasm-cj-86bf265f",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Formular cerere pentru acordare tichete sociale",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/cerere-si-declaratie-tichete-sociale.pdf",
+          "eDirectDocId": "dasm-cj-db248ea7",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Formular cerere acordare venit minim incluziune",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala1.pdf",
+          "eDirectDocId": "dasm-cj-15203f3a",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "6",
+          "name": "Informații utile privind acordarea ajutorului pentru plata chiriei persoanelor singure/familiilor cu domiciliul sau reședința pe raza municipiului Cluj-Napoca",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/INFORMATII-HCL-522-ISR-660.pdf",
+          "eDirectDocId": "dasm-cj-01410c89",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "7",
+          "name": "Cerere ajutor pentru plata chiriei",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala1.pdf",
+          "eDirectDocId": "dasm-cj-8208658f",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "8",
+          "name": "Cerere cantina",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala1.pdf",
+          "eDirectDocId": "dasm-cj-8208658f",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "9",
+          "name": "Cerere cantina cu 30%",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/CERERE-CANTINA-301-2.pdf",
+          "eDirectDocId": "dasm-cj-90fc7672",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "10",
+          "name": "Cerere cantina gratuită",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-acordare-cantina-gratuita.pdf",
+          "eDirectDocId": "dasm-cj-cb4bd399",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "11",
+          "name": "Cerere completare dosar prestatii",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-completare-dosar-prestatii.pdf",
+          "eDirectDocId": "dasm-cj-4929786a",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "12",
+          "name": "Acte necesare acordare prestatii",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Acte-necesare-acordare-prestatii.pdf",
+          "eDirectDocId": "dasm-cj-63024c18",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "13",
+          "name": "Fomulare tip – Încălzirea locuinței",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/Cerere-declaratie-pe-proprie-raspundere-pentru-acordarea-unor-drepturi-de-asistenta-sociala.pdf",
+          "eDirectDocId": "dasm-cj-bb741e5f",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "14",
+          "name": "Adeverință",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Adeverinta_model_2016.pdf",
+          "eDirectDocId": "dasm-cj-95f9dca4",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "15",
+          "name": "Cerere de solicitare a subvenției în temeiul Legii nr.34-1998 și anexe la cerere",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-de-solicitare-a-subventiei-in-temeiul-Legii-nr.34-1998-si-anexe-la-cerere.pdf",
+          "eDirectDocId": "dasm-cj-11e35164",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului": {
+      "procedureId": "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului",
+      "title": "Alocații și indemnizații creșterea copilului",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Informatii utile privind întocmirea dosarelor",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/Informatii-utile-privind-intocmirea-dosarelor-modificat-6.pdf",
+          "eDirectDocId": "dasm-cj-5fb6b95c",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Lista actelor necesare pentru dosarele de alocatie, indemnizație stimulent inserție",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+          "eDirectDocId": "dasm-cj-45d68973",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-alocatie-de-stat-lista": {
+      "procedureId": "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-alocatie-de-stat-lista",
+      "title": "Alocații și indemnizații creșterea copilului — Formulare alocație de stat + Lista actelor necesare",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Opis",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/opis.pdf",
+          "eDirectDocId": "dasm-cj-68812980",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere alocație",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/cerere-alocatie-de-stat.pdf",
+          "eDirectDocId": "dasm-cj-eb8f7328",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Anexa UE (doar pentru copii născuți în UE)",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/anexa-informatii-suplimentare-UE-pt.-alocatia-de-stat.pdf",
+          "eDirectDocId": "dasm-cj-227957a2",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Declarație celălalt părinte (doar pentru părinții necăsătoriți)",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/declaratia-celuilalt-parinte-cu-privire-la-acordarea-alocatiei-de-stat1.pdf",
+          "eDirectDocId": "dasm-cj-6cc0df41",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Lista actelor necesare pentru dosarele de alocatie, indemnizație stimulent inserție",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+          "eDirectDocId": "dasm-cj-d38ce25b",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-indemnizatie-crestere-copil-lista": {
+      "procedureId": "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-indemnizatie-crestere-copil-lista",
+      "title": "Alocații și indemnizații creșterea copilului — Formulare indemnizație creștere copil + Lista actelor necesare",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Opis",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/opis.pdf",
+          "eDirectDocId": "dasm-cj-68812980",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere tip",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/06/Cerere-tip-completata-si-semnata-OBLIGATORIU-de-ambii-parinti.pdf",
+          "eDirectDocId": "dasm-cj-73c211ea",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Adeverință tip",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/ADEVERINTA-TIP.pdf",
+          "eDirectDocId": "dasm-cj-18e9b5c7",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Declarație pe propria răspundere (PFA 2026)",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/08/ANAF-DECLARATIAPFA.pdf",
+          "eDirectDocId": "dasm-cj-b5fcad65",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Declarația celuilalt părinte (doar pentru părinții necăsătoriți)",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/declaratia-celuilalt-parinte-cu-privire-la-acordarea-alocatiei-de-stat1.pdf",
+          "eDirectDocId": "dasm-cj-6cc0df41",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "6",
+          "name": "Lista actelor necesare pentru dosarele de alocatie indemnizație stimulent inserție",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+          "eDirectDocId": "dasm-cj-d38ce25b",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-stimulent-insertie-lista-actelor-necesare": {
+      "procedureId": "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-stimulent-insertie-lista-actelor-necesare",
+      "title": "Alocații și indemnizații creșterea copilului — Stimulent inserție + Lista actelor necesare",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Opis",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/opis.pdf",
+          "eDirectDocId": "dasm-cj-68812980",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere tip",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/Cerere_indemnizatie_model_iunie_2016.pdf",
+          "eDirectDocId": "dasm-cj-9112dd5c",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Declarație stagiu de cotizare",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/declaratie-referitoare-la-dovada-stagiului-de-cotizare2.pdf",
+          "eDirectDocId": "dasm-cj-4ec41524",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Lista actelor necesare pentru dosarele de alocatie indemnizație stimulent inserție",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+          "eDirectDocId": "dasm-cj-d38ce25b",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-indemnizatie-crestere-copil-cu": {
+      "procedureId": "dasm-cj-alocatii-si-indemnizatii-cresterea-copilului-formulare-indemnizatie-crestere-copil-cu",
+      "title": "Alocații și indemnizații creșterea copilului — Formulare indemnizație creștere copil cu handicap + Lista actelor necesare",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Opis",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/opis.pdf",
+          "eDirectDocId": "dasm-cj-68812980",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere tip",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/Cerere_indemnizatie_model_iunie_2016.pdf",
+          "eDirectDocId": "dasm-cj-9112dd5c",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Declarație stagiu de cotizare",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2016/02/declaratie-referitoare-la-dovada-stagiului-de-cotizare2.pdf",
+          "eDirectDocId": "dasm-cj-4ec41524",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Lista actelor necesare pentru dosarele de alocatie indemnizatie stimulent inserție",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Lista-actelor-necesare-pentru-dosarele-de-alocatieindemnizatie-stimulent-insertie-3.pdf",
+          "eDirectDocId": "dasm-cj-d38ce25b",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-ajutoare-de-incalzire-2025-2026": {
+      "procedureId": "dasm-cj-ajutoare-de-incalzire-2025-2026",
+      "title": "Ajutoare de încălzire 2025-2026",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Informații generale depunere program",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/2.-Informatii-generale-A3.pdf",
+          "eDirectDocId": "dasm-cj-cd38aa66",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Tipuri de ajutoare",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/3.-Tipuri-de-ajutoare-A3.pdf",
+          "eDirectDocId": "dasm-cj-d9165d44",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Criterii de eligibilitate",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/4.-Criterii-de-eligibilitate-A3.pdf",
+          "eDirectDocId": "dasm-cj-4ccd5e30",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Lista bunurilor",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/5.-Lista-bunurilor-A3-196.pdf",
+          "eDirectDocId": "dasm-cj-985f1f03",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Acte necesare",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/6.-Acte-necesare-A3.pdf",
+          "eDirectDocId": "dasm-cj-3342232f",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "6",
+          "name": "Obligațiile beneficiarilor",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/7.-Obligatii-A3.pdf",
+          "eDirectDocId": "dasm-cj-5c635e36",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "7",
+          "name": "Plafoane și cuantumuri",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/8.-Plafoane-si-cuantumuri-A3.pdf",
+          "eDirectDocId": "dasm-cj-8ba08355",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "8",
+          "name": "Informații suplimentare",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/9.-INFORMATII-SUPLIMENTARE.pdf",
+          "eDirectDocId": "dasm-cj-ddb192ec",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "9",
+          "name": "Cerere ajutor de încălzire",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/CERERE-2025.pdf",
+          "eDirectDocId": "dasm-cj-5a1c9284",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "10",
+          "name": "Venituri excluse",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/10.-VENITURI-EXCLUSE-A3-L196.pdf",
+          "eDirectDocId": "dasm-cj-d3697892",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "11",
+          "name": "Cerere2024-v5",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/10/Cerere2024-v5.pdf",
+          "eDirectDocId": "dasm-cj-c5ca707e",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-centrul-de-incluziune-sociala": {
+      "procedureId": "dasm-cj-centrul-de-incluziune-sociala",
+      "title": "Centrul de incluziune socială",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Cerere pentru acordarea serviciilor din partea CIS",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/cerere-CIS.doc",
+          "eDirectDocId": "dasm-cj-3453b43e",
+          "sourceExt": "doc"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-asistenta-persoanelor-cu-dizabilitati": {
+      "procedureId": "dasm-cj-serviciul-asistenta-persoanelor-cu-dizabilitati",
+      "title": "Serviciul asistența persoanelor cu dizabilități",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Cerere suport financiar pentru copiii cu dizabilități",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/01/Cerere-suport-financiar-pentru-copiii-cu-dizabilitati.pdf",
+          "eDirectDocId": "dasm-cj-961e7e96",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere ancheta sociala admitere centru de ingrijire",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-admitere-centru-de-ingrijire-si-asistenta.doc",
+          "eDirectDocId": "dasm-cj-70dc7354",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "3",
+          "name": "Cerere ancheta sociala comisie handicap adulti",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2025/01/Cerere-ancheta-sociala-comisie-handicap-adult.pdf",
+          "eDirectDocId": "dasm-cj-5277c405",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Cerere card- legitimatie parcare persoane cu handicap",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-card-parcare-persoane-cu-dizabilitati-1.doc",
+          "eDirectDocId": "dasm-cj-a939b6c5",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "5",
+          "name": "Cerere indemnizatie persoane cu handicap",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-adeverinta-indemnizatie.doc",
+          "eDirectDocId": "dasm-cj-5247a50c",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "6",
+          "name": "Cerere adeverință – indemnizație",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-adeverinta-indemnizatie.doc",
+          "eDirectDocId": "dasm-cj-5247a50c",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "7",
+          "name": "Cerere transport urban persoane cu handicap",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-transport-urban-persoane-cu-dizabilitati.doc",
+          "eDirectDocId": "dasm-cj-94f9b6ac",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "8",
+          "name": "Cerere anchetă socială privind evaluarea copiilor necesară la Comisia pentru Protecţia Copilului Cluj/ Comisia de Orientare Şcolară şi Profesională",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-ancheta-sociala-comisie-copil-si-orientare-scolara.doc",
+          "eDirectDocId": "dasm-cj-673fe7ba",
+          "sourceExt": "doc"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-protectia-copilului-si-familiei": {
+      "procedureId": "dasm-cj-serviciul-protectia-copilului-si-familiei",
+      "title": "Serviciul protecția copilului și familiei",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Cerere solicitare servicii CRPC",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-CPCVF.odt",
+          "eDirectDocId": "dasm-cj-23b8e814",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere tichete nou-născuți SPCF",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/CERERE-TICHETE-NOU-NASCUTI-SPCF.odt",
+          "eDirectDocId": "dasm-cj-7242f4fe",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "3",
+          "name": "Declaratie plecare părinte",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Declaratie-parinte-care-pleaca-la-munca-in-strainatate.doc",
+          "eDirectDocId": "dasm-cj-f555046b",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "4",
+          "name": "Declarație îngrijire",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Declaratie-parinte-care-pleaca-la-munca-in-strainatate.doc",
+          "eDirectDocId": "dasm-cj-f555046b",
+          "sourceExt": "doc"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-pentru-functii-contractuale": {
+      "procedureId": "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-pentru-functii-contractuale",
+      "title": "Serviciul resurse umane salarizare — Formulare tip pentru funcții contractuale",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "FORMULAR DE ÎNSCRIERE la exemenul de promovare în grad profesional/treaptă profesională",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/fisa-insciere-examen-promovare.docx",
+          "eDirectDocId": "dasm-cj-f055125e",
+          "sourceExt": "docx"
+        },
+        {
+          "nr": "2",
+          "name": "Formular adeverinta vechime",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Formular-ADEVERINTA-VECHIME.pdf",
+          "eDirectDocId": "dasm-cj-36300756",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Formular cerere inscriere concurs",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/Formular-inscriere-la-concurs-72-1.pdf",
+          "eDirectDocId": "dasm-cj-74e07968",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Cerere pentru eliberare adeverințe",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/cereri-adeverinte.pdf",
+          "eDirectDocId": "dasm-cj-fc8b719b",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Cererea pentru eliberarea extrasului Reges",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Formular-REGES.doc",
+          "eDirectDocId": "dasm-cj-40328019",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "6",
+          "name": "Cerere concediu de odihna",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Model-cerere-de-concediu.odt",
+          "eDirectDocId": "dasm-cj-09d0e813",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "7",
+          "name": "Cerere concediu de odihna cabinete medicale",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/cerere-concediu-odihna-Cabinete-Medicale.doc",
+          "eDirectDocId": "dasm-cj-31cccf17",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "8",
+          "name": "Bilet de voie",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/bilet_de_voie-2.pdf",
+          "eDirectDocId": "dasm-cj-69e4b8b3",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-pentru-functii-publice": {
+      "procedureId": "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-pentru-functii-publice",
+      "title": "Serviciul resurse umane salarizare — Formulare tip pentru funcții publice",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Adeverință vechime",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/12/Adeverinta-vechime-model-orientativ-1.pdf",
+          "eDirectDocId": "dasm-cj-8f6332c8",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "CV European HG 1021/ 2004",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/CV_European_HG_1021_2004-MODEL.pdf",
+          "eDirectDocId": "dasm-cj-d2f96f33",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Declarație pe proprie răspundere cf. OUG 24/2008",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/Declaratie-pe-propria-raspundere-cf-OUG-24-20081.pdf",
+          "eDirectDocId": "dasm-cj-71b2dee1",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Formular inscriere concurs editabil",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/12/Formular-inscriere-Funct-Publici.doc",
+          "eDirectDocId": "dasm-cj-ce239000",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "5",
+          "name": "Cerere pentru eliberare adeverințe",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/cereri-adeverinte.pdf",
+          "eDirectDocId": "dasm-cj-fc8b719b",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "6",
+          "name": "Cerere concediu de odihna",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Model-cerere-de-concediu.odt",
+          "eDirectDocId": "dasm-cj-09d0e813",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "7",
+          "name": "Bilet de voie",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/bilet_de_voie-2.pdf",
+          "eDirectDocId": "dasm-cj-69e4b8b3",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-asistenti-personali": {
+      "procedureId": "dasm-cj-serviciul-resurse-umane-salarizare-formulare-tip-asistenti-personali",
+      "title": "Serviciul resurse umane salarizare — Formulare tip asistenți personali",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Acte necesare pentru angajare asistent personal",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/acte-necesare-pentru-angajare-asistent-personal-.pdf",
+          "eDirectDocId": "dasm-cj-6c63a45d",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Adresă comunicare deces",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/CERERE-INCETARE-IM-DECES-PH.odt",
+          "eDirectDocId": "dasm-cj-bd3c6e54",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "3",
+          "name": "Cerere concediu de odihnă",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/cerere-CO-tip-2026.doc",
+          "eDirectDocId": "dasm-cj-74feceb8",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "4",
+          "name": "Cerere concediu fără plată",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-CFS.pdf",
+          "eDirectDocId": "dasm-cj-4125f9f7",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Cerere de angajare asistent personal",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/CERERE-ANGAJARE-AP.pdf",
+          "eDirectDocId": "dasm-cj-c96e637a",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "6",
+          "name": "Cerere eliberare adeverință pentru dovedire calitate de angajat pentru DASM necesară la DGASPC",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/cerere-eliberare-adeverinte-RUS.odt",
+          "eDirectDocId": "dasm-cj-664bb886",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "7",
+          "name": "Cerere încetare CIM cu acordul părților",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/CERERE-INCETARE-CIM-ACORD-PARTI.doc",
+          "eDirectDocId": "dasm-cj-2b1fdb19",
+          "sourceExt": "doc"
+        },
+        {
+          "nr": "8",
+          "name": "Cerere eliberare adeverință necesară la: medic; spitalizare; venit net; bancă; burse școlare; locuințe sociale",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/cerere-eliberare-adeverinte-FINANCIAR-1.odt",
+          "eDirectDocId": "dasm-cj-198405de",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "9",
+          "name": "Cerere pentru acordarea zilelor platite",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-pentru-acordarea-zilelor-platite-pentru-evenimente-familiale.pdf",
+          "eDirectDocId": "dasm-cj-108799e8",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "10",
+          "name": "Declarație anexa 1",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/Declaratie-anexa-11.pdf",
+          "eDirectDocId": "dasm-cj-25a63ec5",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "11",
+          "name": "Declarație pe proprie răspundere anexa 2",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/Declaratie-pe-proprie-raspundere-anexa-21.pdf",
+          "eDirectDocId": "dasm-cj-0c4a2864",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "12",
+          "name": "Declarație pe proprie răspundere anexa 3",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/Declaratie-pe-proprie-raspundere-anexa-32.pdf",
+          "eDirectDocId": "dasm-cj-81e012fa",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "13",
+          "name": "Foaie de pontaj asistenți personali",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/foaie-de-pontaj-AS.PERS_.1.pdf",
+          "eDirectDocId": "dasm-cj-d4c92872",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-asistenta-persoanelor-varstnice": {
+      "procedureId": "dasm-cj-serviciul-asistenta-persoanelor-varstnice",
+      "title": "Serviciul asistența persoanelor vârstnice",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Comunicat depunere cereri pentru tichete sociale pe suport electronic in cadrul Programului social „Alimente”",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/02/Comunicat-de-presa-Program-social-Alimente-2026-2.pdf",
+          "eDirectDocId": "dasm-cj-9e925943",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere-declarație pentru Programului social „Alimente”",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2015/12/cerere-si-declaratie-tichete-sociale.pdf",
+          "eDirectDocId": "dasm-cj-db248ea7",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Cerere pentru servicii de îngrijire la domiciliu",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/CERERE-INGRIJIRE-LA-DOMICILIU-refacut-27062023.pdf",
+          "eDirectDocId": "dasm-cj-e842a717",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Cerere solicitare efectuare anchetă socială",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/10/CERERE-INTERNARE-CAMIN-PERSOANE-VARSTNICE.pdf",
+          "eDirectDocId": "dasm-cj-59507342",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "CERERE INSCRIERE CZV 1",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.1.odt",
+          "eDirectDocId": "dasm-cj-cc40942e",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "6",
+          "name": "CERERE INSCRIERE CZV 2",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/03/Cerere-de-inscriere-la-Centrul-de-zi-pentru-seniori-nr.-2.odt",
+          "eDirectDocId": "dasm-cj-55ae56f2",
+          "sourceExt": "odt"
+        },
+        {
+          "nr": "7",
+          "name": "HCL 520/2024",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2024/12/520.compressed.pdf",
+          "eDirectDocId": "dasm-cj-9d8a90d6",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-serviciul-fondul-locativ-social": {
+      "procedureId": "dasm-cj-serviciul-fondul-locativ-social",
+      "title": "Serviciul fondul locativ social",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Cerere încheiere contract locuinţa socială",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/815.02-CERERE-INCHEIERE-CONTRACT-LOCUINTA-SOCIALA.pdf",
+          "eDirectDocId": "dasm-cj-2ea6b946",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Cerere prelungire contract locuinţă",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/815.03-CERERE-PRELUNGIRE-CONTRACT-LOCUINTA.pdf",
+          "eDirectDocId": "dasm-cj-4ea66c52",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "3",
+          "name": "Cerere transcriere locuinţă",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/815.04-CERERE-TRANSCRIERE-LOCUINTA.pdf",
+          "eDirectDocId": "dasm-cj-7cf3db8d",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "4",
+          "name": "Cerere aprobare schimb locuinţă",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Formular tipizat",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/815.05-CERERE-APROBARE-SCHIMB-LOCUINTA.pdf",
+          "eDirectDocId": "dasm-cj-6d3aeeb8",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "5",
+          "name": "Completare dosar",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/04/815.06-COMPLETARE-DOSAR.pdf",
+          "eDirectDocId": "dasm-cj-5b81f091",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    },
+    "dasm-cj-securitate-si-sanatate-in-munca": {
+      "procedureId": "dasm-cj-securitate-si-sanatate-in-munca",
+      "title": "Securitate și sănătate în muncă",
+      "institution": "Direcția de Asistență Socială și Medicală Cluj-Napoca",
+      "county": "Cluj",
+      "city": "Cluj-Napoca",
+      "source": "dasm-cluj-napoca",
+      "sourceUrl": "https://dasmclujnapoca.ro/formulare/",
+      "informational": false,
+      "informationalNotice": null,
+      "fields": {
+        "institutiaResponsabila": "Direcția de Asistență Socială și Medicală Cluj-Napoca, Județ Cluj",
+        "dateContact": "Adresa: Cluj-Napoca, str. Venus f.n., jud. Cluj\nTelefon: 0264-599316\nE-mail: contact@dasmclujnapoca.ro",
+        "modalitatePrestare": "Local"
+      },
+      "documents": [
+        {
+          "nr": "1",
+          "name": "Instruirea periodică pentru personalul tehnico-administrativ",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/01/Instruirea-periodica-personal-tehnico-administrativ-DASM-2026.pdf",
+          "eDirectDocId": "dasm-cj-e6a0783a",
+          "sourceExt": "pdf"
+        },
+        {
+          "nr": "2",
+          "name": "Instruirea periodică pentru personalul muncitor",
+          "description": "",
+          "required": false,
+          "eSignature": false,
+          "type": "Document informativ",
+          "downloadUrl": "https://dasmclujnapoca.ro/wp-content/uploads/2026/01/Instruirea-periodica-personal-muncitor-DASM-2026.pdf",
+          "eDirectDocId": "dasm-cj-c575af13",
+          "sourceExt": "pdf"
+        }
+      ],
+      "outputDocuments": [],
+      "laws": [],
+      "fetchedAt": "2026-08-18T18:58:24.625Z"
+    }
+  }
+}

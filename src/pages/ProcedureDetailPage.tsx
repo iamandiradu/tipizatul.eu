@@ -27,6 +27,25 @@ import type { Procedure, ProcedureDocument, SlimTemplate } from '@/types/templat
 const EDIRECT_BASE_URL =
   'https://edirect.e-guvernare.ro/Admin/Proceduri/ProceduraVizualizare.aspx?IdInregistrare='
 
+// Where a procedure's data came from, for the "vezi sursa" link and the
+// attribution next to each document. Procedures without a `source` are eDirect
+// ones — all but a handful — and keep the original wording.
+function sourceOf(p: Procedure): { label: string; url: string; title: string } {
+  if (p.sourceUrl) {
+    return {
+      label: 'Vezi sursa oficială',
+      url: p.sourceUrl,
+      title: `Procedura, așa cum apare pe site-ul instituției — sursa de unde Tipizatul.eu preia aceste date (${p.sourceUrl}).`,
+    }
+  }
+  return {
+    label: 'Vezi pe eDirect',
+    url: `${EDIRECT_BASE_URL}${p.procedureId}`,
+    title:
+      'Procedura, așa cum apare pe portalul oficial eDirect — sursa de unde Tipizatul.eu preia toate datele.',
+  }
+}
+
 function formatBytes(n: number): string {
   if (n < 1024) return `${n} B`
   if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`
@@ -70,9 +89,11 @@ function FactCard({
 function DocumentCard({
   doc,
   template,
+  sourceName,
 }: {
   doc: ProcedureDocument
   template: SlimTemplate | null
+  sourceName: string
 }) {
   const [expanded, setExpanded] = useState(false)
   const longDescription = !!doc.description && doc.description.length > 220
@@ -185,10 +206,10 @@ function DocumentCard({
                 href={doc.downloadUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                title="Fișierul original, direct de pe portalul eDirect"
+                title={`Fișierul original, direct de la ${sourceName}`}
                 className="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
-                sursa eDirect
+                sursa {sourceName}
                 <ExternalLink className="w-3 h-3" aria-hidden="true" />
               </a>
             )}
@@ -386,7 +407,10 @@ export default function ProcedureDetailPage() {
     )
   }
 
-  const sourceUrl = `${EDIRECT_BASE_URL}${p.procedureId}`
+  const source = sourceOf(p)
+  // Attribution shown next to each mirrored document: the institution's own
+  // site when it is the source, eDirect otherwise.
+  const sourceName = p.sourceUrl ? 'instituției' : 'eDirect'
 
   // Pair each procedure document with its editable Template (if any) by
   // eDirect doc id. Templates whose linkage didn't make it into a specific
@@ -434,14 +458,14 @@ export default function ProcedureDetailPage() {
             )}
           </div>
           <div className="break-all">
-            <span className="opacity-70">eDirect:</span>{' '}
+            <span className="opacity-70">{p.source ?? 'eDirect'}:</span>{' '}
             <a
-              href={sourceUrl}
+              href={source.url}
               target="_blank"
               rel="noopener noreferrer"
               className="underline hover:no-underline"
             >
-              {sourceUrl}
+              {source.url}
             </a>
           </div>
           <div>
@@ -466,13 +490,13 @@ export default function ProcedureDetailPage() {
           {p.fields.institutiaResponsabila || p.institution}
         </p>
         <a
-          href={sourceUrl}
+          href={source.url}
           target="_blank"
           rel="noopener noreferrer"
-          title="Procedura, așa cum apare pe portalul oficial eDirect — sursa de unde Tipizatul.eu preia toate datele."
+          title={source.title}
           className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 text-sm rounded-md transition-colors"
         >
-          Vezi pe eDirect
+          {source.label}
           <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
         </a>
         {p.informational && p.informationalNotice && (
@@ -520,6 +544,7 @@ export default function ProcedureDetailPage() {
                     key={d.nr}
                     doc={d}
                     template={d.eDirectDocId ? formByDocId.get(d.eDirectDocId) ?? null : null}
+                    sourceName={sourceName}
                   />
                 ))}
               </div>
