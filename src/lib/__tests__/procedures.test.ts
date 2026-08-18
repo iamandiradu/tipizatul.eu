@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { NATIONAL_COUNTY, procedureCounty } from '../procedures'
-import type { Procedure } from '@/types/template'
+import { NATIONAL_COUNTY, buildTemplateIndex, procedureCounty, templateDocIds } from '../procedures'
+import type { Procedure, SlimTemplate } from '@/types/template'
 
 function makeProcedure(partial: Partial<Procedure>): Procedure {
   return {
@@ -96,5 +96,61 @@ describe('procedureCounty', () => {
     expect(procedureCounty(makeProcedure({ institution: 'Some unknown entity' }))).toBe(
       NATIONAL_COUNTY,
     )
+  })
+})
+
+function makeTemplate(partial: Partial<SlimTemplate>): SlimTemplate {
+  return {
+    id: 't1',
+    name: 'Formular',
+    version: 1,
+    visibleFieldCount: 3,
+    driveFileId: 'drive1',
+    ...partial,
+  }
+}
+
+describe('buildTemplateIndex — shared archetypes', () => {
+  it('resolves every doc id a shared archetype serves', () => {
+    const arch = makeTemplate({
+      id: 'arch',
+      archetype: 'cerere-tip',
+      eDirectDocIds: ['100', '200', '300'],
+    })
+    const { byDocId } = buildTemplateIndex([arch])
+    expect(byDocId.get('100')?.id).toBe('arch')
+    expect(byDocId.get('200')?.id).toBe('arch')
+    expect(byDocId.get('300')?.id).toBe('arch')
+  })
+
+  it('prefers a purpose-built template over a shared archetype, whatever the order', () => {
+    // The archetype covers doc 100 too, but a template built for exactly that
+    // document is the better answer and must win regardless of array order.
+    const specific = makeTemplate({ id: 'specific', eDirectDocId: '100' })
+    const arch = makeTemplate({ id: 'arch', archetype: 'cerere-tip', eDirectDocIds: ['100', '200'] })
+
+    expect(buildTemplateIndex([arch, specific]).byDocId.get('100')?.id).toBe('specific')
+    expect(buildTemplateIndex([specific, arch]).byDocId.get('100')?.id).toBe('specific')
+  })
+
+  it('still serves the archetype to documents the specific template does not cover', () => {
+    const specific = makeTemplate({ id: 'specific', eDirectDocId: '100' })
+    const arch = makeTemplate({ id: 'arch', archetype: 'cerere-tip', eDirectDocIds: ['100', '200'] })
+    expect(buildTemplateIndex([specific, arch]).byDocId.get('200')?.id).toBe('arch')
+  })
+
+  it('ignores archived templates entirely', () => {
+    const arch = makeTemplate({ id: 'arch', archived: true, eDirectDocIds: ['100'] })
+    expect(buildTemplateIndex([arch]).byDocId.size).toBe(0)
+  })
+})
+
+describe('templateDocIds', () => {
+  it('merges the primary id with the shared list without duplicating it', () => {
+    expect(templateDocIds({ eDirectDocId: '100', eDirectDocIds: ['100', '200'] })).toEqual(['100', '200'])
+  })
+
+  it('returns an empty list when a template carries no doc ids', () => {
+    expect(templateDocIds({})).toEqual([])
   })
 })

@@ -91,6 +91,29 @@ function slim(t) {
   if (t.eDirectDocId) out.eDirectDocId = t.eDirectDocId
   if (t.originalDriveFileId) out.originalDriveFileId = t.originalDriveFileId
   if (t.acroFormOrigin) out.acroFormOrigin = t.acroFormOrigin
+  // Provenance signals the catalog needs so a card can show how trustworthy a
+  // form's fields are without fetching the full template document.
+  if (t.archetype) out.archetype = t.archetype
+  // detectorConfidence, needsReview and voteCount are deliberately NOT
+  // projected. This blob has a hard 1 MB budget and the baseline already sits
+  // at 992 KB of it; the raw detector means alone cost ~16 KB gzipped across
+  // ~7.6k templates, which does not fit. The split is by design rather than
+  // by accident: a catalog card shows the accuracy *tier*, which
+  // `acroFormOrigin` + `archetype` (both cheap) already determine, while the
+  // exact percentage and the review caution render on FillPage, which loads
+  // the complete Template anyway.
+  if (Array.isArray(t.eDirectDocIds) && t.eDirectDocIds.length) {
+    out.eDirectDocIds = t.eDirectDocIds
+  }
+  // Every document a shared archetype serves. Without this the published
+  // archetypes resolve to nothing on procedure pages.
+  if (Array.isArray(t.eDirectDocIds) && t.eDirectDocIds.length) {
+    out.eDirectDocIds = t.eDirectDocIds
+  }
+  // voteCount is deliberately NOT projected: only AccuracyBadge's `full`
+  // variant shows votes, and that renders on FillPage, which loads the
+  // complete Template anyway. Shipping it to every catalog reader is dead
+  // weight in a byte-budgeted payload.
   return out
 }
 

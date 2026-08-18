@@ -1,0 +1,41 @@
+{
+  "note": "Which source document each authored replica was written FROM, by manifest md5. This is the strongest join evidence there is: the archetype's wording was taken from that exact document, so every copy of it is served by that archetype by construction — no similarity threshold involved. Generated joins land in authored-joins.json via build-authored-joins.mjs. Add an entry here whenever a replica is authored from an identified corpus document.",
+  "specs": {
+    "cerere-stimulent-educational": {
+      "md5": "4310e1121ed2a977df8f1dce66c233e6",
+      "document": "Cerere şi declaraţie pe propria răspundere (tichet social grădiniţă), Legea 248/2015"
+    },
+    "declaratie-identitate-culturala": {
+      "md5": "68282c73044a70e1a5d55b66cef0f5a3",
+      "document": "Anexa 3 — Declarație privind apartenența la identitatea culturală română, Legea 299/2007"
+    },
+    "cerere-dsp-model-4": {
+      "md5": "1ad2cc4cd5788a8c8a5193f0fb626589",
+      "document": "Modelul nr. 4 — planificare inspecție pentru obținerea autorizației, Legea farmaciei 266/2008"
+    },
+    "cerere-dsp-model-10": {
+      "md5": "125b66469205ad6ed6d2701f87503bbd",
+      "document": "Model nr. 10 — planificare inspecție la noul sediu, Legea farmaciei 266/2008"
+    },
+    "cerere-dsp-model-13": {
+      "md5": "dd53a1d970923cd4adab1f600ef9d499",
+      "document": "Modelul nr. 13 — planificare inspecție după modificarea spațiului, Legea farmaciei 266/2008"
+    },
+    "cerere-apostila": {
+      "md5": "9bed40aae38ca50a0d3465e9b80cc7cc",
+      "document": "Anexa nr. 3 — Cerere pentru eliberarea apostilei, Institutia Prefectului"
+    },
+    "cerere-certificat-profesional": {
+      "md5": "d2c27b4f990e20d43a941eb55c742a6b",
+      "document": "Anexa nr. 2 — Cerere certificat profesional curent (CPC), CMSR, Decizia CN 16/2CN/2019"
+    },
+    "cerere-inregistrare-sanitar-veterinara": {
+      "md5": "c4117b36f7b0f8aaee5aeacd5eb46fc1",
+      "document": "Anexa nr. 6 la norma sanitara veterinara — cerere inregistrare sanitar-veterinara, ANSVSA"
+    },
+    "cerere-ms-modificare-autorizatie": {
+      "md5": "104131bfb8644a966ae859b94a9c04af",
+      "document": "Modelul nr. 4 (Ministerul Sanatatii) — modificarea conditiilor de autorizare, Legea farmaciei 266/2008"
+    }
+  }
+}

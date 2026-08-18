@@ -261,6 +261,15 @@ export async function deletePdfFromDrive(
 }
 
 /**
+ * URL of a mirrored eDirect source document, served from our own Drive copy.
+ * Unlike fetchPdfFromDrive this is a plain href, not a fetch — the browser
+ * downloads it directly, and /api/file supplies the filename and MIME type.
+ */
+export function mirrorFileUrl(fileId: string): string {
+  return `/api/file?fileId=${encodeURIComponent(fileId)}`
+}
+
+/**
  * Fetch a publicly shared PDF from Google Drive via server-side proxy.
  * The API key is kept server-side — no user authentication required.
  */

@@ -153,23 +153,33 @@ async function runConsentFlow(oauth) {
   persistTokens(tokens)
 }
 
-let _drive = null
+let _drivePromise = null
 let _firestore = null
 
-async function getDrive() {
-  if (_drive) return _drive
-  const cfg = parseOAuthClient()
-  const oauth = new google.auth.OAuth2(cfg.client_id, cfg.client_secret, OAUTH_REDIRECT_URI)
+// Memoizes the in-flight promise, not the resolved client. Caching the result
+// alone is not enough under concurrency: N workers all observe `null` before
+// the first consent completes, and each spins up its own loopback server on
+// the same port — every one after the first dies with EADDRINUSE.
+function getDrive() {
+  if (_drivePromise) return _drivePromise
+  _drivePromise = (async () => {
+    const cfg = parseOAuthClient()
+    const oauth = new google.auth.OAuth2(cfg.client_id, cfg.client_secret, OAUTH_REDIRECT_URI)
 
-  if (existsSync(OAUTH_TOKEN_PATH)) {
-    oauth.setCredentials(JSON.parse(readFileSync(OAUTH_TOKEN_PATH, 'utf-8')))
-  } else {
-    await runConsentFlow(oauth)
-  }
-  oauth.on('tokens', persistTokens)
+    if (existsSync(OAUTH_TOKEN_PATH)) {
+      oauth.setCredentials(JSON.parse(readFileSync(OAUTH_TOKEN_PATH, 'utf-8')))
+    } else {
+      await runConsentFlow(oauth)
+    }
+    oauth.on('tokens', persistTokens)
 
-  _drive = google.drive({ version: 'v3', auth: oauth })
-  return _drive
+    return google.drive({ version: 'v3', auth: oauth })
+  })().catch((err) => {
+    // Don't poison the cache — a failed consent should be retryable.
+    _drivePromise = null
+    throw err
+  })
+  return _drivePromise
 }
 
 function getFirestore() {
@@ -210,17 +220,28 @@ async function getOrCreateFolder(drive, name, parentId) {
   return created.data.id
 }
 
-let _originalsFolderId = null
-async function getOriginalsFolderId() {
-  if (_originalsFolderId) return _originalsFolderId
-  const drive = await getDrive()
-  let pdfsId = FOLDER_ID_OVERRIDE
-  if (!pdfsId) {
-    const rootId = await getOrCreateFolder(drive, DRIVE_ROOT_NAME, null)
-    pdfsId = await getOrCreateFolder(drive, DRIVE_PDFS_NAME, rootId)
-  }
-  _originalsFolderId = await getOrCreateFolder(drive, DRIVE_ORIGINALS_NAME, pdfsId)
-  return _originalsFolderId
+// Promise-memoized for the same reason as getDrive: getOrCreateFolder is
+// look-then-create, so concurrent callers would each see "no Originals folder"
+// and create their own. That already happened — the Drive has two `Originals`
+// folders under `PDFs`, so existing originalDriveFileId values are split
+// across both. Consolidating them is a separate cleanup; this only stops it
+// getting worse.
+let _originalsFolderPromise = null
+function getOriginalsFolderId() {
+  if (_originalsFolderPromise) return _originalsFolderPromise
+  _originalsFolderPromise = (async () => {
+    const drive = await getDrive()
+    let pdfsId = FOLDER_ID_OVERRIDE
+    if (!pdfsId) {
+      const rootId = await getOrCreateFolder(drive, DRIVE_ROOT_NAME, null)
+      pdfsId = await getOrCreateFolder(drive, DRIVE_PDFS_NAME, rootId)
+    }
+    return getOrCreateFolder(drive, DRIVE_ORIGINALS_NAME, pdfsId)
+  })().catch((err) => {
+    _originalsFolderPromise = null
+    throw err
+  })
+  return _originalsFolderPromise
 }
 
 async function withBackoff(fn) {
@@ -390,6 +411,15 @@ async function main() {
   log(`${C.bold}${queue.length}${C.reset} template(s) to upload originals for` +
     (limit !== Infinity ? ` (limited to ${limit})` : ''))
   log()
+
+  // Resolve auth and the destination folder before any worker starts, so the
+  // consent prompt (and any failure to authenticate) surfaces once, up front,
+  // instead of racing N workers on first upload.
+  if (!dryRun && queue.length) {
+    const folderId = await getOriginalsFolderId()
+    log(`${C.dim}drive: authenticated · Originals folder ${folderId}${C.reset}`)
+    log()
+  }
 
   let okCount = 0
   let errCount = 0

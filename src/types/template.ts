@@ -52,6 +52,13 @@ export interface Template {
   // so the procedure detail page can offer a "Completează online" link
   // next to the right document.
   eDirectDocId?: string
+  // Every eDirect document this one template serves. Authored archetypes are
+  // published once and shared by all the documents that matched them (decision
+  // 1: one generic template + `?institution=` prefill, no stamped instances),
+  // so a single `eDirectDocId` cannot express the join — 23 archetypes cover
+  // ~1,291 files. `eDirectDocId` stays as the primary/back-compat key for
+  // one-to-one detected templates; readers should consult both.
+  eDirectDocIds?: string[]
   version: number
   createdAt: string
   fields: TemplateField[]
@@ -61,6 +68,15 @@ export interface Template {
   // for regeneration. Absent on hand-annotated and detected templates.
   archetype?: string
   archived?: boolean
+  // Mean confidence of the field detector that produced this AcroForm, 0..1.
+  // Written by upload-templates.mjs. Only meaningful when the AcroForm was
+  // generated — an 'original' form had nothing to detect, and an authored
+  // replica was written by hand, so both ignore it.
+  detectorConfidence?: number
+  // Set by the upload pipeline when the detector's output looked unreliable
+  // (low confidence, no fields found, or far fewer AcroForm fields than the
+  // detector expected). Surfaced to users as an explicit caution.
+  needsReview?: boolean
   driveFileId: string
   // Drive file id of the truly-untouched bundle PDF (no AcroForm fields,
   // straight from eDirect). Optional during the backfill rollout.
@@ -103,13 +119,23 @@ export interface SlimTemplate {
   procedure?: string
   procedureId?: string
   eDirectDocId?: string
+  // Every eDirect document this one template serves. Authored archetypes are
+  // published once and shared by all the documents that matched them (decision
+  // 1: one generic template + `?institution=` prefill, no stamped instances),
+  // so a single `eDirectDocId` cannot express the join — 23 archetypes cover
+  // ~1,291 files. `eDirectDocId` stays as the primary/back-compat key for
+  // one-to-one detected templates; readers should consult both.
+  eDirectDocIds?: string[]
   version: number
   visibleFieldCount: number
   archetype?: string
   archived?: boolean
+  detectorConfidence?: number
+  needsReview?: boolean
   driveFileId: string
   originalDriveFileId?: string
   acroFormOrigin?: AcroFormOrigin
+  voteCount?: VoteCount
 }
 
 // One eDirect procedure — the layer between an institution and its
@@ -131,6 +157,17 @@ export interface ProcedureDocument {
   // index.json. Same key Templates carry, so the procedure detail page
   // can pair this document with its editable Template if one exists.
   eDirectDocId?: string
+  // Drive file id of our byte-identical copy of `downloadUrl`, written by
+  // mirror-documents.mjs. Present only for documents we managed to mirror;
+  // `downloadUrl` stays the fallback (and the attribution link) for the rest.
+  // Served via /api/file — not /api/pdf, since most source documents are
+  // .doc/.docx rather than PDFs.
+  mirrorFileId?: string
+  // Extension and MIME of the mirrored bytes, carried so the UI can label the
+  // download ("DOCX · 42 KB") without a round-trip to Drive.
+  mirrorExt?: string
+  mirrorMimeType?: string
+  mirrorBytes?: number
 }
 
 export interface ProcedureOutputDocument {

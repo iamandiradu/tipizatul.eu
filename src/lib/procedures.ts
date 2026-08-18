@@ -120,12 +120,35 @@ export interface TemplateIndex {
   byProcedureId: Map<string, SlimTemplate[]>
 }
 
+// Every eDirect doc id a template serves — the single primary key plus the
+// shared-archetype list. Deduped, because a one-to-one template legitimately
+// repeats its primary id inside the list.
+export function templateDocIds(t: Pick<SlimTemplate, 'eDirectDocId' | 'eDirectDocIds'>): string[] {
+  const out = new Set<string>()
+  if (t.eDirectDocId) out.add(t.eDirectDocId)
+  for (const id of t.eDirectDocIds ?? []) if (id) out.add(id)
+  return [...out]
+}
+
 export function buildTemplateIndex(catalog: SlimTemplate[]): TemplateIndex {
   const byDocId = new Map<string, SlimTemplate>()
   const byProcedureId = new Map<string, SlimTemplate[]>()
-  for (const t of catalog) {
-    if (t.archived) continue
-    if (t.eDirectDocId) byDocId.set(t.eDirectDocId, t)
+  const live = catalog.filter((t) => !t.archived)
+
+  // Two passes rather than one, so precedence does not depend on catalog order:
+  // a template built for one specific document always wins over a shared
+  // archetype that merely also covers it. Within a pass, ties keep the first
+  // entry — arbitrary, but only between templates of equal specificity.
+  for (const t of live) {
+    if (t.eDirectDocId && !byDocId.has(t.eDirectDocId)) byDocId.set(t.eDirectDocId, t)
+  }
+  for (const t of live) {
+    for (const id of t.eDirectDocIds ?? []) {
+      if (id && !byDocId.has(id)) byDocId.set(id, t)
+    }
+  }
+
+  for (const t of live) {
     if (t.procedureId) {
       const bucket = byProcedureId.get(t.procedureId)
       if (bucket) bucket.push(t)
@@ -155,6 +178,8 @@ export function countEditableDocuments(
   const seen = new Set<string>()
   for (const d of p.documents) {
     if (!d.eDirectDocId) continue
+    // byDocId already resolves shared-archetype ids, so this counts a document
+    // as editable whether a dedicated template or an archetype serves it.
     const t = idx.byDocId.get(d.eDirectDocId)
     if (t && allow(t)) seen.add(t.id)
   }
