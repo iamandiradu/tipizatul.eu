@@ -8,6 +8,13 @@ describe('RoepasNotice', () => {
     localStorage.clear()
   })
 
+  it('reads as one clean sentence pair', () => {
+    const { container } = render(<RoepasNotice />)
+    expect(container.querySelector('p')?.textContent).toBe(
+      'PCUe (eDirect) a fost înlocuit de ROePAS (roepas.ro) — o interfață mult mai bună decât vechea platformă. Nu înlocuiește Tipizatul.eu.',
+    )
+  })
+
   it('links to the new ROePAS portal', () => {
     render(<RoepasNotice />)
     expect(screen.getByRole('link', { name: 'roepas.ro' })).toHaveAttribute(

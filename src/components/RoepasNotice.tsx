@@ -3,7 +3,7 @@ import { Megaphone, X } from 'lucide-react'
 
 // Bump the version suffix when the wording changes, so the notice re-appears
 // for people who dismissed the previous one.
-const STORAGE_KEY = 'roepasNotice:v1'
+const STORAGE_KEY = 'roepasNotice:v2'
 
 function readDismissed(): boolean {
   try {
@@ -36,8 +36,8 @@ export default function RoepasNotice() {
       <div className="max-w-screen-2xl mx-auto px-4 py-2 flex items-start sm:items-center gap-2 text-sm">
         <Megaphone className="w-4 h-4 mt-0.5 sm:mt-0 shrink-0" aria-hidden="true" />
         <p className="flex-1 min-w-0">
-          <strong className="font-semibold">PCUe (eDirect) a fost înlocuit de ROePAS.</strong>{' '}
-          Solicitările se depun acum pe{' '}
+          <strong className="font-semibold">PCUe (eDirect) a fost înlocuit de ROePAS</strong>{' '}
+          (
           <a
             href="https://roepas.ro/ro/"
             target="_blank"
@@ -46,7 +46,7 @@ export default function RoepasNotice() {
           >
             roepas.ro
           </a>
-          {' '}— formularele de aici rămân utile pentru completare.
+          ) — o interfață mult mai bună decât vechea platformă. Nu înlocuiește Tipizatul.eu.
         </p>
         <button
           onClick={dismiss}
