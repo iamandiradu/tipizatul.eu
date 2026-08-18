@@ -4,6 +4,7 @@ import { Moon, Sun, Lightbulb, Github, AlertTriangle, Code2 } from 'lucide-react
 import { useDarkMode } from '@/lib/useDarkMode'
 import { useDevMode } from '@/lib/useDevMode'
 import ProposalWidget from '@/components/ProposalWidget'
+import RoepasNotice from '@/components/RoepasNotice'
 import Logo from '@/components/Logo'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
@@ -88,6 +89,7 @@ function AppShell({ showBackLink }: { showBackLink?: boolean }) {
           </div>
         </div>
       </header>
+      <RoepasNotice />
       <div
         role="alert"
         className="bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200 dark:border-amber-900/60 text-amber-900 dark:text-amber-200"
