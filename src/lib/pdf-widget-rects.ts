@@ -50,7 +50,6 @@ export async function harvestWidgetRects(
         page.cleanup()
       }
     }
-    pdf.destroy()
     return rects
   } finally {
     task.destroy()

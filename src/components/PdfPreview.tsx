@@ -58,13 +58,13 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
     task.promise
       .then(async (pdf) => {
         if (cancelled) {
-          pdf.destroy()
+          void task.destroy()
           return
         }
         const container = containerRef.current
         const wrapper = wrapperRef.current
         if (!container || !wrapper) {
-          pdf.destroy()
+          void task.destroy()
           return
         }
 
@@ -97,7 +97,7 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
 
         for (let i = 1; i <= pdf.numPages; i++) {
           if (cancelled) {
-            pdf.destroy()
+            void task.destroy()
             return
           }
           const page = await pdf.getPage(i)
@@ -123,7 +123,7 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
           await page.render({ canvas: offscreen, viewport, transform }).promise
 
           if (cancelled) {
-            pdf.destroy()
+            void task.destroy()
             return
           }
 
@@ -156,7 +156,7 @@ export default function PdfPreview({ pdfBytes, onPagesReady }: PdfPreviewProps) 
           })
         }
 
-        pdf.destroy()
+        void task.destroy()
         if (!cancelled) {
           setError(null)
           onPagesReadyRef.current?.(pageInfos)

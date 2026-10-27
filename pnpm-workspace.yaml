@@ -1,0 +1,6 @@
+# Mirrors the "overrides" block in package.json (pnpm ignores npm's field).
+overrides:
+  '@grpc/grpc-js': ^1.14.6
+  '@vercel/node>undici': ^6.29.1
+  '@vercel/node>path-to-regexp': ^6.3.0
+  '@vercel/static-config>ajv': ^8.20.0

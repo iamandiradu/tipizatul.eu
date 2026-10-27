@@ -1,13 +1,13 @@
 import { z } from 'zod'
 import type { Template } from '@/types/template'
 
-export function buildZodSchema(template: Template): z.ZodObject<z.ZodRawShape> {
-  const shape: z.ZodRawShape = {}
+export function buildZodSchema(template: Template) {
+  const shape: Record<string, z.ZodType> = {}
 
   for (const field of template.fields) {
     if (field.hidden) continue
 
-    let schema: z.ZodTypeAny
+    let schema: z.ZodType
 
     if (field.type === 'checkbox') {
       schema = z.boolean()

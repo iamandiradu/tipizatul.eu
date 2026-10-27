@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useSearchParams, Link } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronRight, Code2, Download, Loader2, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { fetchTemplate } from '@/lib/firestore'
@@ -116,7 +116,7 @@ export default function FillPage() {
     getValues,
     formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodSchema ? zodResolver(zodSchema) : undefined,
+    resolver: zodSchema ? (zodResolver(zodSchema) as Resolver<FormValues>) : undefined,
     defaultValues: savedValues as FormValues | undefined,
     mode: 'onBlur',
   })
